@@ -1,0 +1,93 @@
+/* src/app/subjects/create/CreatePage.module.css */
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.createContainer {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form {
+  max-width: 550px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #495057;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.submitButton {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background-color: #28a745;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.btnSecondary {
+  margin-top: 16px;
+  padding: 10px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.textDanger {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

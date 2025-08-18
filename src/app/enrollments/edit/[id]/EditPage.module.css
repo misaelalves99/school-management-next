@@ -1,0 +1,71 @@
+/* src/app/enrollments/edit/[id]/EditPage.module.css */
+
+.title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.inputField {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.btnSubmit {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  background-color: #007bff;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.btnSubmit:hover {
+  background-color: #0056b3;
+}
+
+.btnSecondary {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  background-color: #6c757d;
+  margin-top: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.textDanger {
+  color: #dc3545;
+  font-size: 0.9em;
+  margin-top: 4px;
+  display: block;
+}

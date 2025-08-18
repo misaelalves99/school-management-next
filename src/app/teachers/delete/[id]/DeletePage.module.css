@@ -1,0 +1,57 @@
+/* src/pages/Teachers/Delete/DeletePage.module.css */
+
+.title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.warning {
+  color: #dc3545;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.infoBox {
+  max-width: 500px;
+  margin: 0 auto 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.infoBox h4,
+.infoBox p {
+  text-align: center;
+  margin: 8px 0;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+}
+
+.btnDanger {
+  background-color: #dc3545;
+}
+
+.btnDanger:hover {
+  background-color: #bd2130;
+}
+
+.btnSecondary {
+  background-color: #6c757d;
+}
+
+.btnSecondary:hover {
+  background-color: #5a6268;
+}

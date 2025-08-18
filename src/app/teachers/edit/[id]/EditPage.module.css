@@ -1,0 +1,74 @@
+/* src/app/teachers/edit/[id]/EditPage.module.css */
+
+.title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 28px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.inputControl {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.inputControlFocus {
+  outline: none;
+  border-color: #28a745;
+}
+
+.btnSubmit {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  background-color: #007bff;
+}
+
+.btnSubmit:hover {
+  background-color: #0056b3;
+}
+
+.btnSecondary {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: #6c757d;
+  margin-left: 12px;
+}
+
+.textDanger {
+  color: #dc3545;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,15 @@
+/* app/components/Footer/Footer.module.css */
+
+.footer {
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: #1f2937; /* Cinza escuro */
+  color: #f9fafb; /* Branco suave */
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-top: 1px solid #374151; /* Linha sutil no topo */
+  position: relative; /* Mantém o footer no fluxo normal */
+  bottom: 0;
+  left: 0;
+}

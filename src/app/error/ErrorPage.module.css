@@ -1,0 +1,70 @@
+/* src/pages/ErrorPage/ErrorPage.module.css */
+
+.errorContainer {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.errorTitle {
+  font-size: 1.8rem;
+  color: #d9534f;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.errorDescription {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.errorDetails {
+  background: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: left;
+  color: #721c24;
+  font-size: 0.95rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.errorDetails h3 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.btnReturn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background-color: #004085;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btnReturn:hover,
+.btnReturn:focus {
+  background-color: #0062cc;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .errorContainer {
+    padding: 1rem;
+  }
+
+  .errorTitle {
+    font-size: 1.5rem;
+  }
+}

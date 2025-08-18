@@ -1,0 +1,43 @@
+/* src/pages/Students/Delete/DeletePage.module.css */
+
+.container {
+  max-width: 500px;
+  margin: 0 auto 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+.warning {
+  margin: 8px 0;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btnDelete {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnCancel {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
