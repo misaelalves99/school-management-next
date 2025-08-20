@@ -1,22 +1,37 @@
-// src/app/classrooms/[id]/edit/page.tsx
+// /src/app/classrooms/[id]/edit/page.tsx
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './EditPage.module.css';
+import type { ClassRoom } from '../../../types/Classroom';
+import mockClassRooms from '../../../mocks/classRooms'; // default import
 
-type Props = {
-  id: number;
-  name: string;
-  capacity: number;
-  onSubmit: (data: { id: number; name: string; capacity: number }) => void;
-};
+interface PageProps {
+  params: { id: string };
+}
 
-const EditClassRoom: React.FC<Props> = ({ id, name, capacity, onSubmit }) => {
+export default function EditClassRoomPage({ params }: PageProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState({ name, capacity });
+  const id = Number(params.id);
+  const [classRoom, setClassRoom] = useState<ClassRoom | null>(null);
+  const [formData, setFormData] = useState({ name: '', capacity: 0 });
+
+  useEffect(() => {
+    const found: ClassRoom | undefined = mockClassRooms.find(
+      (c: ClassRoom) => c.id === id
+    );
+
+    if (!found) {
+      alert('Sala não encontrada');
+      router.push('/classrooms');
+    } else {
+      setClassRoom(found);
+      setFormData({ name: found.name, capacity: found.capacity });
+    }
+  }, [id, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,19 +43,28 @@ const EditClassRoom: React.FC<Props> = ({ id, name, capacity, onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ id, ...formData });
-    router.push('/classrooms'); // redireciona após salvar
+    if (!classRoom) return;
+
+    // Atualiza o mock (substitua pelo seu service real)
+    const index = mockClassRooms.findIndex((c: ClassRoom) => c.id === classRoom.id);
+    if (index !== -1) {
+      mockClassRooms[index] = { ...mockClassRooms[index], ...formData };
+    }
+
+    router.push('/classrooms');
   };
+
+  if (!classRoom) return <p className={styles.loading}>Carregando...</p>;
 
   return (
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>Editar Sala</h1>
 
       <form onSubmit={handleSubmit} className={styles.form}>
-        <input type="hidden" value={id} />
-
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="name">Nome</label>
+          <label className={styles.label} htmlFor="name">
+            Nome
+          </label>
           <input
             id="name"
             name="name"
@@ -52,7 +76,9 @@ const EditClassRoom: React.FC<Props> = ({ id, name, capacity, onSubmit }) => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="capacity">Capacidade</label>
+          <label className={styles.label} htmlFor="capacity">
+            Capacidade
+          </label>
           <input
             id="capacity"
             name="capacity"
@@ -75,6 +101,4 @@ const EditClassRoom: React.FC<Props> = ({ id, name, capacity, onSubmit }) => {
       </Link>
     </div>
   );
-};
-
-export default EditClassRoom;
+}
