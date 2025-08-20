@@ -6,24 +6,24 @@
   padding: 0 15px;
 }
 
-h1 {
+:global(h1) {
   font-size: 2rem;
   text-align: center;
   margin-bottom: 24px;
   color: #333;
 }
 
-p {
+:global(p) {
   line-height: 1.6;
   color: #444;
   margin-bottom: 16px;
 }
 
-ul {
+:global(ul) {
   padding-left: 20px;
   margin-bottom: 16px;
 }
 
-li {
+:global(li) {
   margin-bottom: 8px;
 }
