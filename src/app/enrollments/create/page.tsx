@@ -1,5 +1,3 @@
-// src/app/enrollments/create/page.tsx
-
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
@@ -10,17 +8,11 @@ import type { Student } from '../../types/Student';
 import type { ClassRoom } from '../../types/Classroom';
 import type { EnrollmentForm } from '../../types/Enrollment';
 
-interface CreateEnrollmentProps {
-  students?: Student[];       // agora opcional
-  classRooms?: ClassRoom[];   // agora opcional
-  onCreate: (data: EnrollmentForm) => Promise<void>;
-}
+import studentsMock from '../../mocks/students';
+import classRoomsMock from '../../mocks/classRooms';
+import enrollmentsMock from '../../mocks/enrollments';
 
-export default function CreateEnrollment({
-  students = [],
-  classRooms = [],
-  onCreate,
-}: CreateEnrollmentProps) {
+export default function CreateEnrollmentPage() {
   const router = useRouter();
 
   const [form, setForm] = useState<EnrollmentForm>({
@@ -44,12 +36,16 @@ export default function CreateEnrollment({
     e.preventDefault();
     if (!validate()) return;
 
-    try {
-      await onCreate(form);
-      router.push('/enrollments');
-    } catch (err) {
-      console.error(err);
-    }
+    // Criação de matrícula no mock com status obrigatório
+    enrollmentsMock.push({
+      id: enrollmentsMock.length + 1,
+      studentId: Number(form.studentId),
+      classRoomId: Number(form.classRoomId),
+      enrollmentDate: form.enrollmentDate,
+      status: 'Ativo', // deve existir no tipo Enrollment
+    });
+
+    router.push('/enrollments');
   }
 
   function handleChange(e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
@@ -74,7 +70,7 @@ export default function CreateEnrollment({
             className={styles.formControl}
           >
             <option value="">Selecione o Aluno</option>
-            {students.map(s => (
+            {studentsMock.map((s: Student) => (
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
@@ -91,7 +87,7 @@ export default function CreateEnrollment({
             className={styles.formControl}
           >
             <option value="">Selecione a Turma</option>
-            {classRooms.map(c => (
+            {classRoomsMock.map((c: ClassRoom) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
