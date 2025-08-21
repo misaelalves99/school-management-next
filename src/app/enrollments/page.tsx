@@ -6,9 +6,9 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import styles from './EnrollmentsPage.module.css';
 
-import { Enrollment } from '../types/Enrollment';
-import { mockEnrollments } from '../mocks/enrollments';
-import { mockStudents } from '../mocks/students';
+import type { Enrollment } from '../types/Enrollment';
+import mockEnrollments from '../mocks/enrollments';
+import mockStudents from '../mocks/students';
 import mockClassRooms from '../mocks/classRooms';
 
 const PAGE_SIZE = 2;
@@ -19,7 +19,7 @@ export default function EnrollmentsPage() {
   const [filteredEnrollments, setFilteredEnrollments] = useState<Enrollment[]>([]);
 
   useEffect(() => {
-    let filtered = mockEnrollments;
+    let filtered: Enrollment[] = mockEnrollments;
 
     if (searchString) {
       const lowerSearch = searchString.toLowerCase();
@@ -30,15 +30,24 @@ export default function EnrollmentsPage() {
     setCurrentPage(1);
   }, [searchString]);
 
-  const totalPages = useMemo(() => Math.ceil(filteredEnrollments.length / PAGE_SIZE), [filteredEnrollments]);
+  const totalPages = useMemo(
+    () => Math.ceil(filteredEnrollments.length / PAGE_SIZE),
+    [filteredEnrollments]
+  );
 
   const paginatedEnrollments = useMemo(
-    () => filteredEnrollments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    () =>
+      filteredEnrollments.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE
+      ),
     [filteredEnrollments, currentPage]
   );
 
-  const getStudentName = (id: number) => mockStudents.find((s) => s.id === id)?.name ?? 'Aluno não informado';
-  const getClassRoomName = (id: number) => mockClassRooms.find((c) => c.id === id)?.name ?? 'Turma não informada';
+  const getStudentName = (id: number) =>
+    mockStudents.find((s) => s.id === id)?.name ?? 'Aluno não informado';
+  const getClassRoomName = (id: number) =>
+    mockClassRooms.find((c) => c.id === id)?.name ?? 'Turma não informada';
 
   return (
     <div className={styles.pageContainer}>
@@ -75,9 +84,15 @@ export default function EnrollmentsPage() {
                 <td>{enrollment.status}</td>
                 <td>{new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>
                 <td>
-                  <Link href={`/enrollments/details/${enrollment.id}`} className={`${styles.btn} ${styles.btnInfo}`}>Detalhes</Link>{' '}
-                  <Link href={`/enrollments/edit/${enrollment.id}`} className={`${styles.btn} ${styles.btnWarning}`}>Editar</Link>{' '}
-                  <Link href={`/enrollments/delete/${enrollment.id}`} className={`${styles.btn} ${styles.btnDanger}`}>Excluir</Link>
+                  <Link href={`/enrollments/details/${enrollment.id}`} className={`${styles.btn} ${styles.btnInfo}`}>
+                    Detalhes
+                  </Link>{' '}
+                  <Link href={`/enrollments/edit/${enrollment.id}`} className={`${styles.btn} ${styles.btnWarning}`}>
+                    Editar
+                  </Link>{' '}
+                  <Link href={`/enrollments/delete/${enrollment.id}`} className={`${styles.btn} ${styles.btnDanger}`}>
+                    Excluir
+                  </Link>
                 </td>
               </tr>
             ))}

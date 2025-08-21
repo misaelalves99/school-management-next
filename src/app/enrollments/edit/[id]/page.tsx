@@ -9,11 +9,7 @@ import styles from './EditPage.module.css';
 import type { Enrollment } from '../../../types/Enrollment';
 import { mockEnrollments } from '../../../mocks/enrollments';
 
-interface EditEnrollmentProps {
-  onSave: (data: Enrollment) => Promise<void>;
-}
-
-export default function EditEnrollment({ onSave }: EditEnrollmentProps) {
+export default function EditEnrollmentPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [formData, setFormData] = useState<Enrollment | null>(null);
@@ -61,7 +57,12 @@ export default function EditEnrollment({ onSave }: EditEnrollmentProps) {
     }
 
     try {
-      await onSave(formData);
+      // 🚀 Aqui simulamos salvamento (você pode trocar depois por API real)
+      const idx = mockEnrollments.findIndex(e => e.id === formData.id);
+      if (idx !== -1) {
+        mockEnrollments[idx] = { ...formData };
+      }
+
       router.push('/enrollments');
     } catch (err) {
       console.error(err);

@@ -1,10 +1,11 @@
 // src/app/enrollments/details/[id]/page.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { mockEnrollments } from '../../../mocks/enrollments';
-import { mockStudents } from '../../../mocks/students';
+import mockEnrollments from '../../../mocks/enrollments';
+import mockStudents from '../../../mocks/students';
 import mockClassRooms from '../../../mocks/classRooms';
 import styles from './DetailsPage.module.css';
 
@@ -25,7 +26,9 @@ export default function EnrollmentDetailsPage() {
     if (!id) return;
 
     const enrollmentId = Number(id);
-    const enrollmentData = mockEnrollments.find((e): e is typeof mockEnrollments[number] => e.id === enrollmentId);
+    const enrollmentData = mockEnrollments.find(
+      (e): e is typeof mockEnrollments[number] => e.id === enrollmentId
+    );
 
     if (!enrollmentData) {
       alert('Matrícula não encontrada');
