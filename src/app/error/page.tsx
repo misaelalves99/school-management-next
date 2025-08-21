@@ -2,12 +2,13 @@
 
 'use client';
 
+import { Suspense } from 'react';
 import styles from './ErrorPage.module.css';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type { ErrorData } from '../types/ErrorData';
 
-export default function ErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const errorMessage = searchParams.get('message') ?? undefined;
   const errorStack = searchParams.get('stack') ?? undefined;
@@ -37,5 +38,13 @@ export default function ErrorPage() {
         ⬅ Voltar para o Início
       </Link>
     </div>
+  );
+}
+
+export default function ErrorPage() {
+  return (
+    <Suspense fallback={<div>Carregando erro...</div>}>
+      <ErrorContent />
+    </Suspense>
   );
 }
