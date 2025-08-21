@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './StudentsPage.module.css';
 
-import { mockStudents } from '../mocks/students';
+import mockStudents from '../mocks/students';
 import type { Student } from '../types/Student';
 
 export default function StudentsIndexPage() {
@@ -16,7 +16,7 @@ export default function StudentsIndexPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const filtered = mockStudents.filter(s =>
+    const filtered = mockStudents.filter((s: Student) =>
       s.name.toLowerCase().includes(search.toLowerCase())
     );
     const pageSize = 10;
