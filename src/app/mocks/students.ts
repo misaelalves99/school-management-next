@@ -1,9 +1,8 @@
 // src/mocks/students.ts
 
-import type { Student } from '../types/Student';
+import { Student } from '../types/Student';
 
-// Mock completo de alunos com todas as propriedades do tipo Student
-const mockStudents: Student[] = [
+export const mockStudents: Student[] = [
   {
     id: 1,
     name: 'João Silva',
@@ -11,7 +10,7 @@ const mockStudents: Student[] = [
     phone: '123456789',
     address: 'Rua A',
     email: 'joao.silva@email.com',
-    dateOfBirth: '2005-01-10',
+    dateOfBirth: '2000-01-15'
   },
   {
     id: 2,
@@ -20,7 +19,7 @@ const mockStudents: Student[] = [
     phone: '987654321',
     address: 'Rua B',
     email: 'maria.oliveira@email.com',
-    dateOfBirth: '2004-05-22',
+    dateOfBirth: '2001-03-22'
   },
   {
     id: 3,
@@ -29,7 +28,7 @@ const mockStudents: Student[] = [
     phone: '111222333',
     address: 'Rua C',
     email: 'pedro.santos@email.com',
-    dateOfBirth: '2006-03-18',
+    dateOfBirth: '1999-07-09'
   },
   {
     id: 4,
@@ -38,7 +37,7 @@ const mockStudents: Student[] = [
     phone: '444555666',
     address: 'Rua D',
     email: 'ana.costa@email.com',
-    dateOfBirth: '2005-07-09',
+    dateOfBirth: '2002-11-05'
   },
   {
     id: 5,
@@ -47,9 +46,9 @@ const mockStudents: Student[] = [
     phone: '777888999',
     address: 'Rua E',
     email: 'carlos.souza@email.com',
-    dateOfBirth: '2004-12-25',
-  },
+    dateOfBirth: '2000-09-12'
+  }
 ];
 
-// Exporta como default para facilitar importações
+// Exporta de forma única, sempre com o mesmo nome
 export default mockStudents;

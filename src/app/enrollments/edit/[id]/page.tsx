@@ -57,10 +57,10 @@ export default function EditEnrollmentPage() {
     }
 
     try {
-      // 🚀 Aqui simulamos salvamento (você pode trocar depois por API real)
-      const idx = mockEnrollments.findIndex(e => e.id === formData.id);
-      if (idx !== -1) {
-        mockEnrollments[idx] = { ...formData };
+      // simulação de update (como não tem API ainda)
+      const index = mockEnrollments.findIndex(e => e.id === formData.id);
+      if (index !== -1) {
+        mockEnrollments[index] = { ...formData };
       }
 
       router.push('/enrollments');
