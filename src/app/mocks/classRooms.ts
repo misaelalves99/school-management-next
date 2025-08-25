@@ -1,9 +1,8 @@
 // /src/mocks/classRooms.ts
-
 import type { ClassRoom } from '../types/Classroom';
 import type { Teacher } from '../types/Teacher';
 
-// Mock completo de professores (mesmo formato do tipo Teacher)
+// Mock completo de professores
 const mockTeachers: Teacher[] = [
   {
     id: 1,
