@@ -1,4 +1,5 @@
 // src/app/subjects/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -7,19 +8,13 @@ import styles from './SubjectsPage.module.css';
 import { mockSubjects } from '@/app/mocks/subjects';
 import { Subject } from '../types/Subject';
 
-const pageSize = 2;
-
 export default function SubjectsIndexPage() {
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
 
   const filtered: Subject[] = mockSubjects.filter((s) =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.description.toLowerCase().includes(search.toLowerCase())
   );
-
-  const totalPages = Math.ceil(filtered.length / pageSize);
-  const paginated: Subject[] = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className={styles.pageContainer}>
@@ -30,10 +25,7 @@ export default function SubjectsIndexPage() {
             type="text"
             value={search}
             placeholder="Digite o nome ou descrição..."
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button className={`${styles.btn} ${styles.btnPrimary}`}>Buscar</button>
         </form>
@@ -55,7 +47,7 @@ export default function SubjectsIndexPage() {
             </tr>
           </thead>
           <tbody>
-            {paginated.map((subject) => (
+            {filtered.map((subject) => (
               <tr key={subject.id}>
                 <td>{subject.name}</td>
                 <td>{subject.description}</td>
@@ -69,20 +61,6 @@ export default function SubjectsIndexPage() {
             ))}
           </tbody>
         </table>
-
-        <div className={styles.pagination}>
-          {page > 1 && (
-            <button onClick={() => setPage(page - 1)} className={styles.pageLink}>
-              Anterior
-            </button>
-          )}
-          <span className={styles.pageInfo}>Página {page} de {totalPages}</span>
-          {page < totalPages && (
-            <button onClick={() => setPage(page + 1)} className={styles.pageLink}>
-              Próxima
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

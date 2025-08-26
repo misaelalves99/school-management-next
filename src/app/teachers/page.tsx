@@ -7,12 +7,9 @@ import { useRouter } from 'next/navigation';
 import styles from './TeachersPage.module.css';
 import { getTeachers, Teacher } from '../mocks/teachers';
 
-const PAGE_SIZE = 2;
-
 export default function TeachersPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
 
   const allTeachers = getTeachers();
 
@@ -24,22 +21,8 @@ export default function TeachersPage() {
     );
   }, [searchTerm, allTeachers]);
 
-  const totalItems = filteredTeachers.length;
-  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
-
-  const currentItems = filteredTeachers.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
   };
 
   return (
@@ -47,10 +30,7 @@ export default function TeachersPage() {
       <div className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Professores</h2>
         <form
-          onSubmit={e => {
-            e.preventDefault();
-            goToPage(1);
-          }}
+          onSubmit={e => e.preventDefault()}
           className={styles.searchForm}
           role="search"
           aria-label="Buscar professores"
@@ -90,14 +70,14 @@ export default function TeachersPage() {
             </tr>
           </thead>
           <tbody>
-            {currentItems.length === 0 ? (
+            {filteredTeachers.length === 0 ? (
               <tr>
                 <td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>
                   Nenhum professor encontrado.
                 </td>
               </tr>
             ) : (
-              currentItems.map((teacher: Teacher) => (
+              filteredTeachers.map((teacher: Teacher) => (
                 <tr key={teacher.id}>
                   <td>{teacher.name}</td>
                   <td>{teacher.email}</td>
@@ -127,30 +107,6 @@ export default function TeachersPage() {
             )}
           </tbody>
         </table>
-
-        <div className={styles.pagination}>
-          <button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={styles.pageLink}
-            aria-label="Página anterior"
-          >
-            Anterior
-          </button>
-
-          <span className={styles.pageInfo}>
-            Página {currentPage} de {totalPages}
-          </span>
-
-          <button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={styles.pageLink}
-            aria-label="Próxima página"
-          >
-            Próxima
-          </button>
-        </div>
       </div>
     </div>
   );

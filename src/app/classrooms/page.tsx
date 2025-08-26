@@ -10,24 +10,14 @@ import type { ClassRoom } from '../types/Classroom';
 
 const ClassroomsPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
-  const [page, setPage] = useState(1);
   const router = useRouter();
-  const pageSize = 2;
 
   const filteredData: ClassRoom[] = mockClassRooms.filter((c) =>
     c.name.toLowerCase().includes(searchString.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
-
-  const pagedData: ClassRoom[] = filteredData.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
   };
 
   return (
@@ -64,50 +54,42 @@ const ClassroomsPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {pagedData.map((room) => (
-              <tr key={room.id}>
-                <td>{room.name}</td>
-                <td>{room.capacity}</td>
-                <td>
-                  <button
-                    className={`${styles.btn} ${styles.btnWarning}`}
-                    onClick={() => router.push(`/classrooms/edit/${room.id}`)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className={`${styles.btn} ${styles.btnInfo}`}
-                    onClick={() => router.push(`/classrooms/details/${room.id}`)}
-                  >
-                    Detalhes
-                  </button>
-                  <button
-                    className={`${styles.btn} ${styles.btnDanger}`}
-                    onClick={() => router.push(`/classrooms/delete/${room.id}`)}
-                  >
-                    Excluir
-                  </button>
+            {filteredData.length === 0 ? (
+              <tr>
+                <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhuma sala encontrada.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredData.map((room) => (
+                <tr key={room.id}>
+                  <td>{room.name}</td>
+                  <td>{room.capacity}</td>
+                  <td>
+                    <button
+                      className={`${styles.btn} ${styles.btnWarning}`}
+                      onClick={() => router.push(`/classrooms/edit/${room.id}`)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnInfo}`}
+                      onClick={() => router.push(`/classrooms/details/${room.id}`)}
+                    >
+                      Detalhes
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnDanger}`}
+                      onClick={() => router.push(`/classrooms/delete/${room.id}`)}
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-
-        <div className={styles.pagination}>
-          {page > 1 && (
-            <button className={styles.pageLink} onClick={() => setPage(page - 1)}>
-              Anterior
-            </button>
-          )}
-          <span className={styles.pageInfo}>
-            Página {page} de {totalPages}
-          </span>
-          {page < totalPages && (
-            <button className={styles.pageLink} onClick={() => setPage(page + 1)}>
-              Próxima
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

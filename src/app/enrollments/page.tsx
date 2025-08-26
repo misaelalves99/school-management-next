@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './EnrollmentsPage.module.css';
 
@@ -11,11 +11,8 @@ import mockEnrollments from '../mocks/enrollments';
 import mockStudents from '../mocks/students';
 import mockClassRooms from '../mocks/classRooms';
 
-const PAGE_SIZE = 2;
-
 export default function EnrollmentsPage() {
   const [searchString, setSearchString] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [filteredEnrollments, setFilteredEnrollments] = useState<Enrollment[]>([]);
 
   useEffect(() => {
@@ -27,22 +24,7 @@ export default function EnrollmentsPage() {
     }
 
     setFilteredEnrollments(filtered);
-    setCurrentPage(1);
   }, [searchString]);
-
-  const totalPages = useMemo(
-    () => Math.ceil(filteredEnrollments.length / PAGE_SIZE),
-    [filteredEnrollments]
-  );
-
-  const paginatedEnrollments = useMemo(
-    () =>
-      filteredEnrollments.slice(
-        (currentPage - 1) * PAGE_SIZE,
-        currentPage * PAGE_SIZE
-      ),
-    [filteredEnrollments, currentPage]
-  );
 
   const getStudentName = (id: number) =>
     mockStudents.find((s) => s.id === id)?.name ?? 'Aluno não informado';
@@ -77,43 +59,35 @@ export default function EnrollmentsPage() {
             </tr>
           </thead>
           <tbody>
-            {paginatedEnrollments.map((enrollment) => (
-              <tr key={enrollment.id}>
-                <td>{getStudentName(enrollment.studentId)}</td>
-                <td>{getClassRoomName(enrollment.classRoomId)}</td>
-                <td>{enrollment.status}</td>
-                <td>{new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>
-                <td>
-                  <Link href={`/enrollments/details/${enrollment.id}`} className={`${styles.btn} ${styles.btnInfo}`}>
-                    Detalhes
-                  </Link>{' '}
-                  <Link href={`/enrollments/edit/${enrollment.id}`} className={`${styles.btn} ${styles.btnWarning}`}>
-                    Editar
-                  </Link>{' '}
-                  <Link href={`/enrollments/delete/${enrollment.id}`} className={`${styles.btn} ${styles.btnDanger}`}>
-                    Excluir
-                  </Link>
+            {filteredEnrollments.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhuma matrícula encontrada.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredEnrollments.map((enrollment) => (
+                <tr key={enrollment.id}>
+                  <td>{getStudentName(enrollment.studentId)}</td>
+                  <td>{getClassRoomName(enrollment.classRoomId)}</td>
+                  <td>{enrollment.status}</td>
+                  <td>{new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>
+                  <td>
+                    <Link href={`/enrollments/details/${enrollment.id}`} className={`${styles.btn} ${styles.btnInfo}`}>
+                      Detalhes
+                    </Link>{' '}
+                    <Link href={`/enrollments/edit/${enrollment.id}`} className={`${styles.btn} ${styles.btnWarning}`}>
+                      Editar
+                    </Link>{' '}
+                    <Link href={`/enrollments/delete/${enrollment.id}`} className={`${styles.btn} ${styles.btnDanger}`}>
+                      Excluir
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-
-        <div className={styles.pagination}>
-          {currentPage > 1 && (
-            <button onClick={() => setCurrentPage(currentPage - 1)} className={styles.pageLink}>
-              Anterior
-            </button>
-          )}
-          <span className={styles.pageInfo}>
-            Página {currentPage} de {totalPages}
-          </span>
-          {currentPage < totalPages && (
-            <button onClick={() => setCurrentPage(currentPage + 1)} className={styles.pageLink}>
-              Próxima
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
