@@ -2,19 +2,24 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import styles from './SubjectsPage.module.css';
-import { mockSubjects } from '@/app/mocks/subjects';
-import { Subject } from '../types/Subject';
+import { useSubjects } from '../hooks/useSubjects';
+import type { Subject } from '../types/Subject';
 
 export default function SubjectsIndexPage() {
+  const { subjects } = useSubjects();
   const [search, setSearch] = useState('');
 
-  const filtered: Subject[] = mockSubjects.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.description.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered: Subject[] = useMemo(() => {
+    const term = search.toLowerCase();
+    return subjects.filter(
+      s =>
+        s.name.toLowerCase().includes(term) ||
+        s.description.toLowerCase().includes(term)
+    );
+  }, [search, subjects]);
 
   return (
     <div className={styles.pageContainer}>
@@ -47,18 +52,41 @@ export default function SubjectsIndexPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((subject) => (
-              <tr key={subject.id}>
-                <td>{subject.name}</td>
-                <td>{subject.description}</td>
-                <td>{subject.workloadHours}</td>
-                <td>
-                  <Link href={`/subjects/details/${subject.id}`} className={`${styles.btn} ${styles.btnInfo}`}>Detalhes</Link>
-                  <Link href={`/subjects/edit/${subject.id}`} className={`${styles.btn} ${styles.btnWarning}`}>Editar</Link>
-                  <Link href={`/subjects/delete/${subject.id}`} className={`${styles.btn} ${styles.btnDanger}`}>Excluir</Link>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhuma disciplina encontrada.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filtered.map((subject) => (
+                <tr key={subject.id}>
+                  <td>{subject.name}</td>
+                  <td>{subject.description}</td>
+                  <td>{subject.workloadHours}</td>
+                  <td>
+                    <Link
+                      href={`/subjects/details/${subject.id}`}
+                      className={`${styles.btn} ${styles.btnInfo}`}
+                    >
+                      Detalhes
+                    </Link>
+                    <Link
+                      href={`/subjects/edit/${subject.id}`}
+                      className={`${styles.btn} ${styles.btnWarning}`}
+                    >
+                      Editar
+                    </Link>
+                    <Link
+                      href={`/subjects/delete/${subject.id}`}
+                      className={`${styles.btn} ${styles.btnDanger}`}
+                    >
+                      Excluir
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

@@ -5,11 +5,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './CreatePage.module.css';
-import { Subject } from '../../types/Subject';
+import { useSubjects } from '../../hooks/useSubjects';
+import type { Subject } from '../../types/Subject';
 
 export default function CreateSubjectPage() {
   const router = useRouter();
-  const [subject, setSubject] = useState<Subject>({ name: '', description: '' });
+  const { createSubject } = useSubjects();
+
+  const [subject, setSubject] = useState<Omit<Subject, 'id'>>({ name: '', description: '' });
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -28,7 +31,7 @@ export default function CreateSubjectPage() {
     e.preventDefault();
     if (!validate()) return;
 
-    console.log('Salvar:', subject); // Simula chamada à API
+    createSubject(subject);
     router.push('/subjects');
   };
 

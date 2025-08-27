@@ -1,16 +1,17 @@
 // src/app/classrooms/details/[id]/page.tsx
-
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
 import styles from './DetailsPage.module.css';
-import mockClassRooms from '../../../mocks/classRooms';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
 const ClassRoomDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { getClassRoomById } = useClassRooms();
+
   const classRoomId = Number(id);
-  const classRoom = mockClassRooms.find((c) => c.id === classRoomId);
+  const classRoom = getClassRoomById(classRoomId);
 
   if (!classRoom) return <p>Turma não encontrada.</p>;
 
@@ -32,8 +33,8 @@ const ClassRoomDetailsPage: React.FC = () => {
         <dd>
           {classRoom.subjects?.length ? (
             <ul>
-              {classRoom.subjects.map((s, i) => (
-                <li key={i}>{s.name}</li>
+              {classRoom.subjects.map((s) => (
+                <li key={s.id}>{s.name}</li>
               ))}
             </ul>
           ) : (
@@ -45,8 +46,8 @@ const ClassRoomDetailsPage: React.FC = () => {
         <dd>
           {classRoom.teachers?.length ? (
             <ul>
-              {classRoom.teachers.map((t, i) => (
-                <li key={i}>{t.name}</li>
+              {classRoom.teachers.map((t) => (
+                <li key={t.id}>{t.name}</li>
               ))}
             </ul>
           ) : (

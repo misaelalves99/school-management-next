@@ -4,14 +4,15 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import styles from './DetailsPage.module.css';
-import { mockSubjects } from '../../../mocks/subjects';
+import { useSubjects } from '../../../hooks/useSubjects';
 
 export default function SubjectDetailsPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const subjectId = Number(params.id);
 
-  const subject = mockSubjects.find(s => s.id === subjectId);
+  const { getSubjectById } = useSubjects();
+  const subject = getSubjectById(subjectId);
 
   if (!subject) {
     return (
@@ -37,7 +38,7 @@ export default function SubjectDetailsPage() {
           <div className={styles.value}>{subject.name}</div>
 
           <div className={styles.label}>Carga Horária</div>
-          <div className={styles.value}>{subject.workloadHours} horas</div>
+          <div className={styles.value}>{subject.workloadHours ?? 'N/A'} horas</div>
 
           <div className={styles.label}>Descrição</div>
           <div className={styles.value}>{subject.description}</div>

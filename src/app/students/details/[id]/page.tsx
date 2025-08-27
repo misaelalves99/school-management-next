@@ -4,19 +4,26 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import styles from './DetailsPage.module.css';
+import { useStudents } from '../../../hooks/useStudents';
 
 export default function StudentDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { getStudentById } = useStudents();
 
-  const student = {
-    name: 'João da Silva',
-    email: 'joao@email.com',
-    dateOfBirth: '2001-09-15',
-    enrollmentNumber: '2025001',
-    phone: '(11) 99999-9999',
-    address: 'Rua Exemplo, 123',
-  };
+  const numericId = Number(id); // ✅ converte string -> number
+  const student = !isNaN(numericId) ? getStudentById(numericId) : undefined;
+
+  if (!student) {
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>Aluno não encontrado</h1>
+        <button className={styles.btnSecondary} onClick={() => router.push('/students')}>
+          Voltar à Lista
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -28,8 +35,18 @@ export default function StudentDetailsPage() {
       <div><strong>Telefone:</strong> {student.phone}</div>
       <div><strong>Endereço:</strong> {student.address}</div>
       <div className={styles.actions}>
-        <button className={styles.btnWarning} onClick={() => router.push(`/students/edit/${id}`)}>Editar</button>
-        <button className={styles.btnSecondary} onClick={() => router.push('/students')}>Voltar à Lista</button>
+        <button
+          className={styles.btnWarning}
+          onClick={() => router.push(`/students/edit/${numericId}`)}
+        >
+          Editar
+        </button>
+        <button
+          className={styles.btnSecondary}
+          onClick={() => router.push('/students')}
+        >
+          Voltar à Lista
+        </button>
       </div>
     </div>
   );

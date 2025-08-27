@@ -4,15 +4,22 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import styles from './DeletePage.module.css';
+import { useStudents } from '../../../hooks/useStudents';
 
 export default function DeleteStudentPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { deleteStudent } = useStudents();
 
   const handleDelete = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Aluno ${id} excluído!`);
-    router.push('/students');
+    const numericId = Number(id);
+    if (!isNaN(numericId)) {
+      deleteStudent(numericId);
+      router.push('/students');
+    } else {
+      console.error("ID inválido:", id);
+    }
   };
 
   return (
@@ -23,7 +30,11 @@ export default function DeleteStudentPage() {
       </p>
       <form onSubmit={handleDelete} className={styles.form}>
         <button type="submit" className={styles.btnDelete}>Confirmar Exclusão</button>
-        <button type="button" className={styles.btnCancel} onClick={() => router.push('/students')}>
+        <button
+          type="button"
+          className={styles.btnCancel}
+          onClick={() => router.push('/students')}
+        >
           Cancelar
         </button>
       </form>

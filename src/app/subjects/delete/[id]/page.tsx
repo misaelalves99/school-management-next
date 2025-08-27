@@ -4,14 +4,33 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import styles from './DeletePage.module.css';
+import { useSubjects } from '../../../hooks/useSubjects';
 
 export default function DeleteSubjectPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const id = params.id;
+  const id = Number(params.id);
+
+  const { getSubjectById, deleteSubject } = useSubjects();
+
+  const subject = getSubjectById(id);
+  if (!subject) {
+    return (
+      <div className={styles.container}>
+        <h2>Disciplina não encontrada.</h2>
+        <button
+          className={`${styles.btn} ${styles.btnSecondary}`}
+          onClick={() => router.push('/subjects')}
+        >
+          Voltar
+        </button>
+      </div>
+    );
+  }
 
   const handleDelete = () => {
-    console.log('Excluir disciplina com ID:', id); // Aqui faria a chamada à API
+    deleteSubject(subject.id!);
+    alert(`Disciplina "${subject.name}" excluída com sucesso!`);
     router.push('/subjects');
   };
 
@@ -21,13 +40,20 @@ export default function DeleteSubjectPage() {
       <h3 className={styles.warning}>Tem certeza que deseja excluir esta disciplina?</h3>
 
       <div className={styles.subjectBox}>
-        <h4>Nome da Disciplina (simulado)</h4>
-        <p>Carga Horária: 60 horas</p>
+        <h4>{subject.name}</h4>
+        <p>Carga Horária: {subject.workloadHours ?? 'N/A'} horas</p>
+        <p>Descrição: {subject.description}</p>
       </div>
 
-      <form className={styles.form}>
-        <button type="button" className={styles.btnDanger} onClick={handleDelete}>Excluir</button>
-        <button type="button" className={styles.btnSecondary} onClick={() => router.push('/subjects')}>Cancelar</button>
+      <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleDelete(); }}>
+        <button type="submit" className={styles.btnDanger}>Excluir</button>
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={() => router.push('/subjects')}
+        >
+          Cancelar
+        </button>
       </form>
     </>
   );

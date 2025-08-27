@@ -5,14 +5,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './ClassRoomList.module.css';
-import mockClassRooms from '../mocks/classRooms';
-import type { ClassRoom } from '../types/Classroom';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
 const ClassroomsPage: React.FC = () => {
-  const [searchString, setSearchString] = useState('');
   const router = useRouter();
+  const { classRooms } = useClassRooms();
+  const [searchString, setSearchString] = useState('');
 
-  const filteredData: ClassRoom[] = mockClassRooms.filter((c) =>
+  const filteredData = classRooms.filter((c) =>
     c.name.toLowerCase().includes(searchString.toLowerCase())
   );
 

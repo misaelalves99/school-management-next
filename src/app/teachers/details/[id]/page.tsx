@@ -5,12 +5,14 @@
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './DetailsPage.module.css';
-import { getTeacherById } from '../../../mocks/teachers';
+import { useTeachers } from '../../../hooks/useTeachers';
 
 export default function TeacherDetails() {
   const params = useParams();
   const router = useRouter();
   const id = Number(params?.id);
+
+  const { getTeacherById } = useTeachers();
 
   if (!id) return <div>Id inválido</div>;
 

@@ -5,13 +5,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './EditPage.module.css';
-import { getTeacherById, updateTeacher } from '../../../mocks/teachers';
 import type { TeacherFormData } from '../../../types/Teacher';
+import { useTeachers } from '../../../hooks/useTeachers';
 
 export default function TeacherEdit() {
   const params = useParams();
   const router = useRouter();
   const id = Number(params?.id);
+
+  const { getTeacherById, updateTeacher } = useTeachers();
 
   const [formData, setFormData] = useState<TeacherFormData>({
     name: '',
@@ -42,7 +44,7 @@ export default function TeacherEdit() {
       address: teacher.address,
     });
     setLoading(false);
-  }, [id, router]);
+  }, [id, router, getTeacherById]);
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof TeacherFormData, string>> = {};
@@ -66,11 +68,9 @@ export default function TeacherEdit() {
     if (!validate()) return;
 
     if (!id) return;
-    const updated = updateTeacher(id, formData);
-    if (!updated) {
-      alert('Erro ao atualizar professor');
-      return;
-    }
+
+    // Atualiza diretamente, sem testar retorno
+    updateTeacher(id, formData);
 
     alert('Professor atualizado com sucesso!');
     router.push('/teachers');

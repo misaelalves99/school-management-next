@@ -1,43 +1,54 @@
-// src/app/classrooms/delete/[id]/page.tsx
+// src/app/enrollments/delete/[id]/page.tsx
 
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
 import styles from './DeletePage.module.css';
-import mockClassRooms from '../../../mocks/classRooms';
+import { useEnrollments } from '@/app/hooks/useEnrollments';
+import { useStudents } from '@/app/hooks/useStudents';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
-const ClassRoomDeletePage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const DeleteEnrollmentPage: React.FC = () => {
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const enrollmentId = Number(params.id);
 
-  if (!id) return <p>Turma inválida.</p>;
+  const { enrollments, deleteEnrollment } = useEnrollments();
+  const { students } = useStudents();
+  const { classRooms } = useClassRooms();
 
-  const classRoomId = Number(id);
-  const classRoom = mockClassRooms.find((c) => c.id === classRoomId);
+  // Busca a matrícula pelo ID
+  const enrollment = enrollments.find((e) => e.id === enrollmentId);
+  if (!enrollment) return <p>Matrícula não encontrada.</p>;
 
-  if (!classRoom) return <p>Turma não encontrada.</p>;
+  const student = students.find((s) => s.id === enrollment.studentId);
+  const classRoom = classRooms.find((c) => c.id === enrollment.classRoomId);
 
   const handleDelete = () => {
-    const index = mockClassRooms.findIndex((c) => c.id === classRoomId);
-    if (index !== -1) {
-      mockClassRooms.splice(index, 1); // Remove do mock
-    }
-    router.push('/classrooms'); // Volta para lista
+    deleteEnrollment(enrollmentId);
+    alert('Matrícula excluída com sucesso!');
+    router.push('/enrollments');
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Excluir Turma</h1>
-
-      <p>
-        Tem certeza que deseja excluir a turma <strong>{classRoom.name}</strong>?
+      <h1 className={styles.title}>Excluir Matrícula</h1>
+      <p className={styles.warning}>
+        Tem certeza que deseja excluir esta matrícula?
       </p>
+
+      <div className={styles.infoBox}>
+        <p><strong>Aluno:</strong> {student?.name ?? 'Aluno não informado'}</p>
+        <p><strong>Turma:</strong> {classRoom?.name ?? 'Turma não informada'}</p>
+        <p><strong>Status:</strong> {enrollment.status}</p>
+        <p><strong>Data da Matrícula:</strong> {new Date(enrollment.enrollmentDate).toLocaleDateString()}</p>
+      </div>
 
       <div className={styles.actions}>
         <button className={`${styles.btn} ${styles.btnDanger}`} onClick={handleDelete}>
           Excluir
         </button>
-        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => router.push('/classrooms')}>
+        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => router.push('/enrollments')}>
           Cancelar
         </button>
       </div>
@@ -45,4 +56,4 @@ const ClassRoomDeletePage: React.FC = () => {
   );
 };
 
-export default ClassRoomDeletePage;
+export default DeleteEnrollmentPage;

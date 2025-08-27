@@ -4,12 +4,14 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import styles from './DeletePage.module.css';
-import { getTeacherById, deleteTeacher } from '../../../mocks/teachers';
+import { useTeachers } from '../../../hooks/useTeachers';
 
 export default function TeacherDelete() {
   const params = useParams();
   const router = useRouter();
   const id = Number(params?.id);
+
+  const { getTeacherById, deleteTeacher } = useTeachers();
 
   if (!id) return <div>Id inválido</div>;
 

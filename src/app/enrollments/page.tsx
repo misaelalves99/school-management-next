@@ -6,17 +6,20 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './EnrollmentsPage.module.css';
 
-import type { Enrollment } from '../types/Enrollment';
-import mockEnrollments from '../mocks/enrollments';
-import mockStudents from '../mocks/students';
-import mockClassRooms from '../mocks/classRooms';
+import { useEnrollments } from '../hooks/useEnrollments';
+import { useStudents } from '../hooks/useStudents';
+import { useClassRooms } from '../hooks/useClassRooms';
 
 export default function EnrollmentsPage() {
+  const { enrollments } = useEnrollments();
+  const { students } = useStudents();
+  const { classRooms } = useClassRooms();
+
   const [searchString, setSearchString] = useState('');
-  const [filteredEnrollments, setFilteredEnrollments] = useState<Enrollment[]>([]);
+  const [filteredEnrollments, setFilteredEnrollments] = useState(enrollments);
 
   useEffect(() => {
-    let filtered: Enrollment[] = mockEnrollments;
+    let filtered = enrollments;
 
     if (searchString) {
       const lowerSearch = searchString.toLowerCase();
@@ -24,12 +27,12 @@ export default function EnrollmentsPage() {
     }
 
     setFilteredEnrollments(filtered);
-  }, [searchString]);
+  }, [searchString, enrollments]);
 
   const getStudentName = (id: number) =>
-    mockStudents.find((s) => s.id === id)?.name ?? 'Aluno não informado';
+    students.find((s) => s.id === id)?.name ?? 'Aluno não informado';
   const getClassRoomName = (id: number) =>
-    mockClassRooms.find((c) => c.id === id)?.name ?? 'Turma não informada';
+    classRooms.find((c) => c.id === id)?.name ?? 'Turma não informada';
 
   return (
     <div className={styles.pageContainer}>
@@ -73,13 +76,22 @@ export default function EnrollmentsPage() {
                   <td>{enrollment.status}</td>
                   <td>{new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>
                   <td>
-                    <Link href={`/enrollments/details/${enrollment.id}`} className={`${styles.btn} ${styles.btnInfo}`}>
+                    <Link
+                      href={`/enrollments/details/${enrollment.id}`}
+                      className={`${styles.btn} ${styles.btnInfo}`}
+                    >
                       Detalhes
                     </Link>{' '}
-                    <Link href={`/enrollments/edit/${enrollment.id}`} className={`${styles.btn} ${styles.btnWarning}`}>
+                    <Link
+                      href={`/enrollments/edit/${enrollment.id}`}
+                      className={`${styles.btn} ${styles.btnWarning}`}
+                    >
                       Editar
                     </Link>{' '}
-                    <Link href={`/enrollments/delete/${enrollment.id}`} className={`${styles.btn} ${styles.btnDanger}`}>
+                    <Link
+                      href={`/enrollments/delete/${enrollment.id}`}
+                      className={`${styles.btn} ${styles.btnDanger}`}
+                    >
                       Excluir
                     </Link>
                   </td>

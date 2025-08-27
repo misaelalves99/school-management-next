@@ -4,22 +4,22 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import styles from './DeletePage.module.css';
-import mockClassRooms from '../../../mocks/classRooms';
-
-import type { ClassRoom } from '../../../types/Classroom';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
 const DeleteClassRoomPage: React.FC = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const { getClassRoomById, deleteClassRoom } = useClassRooms();
   const classRoomId = Number(params.id);
-  const classRoom: ClassRoom | undefined = mockClassRooms.find((c) => c.id === classRoomId);
+
+  const classRoom = getClassRoomById(classRoomId);
 
   if (!classRoom) return <p>Turma não encontrada.</p>;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Excluir turma com id', classRoom.id);
-    // Implementar exclusão real via API
+    // Exclui a sala via contexto
+    deleteClassRoom(classRoom.id);
     router.push('/classrooms');
   };
 
@@ -61,7 +61,11 @@ const DeleteClassRoomPage: React.FC = () => {
         <button type="submit" className={styles.btnDanger}>
           Confirmar Exclusão
         </button>
-        <button type="button" className={styles.btnSecondary} onClick={() => router.push('/classrooms')}>
+        <button
+          type="button"
+          className={styles.btnSecondary}
+          onClick={() => router.push('/classrooms')}
+        >
           Cancelar
         </button>
       </form>

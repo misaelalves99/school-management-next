@@ -4,10 +4,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import mockEnrollments from '../../../mocks/enrollments';
-import mockStudents from '../../../mocks/students';
-import mockClassRooms from '../../../mocks/classRooms';
 import styles from './DetailsPage.module.css';
+import { useEnrollments } from '../../../hooks/useEnrollments';
+import { useStudents } from '../../../hooks/useStudents';
+import { useClassRooms } from '../../../hooks/useClassRooms';
 
 interface EnrollmentDetails {
   id: number;
@@ -20,15 +20,16 @@ interface EnrollmentDetails {
 export default function EnrollmentDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { enrollments } = useEnrollments();
+  const { students } = useStudents();
+  const { classRooms } = useClassRooms();
   const [enrollment, setEnrollment] = useState<EnrollmentDetails | null>(null);
 
   useEffect(() => {
     if (!id) return;
 
     const enrollmentId = Number(id);
-    const enrollmentData = mockEnrollments.find(
-      (e): e is typeof mockEnrollments[number] => e.id === enrollmentId
-    );
+    const enrollmentData = enrollments.find(e => e.id === enrollmentId);
 
     if (!enrollmentData) {
       alert('Matrícula não encontrada');
@@ -36,8 +37,8 @@ export default function EnrollmentDetailsPage() {
       return;
     }
 
-    const student = mockStudents.find((s) => s.id === enrollmentData.studentId);
-    const classRoom = mockClassRooms.find((c) => c.id === enrollmentData.classRoomId);
+    const student = students.find(s => s.id === enrollmentData.studentId);
+    const classRoom = classRooms.find(c => c.id === enrollmentData.classRoomId);
 
     setEnrollment({
       id: enrollmentData.id,
@@ -46,7 +47,7 @@ export default function EnrollmentDetailsPage() {
       status: enrollmentData.status ?? '-',
       enrollmentDate: enrollmentData.enrollmentDate,
     });
-  }, [id, router]);
+  }, [id, enrollments, students, classRooms, router]);
 
   if (!enrollment) return <div>Carregando matrícula...</div>;
 

@@ -11,8 +11,8 @@ export interface Teacher {
   photoUrl?: string;
 }
 
-// Inicial mock teachers
-let teachersData: Teacher[] = [
+// Array inicial de professores (mock)
+export const mockTeachers: Teacher[] = [
   {
     id: 1,
     name: "João Silva",
@@ -36,27 +36,32 @@ let teachersData: Teacher[] = [
 ];
 
 // Funções para manipular professores (simula API)
-export function getTeachers() {
-  return [...teachersData];
+export function getTeachers(): Teacher[] {
+  return [...mockTeachers];
 }
 
-export function getTeacherById(id: number) {
-  return teachersData.find(t => t.id === id);
+export function getTeacherById(id: number): Teacher | undefined {
+  return mockTeachers.find(t => t.id === id);
 }
 
 export function createTeacher(teacher: Omit<Teacher, "id">): Teacher {
-  const newTeacher = { ...teacher, id: Math.max(0, ...teachersData.map(t => t.id)) + 1 };
-  teachersData.push(newTeacher);
+  const newId = Math.max(0, ...mockTeachers.map(t => t.id)) + 1;
+  const newTeacher: Teacher = { ...teacher, id: newId };
+  mockTeachers.push(newTeacher);
   return newTeacher;
 }
 
 export function updateTeacher(id: number, updated: Partial<Teacher>): Teacher | null {
-  const index = teachersData.findIndex(t => t.id === id);
+  const index = mockTeachers.findIndex(t => t.id === id);
   if (index === -1) return null;
-  teachersData[index] = { ...teachersData[index], ...updated };
-  return teachersData[index];
+  mockTeachers[index] = { ...mockTeachers[index], ...updated };
+  return mockTeachers[index];
 }
 
-export function deleteTeacher(id: number) {
-  teachersData = teachersData.filter(t => t.id !== id);
+export function deleteTeacher(id: number): void {
+  const index = mockTeachers.findIndex(t => t.id === id);
+  if (index !== -1) mockTeachers.splice(index, 1);
 }
+
+// Export default para compatibilidade com import default
+export default mockTeachers;

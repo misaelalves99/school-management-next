@@ -5,12 +5,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import styles from './EditPage.module.css';
-import { Subject } from '../../../types/Subject';
-import { mockSubjects } from '../../../mocks/subjects';
+import { useSubjects } from '../../../hooks/useSubjects';
+import type { Subject } from '../../../types/Subject';
 
 export default function EditSubjectPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const subjectId = Number(params.id);
+
+  const { getSubjectById, updateSubject } = useSubjects();
 
   const [subject, setSubject] = useState<Subject>({
     id: 0,
@@ -22,13 +25,16 @@ export default function EditSubjectPage() {
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   useEffect(() => {
-    const found = mockSubjects.find(s => s.id === Number(params.id));
+    const found = getSubjectById(subjectId);
     if (found) setSubject(found);
-  }, [params.id]);
+  }, [subjectId, getSubjectById]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setSubject(prev => ({ ...prev, [name]: name === 'workloadHours' ? Number(value) : value }));
+    setSubject(prev => ({
+      ...prev,
+      [name]: name === 'workloadHours' ? Number(value) : value,
+    }));
   };
 
   const validate = () => {
@@ -42,9 +48,25 @@ export default function EditSubjectPage() {
     e.preventDefault();
     if (!validate()) return;
 
-    console.log('Salvar alterações:', subject);
+    updateSubject(subjectId, {
+      name: subject.name,
+      description: subject.description,
+      workloadHours: subject.workloadHours,
+    });
+
     router.push('/subjects');
   };
+
+  if (!subject.id) {
+    return (
+      <div className={styles.pageContainer}>
+        <h2>Disciplina não encontrada.</h2>
+        <button className={styles.btnSecondary} onClick={() => router.push('/subjects')}>
+          Voltar à Lista
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageContainer}>

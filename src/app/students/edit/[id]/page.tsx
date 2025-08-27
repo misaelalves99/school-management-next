@@ -5,17 +5,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './EditPage.module.css';
-
-const mockStudents = [
-  { id: '1', name: 'João Silva', email: 'joao@example.com', dateOfBirth: '2000-01-01', enrollmentNumber: '20230001', phone: '123456789', address: 'Rua A' },
-  { id: '2', name: 'Maria Oliveira', email: 'maria@example.com', dateOfBirth: '1999-05-15', enrollmentNumber: '20230002', phone: '987654321', address: 'Rua B' },
-];
+import { useStudents } from '../../../hooks/useStudents';
+import type { Student } from '../../../types/Student';
 
 export default function EditStudentPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { getStudentById, updateStudent } = useStudents();
 
-  const [formData, setFormData] = useState({
+  const numericId = Number(id); // ✅ converte string -> number
+
+  const [formData, setFormData] = useState<Student>({
+    id: numericId,
     name: '',
     email: '',
     dateOfBirth: '',
@@ -25,13 +26,12 @@ export default function EditStudentPage() {
   });
 
   useEffect(() => {
-    if (!id) {
-      alert('ID do aluno não fornecido.');
+    if (!id || isNaN(numericId)) {
       router.push('/students');
       return;
     }
 
-    const student = mockStudents.find(s => s.id === id);
+    const student = getStudentById(numericId);
     if (!student) {
       alert('Aluno não encontrado.');
       router.push('/students');
@@ -39,7 +39,7 @@ export default function EditStudentPage() {
     }
 
     setFormData(student);
-  }, [id, router]);
+  }, [numericId, id, router, getStudentById]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,7 +48,7 @@ export default function EditStudentPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Aluno atualizado!');
+    updateStudent(numericId, formData); // ✅ usa número
     router.push('/students');
   };
 
@@ -63,7 +63,7 @@ export default function EditStudentPage() {
               id={key}
               name={key}
               type={key === 'dateOfBirth' ? 'date' : 'text'}
-              value={val}
+              value={val as string}
               onChange={handleChange}
               className={styles.inputField}
               onFocus={(e) => e.currentTarget.classList.add(styles.inputFieldFocus)}

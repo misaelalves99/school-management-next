@@ -9,6 +9,7 @@ export interface Teacher {
   subject: string;
   dateOfBirth: string;
   address: string;
+  photoUrl?: string;
 }
 
 // Tipo usado no formulário de cadastro/edição

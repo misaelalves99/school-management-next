@@ -4,10 +4,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import styles from './EditPage.module.css';
-import type { ClassRoom } from '../../../types/Classroom';
-import mockClassRooms from '../../../mocks/classRooms'; // default import
+import { useClassRooms } from '@/app/hooks/useClassRooms';
+import type { ClassRoom } from '@/app/types/Classroom';
+import type { Subject } from '@/app/types/Subject';
+import type { Teacher } from '@/app/types/Teacher';
 
 interface PageProps {
   params: { id: string };
@@ -15,23 +16,34 @@ interface PageProps {
 
 export default function EditClassRoomPage({ params }: PageProps) {
   const router = useRouter();
+  const { getClassRoomById, updateClassRoom } = useClassRooms();
   const id = Number(params.id);
-  const [classRoom, setClassRoom] = useState<ClassRoom | null>(null);
-  const [formData, setFormData] = useState({ name: '', capacity: 0 });
+
+  const [formData, setFormData] = useState<Omit<ClassRoom, 'id'>>({
+    name: '',
+    capacity: 0,
+    schedule: '',
+    subjects: [] as Subject[],
+    teachers: [] as Teacher[],
+    classTeacher: null,
+  });
 
   useEffect(() => {
-    const found: ClassRoom | undefined = mockClassRooms.find(
-      (c: ClassRoom) => c.id === id
-    );
-
-    if (!found) {
+    const classRoom = getClassRoomById(id);
+    if (!classRoom) {
       alert('Sala não encontrada');
       router.push('/classrooms');
     } else {
-      setClassRoom(found);
-      setFormData({ name: found.name, capacity: found.capacity });
+      setFormData({
+        name: classRoom.name,
+        capacity: classRoom.capacity,
+        schedule: classRoom.schedule,
+        subjects: classRoom.subjects || [],
+        teachers: classRoom.teachers || [],
+        classTeacher: classRoom.classTeacher || null,
+      });
     }
-  }, [id, router]);
+  }, [id, getClassRoomById, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,18 +55,9 @@ export default function EditClassRoomPage({ params }: PageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!classRoom) return;
-
-    // Atualiza o mock (substitua pelo seu service real)
-    const index = mockClassRooms.findIndex((c: ClassRoom) => c.id === classRoom.id);
-    if (index !== -1) {
-      mockClassRooms[index] = { ...mockClassRooms[index], ...formData };
-    }
-
+    updateClassRoom(id, formData);
     router.push('/classrooms');
   };
-
-  if (!classRoom) return <p className={styles.loading}>Carregando...</p>;
 
   return (
     <div className={styles.pageContainer}>
@@ -62,9 +65,7 @@ export default function EditClassRoomPage({ params }: PageProps) {
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="name">
-            Nome
-          </label>
+          <label className={styles.label} htmlFor="name">Nome</label>
           <input
             id="name"
             name="name"
@@ -76,9 +77,7 @@ export default function EditClassRoomPage({ params }: PageProps) {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="capacity">
-            Capacidade
-          </label>
+          <label className={styles.label} htmlFor="capacity">Capacidade</label>
           <input
             id="capacity"
             name="capacity"
@@ -91,14 +90,16 @@ export default function EditClassRoomPage({ params }: PageProps) {
           />
         </div>
 
-        <button type="submit" className={styles.btnPrimary}>
-          Salvar Alterações
-        </button>
+        <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
       </form>
 
-      <Link href="/classrooms" className={styles.btnSecondary}>
+      <button
+        type="button"
+        className={styles.btnSecondary}
+        onClick={() => router.push('/classrooms')}
+      >
         Voltar à Lista
-      </Link>
+      </button>
     </div>
   );
 }

@@ -2,45 +2,55 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './StudentsPage.module.css';
+import { useStudents } from '../hooks/useStudents';
 
-import mockStudents from '../mocks/students';
-import type { Student } from '../types/Student';
+export default function StudentsPage() {
+  const router = useRouter();
+  const { students } = useStudents(); // pega a lista do Context
+  const [searchTerm, setSearchTerm] = useState('');
 
-export default function StudentsIndexPage() {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    const filtered = mockStudents.filter((s: Student) =>
-      s.name.toLowerCase().includes(search.toLowerCase())
+  // Filtra os alunos com base no searchTerm
+  const filteredStudents = useMemo(() => {
+    if (!searchTerm.trim()) return students;
+    const term = searchTerm.toLowerCase();
+    return students.filter(
+      s =>
+        s.name.toLowerCase().includes(term) ||
+        s.enrollmentNumber.toLowerCase().includes(term) ||
+        (s.phone?.toLowerCase().includes(term) ?? false) ||
+        (s.address?.toLowerCase().includes(term) ?? false)
     );
-    setStudents(filtered);
-  }, [search]);
+  }, [searchTerm, students]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className={styles.pageContainer}>
       <div className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Alunos</h2>
-        <form
-          onSubmit={e => e.preventDefault()}
-          className={styles.searchForm}
-        >
+        <form onSubmit={e => e.preventDefault()} className={styles.searchForm}>
           <input
             type="text"
-            placeholder="Digite o nome..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
+            placeholder="Digite nome, matrícula, telefone ou endereço..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
           />
           <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
             Buscar
           </button>
         </form>
-        <Link href="/students/create" className={`${styles.btn} ${styles.btnSuccess}`}>
+        <button
+          className={`${styles.btn} ${styles.btnSuccess}`}
+          onClick={() => router.push('/students/create')}
+        >
           Cadastrar Novo Aluno
-        </Link>
+        </button>
       </div>
 
       <div className={styles.rightPanel}>
@@ -56,19 +66,42 @@ export default function StudentsIndexPage() {
             </tr>
           </thead>
           <tbody>
-            {students.map(student => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.enrollmentNumber}</td>
-                <td>{student.phone || '-'}</td>
-                <td>{student.address || '-'}</td>
-                <td>
-                  <Link href={`/students/details/${student.id}`} className={`${styles.btn} ${styles.btnInfo}`}>Detalhes</Link>
-                  <Link href={`/students/edit/${student.id}`} className={`${styles.btn} ${styles.btnWarning}`}>Editar</Link>
-                  <Link href={`/students/delete/${student.id}`} className={`${styles.btn} ${styles.btnDanger}`}>Excluir</Link>
+            {filteredStudents.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhum aluno encontrado.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredStudents.map(student => (
+                <tr key={student.id}>
+                  <td>{student.name}</td>
+                  <td>{student.enrollmentNumber}</td>
+                  <td>{student.phone || '-'}</td>
+                  <td>{student.address || '-'}</td>
+                  <td>
+                    <button
+                      className={`${styles.btn} ${styles.btnInfo}`}
+                      onClick={() => router.push(`/students/details/${student.id}`)}
+                    >
+                      Detalhes
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnWarning}`}
+                      onClick={() => router.push(`/students/edit/${student.id}`)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnDanger}`}
+                      onClick={() => router.push(`/students/delete/${student.id}`)}
+                    >
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

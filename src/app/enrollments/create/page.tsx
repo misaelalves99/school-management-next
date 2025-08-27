@@ -1,3 +1,5 @@
+// src/app/enrollments/create/page.tsx
+
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
@@ -10,10 +12,12 @@ import type { EnrollmentForm } from '../../types/Enrollment';
 
 import studentsMock from '../../mocks/students';
 import classRoomsMock from '../../mocks/classRooms';
-import enrollmentsMock from '../../mocks/enrollments';
+
+import { useEnrollments } from '../../hooks/useEnrollments';
 
 export default function CreateEnrollmentPage() {
   const router = useRouter();
+  const { addEnrollment, enrollments } = useEnrollments();
 
   const [form, setForm] = useState<EnrollmentForm>({
     studentId: '',
@@ -32,22 +36,6 @@ export default function CreateEnrollmentPage() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!validate()) return;
-
-    // Criação de matrícula no mock com status obrigatório
-    enrollmentsMock.push({
-      id: enrollmentsMock.length + 1,
-      studentId: Number(form.studentId),
-      classRoomId: Number(form.classRoomId),
-      enrollmentDate: form.enrollmentDate,
-      status: 'Ativo', // deve existir no tipo Enrollment
-    });
-
-    router.push('/enrollments');
-  }
-
   function handleChange(e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
     const { name, value } = e.target;
     setForm(prev => ({
@@ -56,9 +44,27 @@ export default function CreateEnrollmentPage() {
     }));
   }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    // Adiciona matrícula via contexto
+    const newEnrollmentId = enrollments.length > 0 ? Math.max(...enrollments.map(e => e.id)) + 1 : 1;
+    addEnrollment({
+      id: newEnrollmentId,
+      studentId: Number(form.studentId),
+      classRoomId: Number(form.classRoomId),
+      enrollmentDate: form.enrollmentDate,
+      status: 'Ativo',
+    });
+
+    router.push('/enrollments');
+  }
+
   return (
     <div className={styles.createContainer}>
       <h1 className={styles.title}>Nova Matrícula</h1>
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
           <label htmlFor="studentId" className={styles.label}>Aluno</label>
