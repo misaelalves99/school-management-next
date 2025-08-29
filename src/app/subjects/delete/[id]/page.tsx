@@ -17,9 +17,9 @@ export default function DeleteSubjectPage() {
   if (!subject) {
     return (
       <div className={styles.container}>
-        <h2>Disciplina não encontrada.</h2>
+        <h2 className={styles.title}>Disciplina não encontrada</h2>
         <button
-          className={`${styles.btn} ${styles.btnSecondary}`}
+          className={`${styles.btnSecondary}`}
           onClick={() => router.push('/subjects')}
         >
           Voltar
@@ -35,18 +35,28 @@ export default function DeleteSubjectPage() {
   };
 
   return (
-    <>
+    <div className={styles.container}>
       <h1 className={styles.title}>Excluir Disciplina</h1>
-      <h3 className={styles.warning}>Tem certeza que deseja excluir esta disciplina?</h3>
+      <p className={styles.warning}>Tem certeza que deseja excluir esta disciplina?</p>
 
+      {/* Caixa de informações da disciplina */}
       <div className={styles.subjectBox}>
         <h4>{subject.name}</h4>
         <p>Carga Horária: {subject.workloadHours ?? 'N/A'} horas</p>
-        <p>Descrição: {subject.description}</p>
+        <p>Descrição: {subject.description ?? 'Sem descrição'}</p>
       </div>
 
-      <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleDelete(); }}>
-        <button type="submit" className={styles.btnDanger}>Excluir</button>
+      {/* Botões de ação */}
+      <form
+        className={styles.form || styles.actions} // fallback se .form não existir
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleDelete();
+        }}
+      >
+        <button type="submit" className={styles.btnDanger}>
+          Excluir
+        </button>
         <button
           type="button"
           className={styles.btnSecondary}
@@ -55,6 +65,6 @@ export default function DeleteSubjectPage() {
           Cancelar
         </button>
       </form>
-    </>
+    </div>
   );
 }

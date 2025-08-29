@@ -66,12 +66,9 @@ export default function TeacherEdit() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
     if (!id) return;
 
-    // Atualiza diretamente, sem testar retorno
     updateTeacher(id, formData);
-
     alert('Professor atualizado com sucesso!');
     router.push('/teachers');
   };
@@ -79,9 +76,10 @@ export default function TeacherEdit() {
   if (loading) return <div>Carregando...</div>;
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Editar Professor</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={styles.createContainer}>
+      <h1 className={styles.createTitle}>Editar Professor</h1>
+
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         {[
           { label: 'Nome', name: 'name', type: 'text' },
           { label: 'Email', name: 'email', type: 'email' },
@@ -91,32 +89,34 @@ export default function TeacherEdit() {
           { label: 'Endereço', name: 'address', type: 'text' },
         ].map(({ label, name, type }) => (
           <div key={name} className={styles.formGroup}>
-            <label htmlFor={name} className={styles.label}>{label}</label>
+            <label htmlFor={name} className={styles.formLabel}>{label}</label>
             <input
               id={name}
               name={name}
               type={type}
               value={formData[name as keyof TeacherFormData]}
               onChange={handleChange}
-              className={styles.inputControl}
+              className={styles.formInput}
             />
             {errors[name as keyof TeacherFormData] && (
-              <span className={styles.textDanger}>
+              <span className={styles.formError}>
                 {errors[name as keyof TeacherFormData]}
               </span>
             )}
           </div>
         ))}
-        <button type="submit" className={styles.btnSubmit}>Salvar</button>
-      </form>
 
-      <button
-        className={styles.btnSecondary}
-        onClick={() => router.push('/teachers')}
-        type="button"
-      >
-        Voltar à Lista
-      </button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>Salvar</button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/teachers')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

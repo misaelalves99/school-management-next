@@ -1,77 +1,94 @@
 /* src/app/enrollments/details/[id]/DetailsPage.module.css */
 
 .pageContainer {
-  padding: 20px;
+  max-width: 700px;
+  width: 40%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #2c3e50;
+  transition: all 0.3s ease-in-out;
 }
 
 .title {
   font-size: 1.8rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #333;
   text-align: center;
+  color: #34495e;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 0.8rem;
 }
 
 .detailsContainer {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .dlRow {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .row {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f7f9fc;
+}
+
+.row:last-child {
+  border-bottom: none;
 }
 
 .dt {
   font-weight: 600;
-  color: #555;
+  color: #2c3e50;
 }
 
 .dd {
-  color: #333;
+  color: #555;
+  text-align: right;
 }
 
 .buttonsContainer {
   display: flex;
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .btnWarning {
-  background-color: #f0ad4e;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: #f39c12;
+  color: white;
   border: none;
-  cursor: pointer;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
 }
 
 .btnWarning:hover {
-  background-color: #ec971f;
+  background: #e67e22;
 }
 
 .btnSecondary {
-  background-color: #6c757d;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: #ecf0f1;
+  color: #2c3e50;
   border: none;
-  cursor: pointer;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
 }
 
 .btnSecondary:hover {
-  background-color: #5a6268;
+  background: #dfe6e9;
 }

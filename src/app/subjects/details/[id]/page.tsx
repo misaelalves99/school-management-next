@@ -17,47 +17,56 @@ export default function SubjectDetailsPage() {
   if (!subject) {
     return (
       <div className={styles.container}>
-        <h2>Disciplina não encontrada.</h2>
-        <button
-          className={`${styles.btn} ${styles.btnSecondary}`}
-          onClick={() => router.push('/subjects')}
-        >
-          Voltar
-        </button>
+        <h1 className={styles.title}>Disciplina não encontrada</h1>
+        <div className={styles.actions}>
+          <button
+            className={styles.btnSecondary}
+            onClick={() => router.push('/subjects')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
+    <div className={styles.container}>
       <h1 className={styles.title}>Detalhes da Disciplina</h1>
 
-      <div className={styles.container}>
-        <div className={styles.row}>
-          <div className={styles.label}>Nome</div>
-          <div className={styles.value}>{subject.name}</div>
-
-          <div className={styles.label}>Carga Horária</div>
-          <div className={styles.value}>{subject.workloadHours ?? 'N/A'} horas</div>
-
-          <div className={styles.label}>Descrição</div>
-          <div className={styles.value}>{subject.description}</div>
-        </div>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Nome:</span>
+        <span className={styles.detailsValue}>{subject.name}</span>
       </div>
 
-      <button
-        className={`${styles.btn} ${styles.btnWarning}`}
-        onClick={() => router.push(`/subjects/edit/${subject.id}`)}
-      >
-        Editar
-      </button>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Carga Horária:</span>
+        <span className={styles.detailsValue}>
+          {subject.workloadHours ? `${subject.workloadHours} horas` : 'N/A'}
+        </span>
+      </div>
 
-      <button
-        className={`${styles.btn} ${styles.btnSecondary}`}
-        onClick={() => router.push('/subjects')}
-      >
-        Voltar
-      </button>
-    </>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Descrição:</span>
+        <span className={styles.detailsValue}>
+          {subject.description || <span className={styles.muted}>Sem descrição</span>}
+        </span>
+      </div>
+
+      <div className={styles.actions}>
+        <button
+          className={styles.btnWarning}
+          onClick={() => router.push(`/subjects/edit/${subject.id}`)}
+        >
+          Editar
+        </button>
+        <button
+          className={styles.btnSecondary}
+          onClick={() => router.push('/subjects')}
+        >
+          Voltar à Lista
+        </button>
+      </div>
+    </div>
   );
 }

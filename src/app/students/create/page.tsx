@@ -10,7 +10,7 @@ import type { Student } from '../../types/Student';
 
 export default function CreateStudentPage() {
   const router = useRouter();
-  const { addStudent } = useStudents(); // Hook do Context
+  const { addStudent } = useStudents();
 
   const [formData, setFormData] = useState<Student>({
     name: '',
@@ -57,7 +57,7 @@ export default function CreateStudentPage() {
       e.preventDefault();
       if (!validate()) return;
 
-      addStudent(formData); // Salva pelo Context
+      addStudent(formData);
       alert('Aluno cadastrado com sucesso!');
       router.push('/students');
     },
@@ -66,9 +66,9 @@ export default function CreateStudentPage() {
 
   return (
     <div className={styles.createContainer}>
-      <h1 className={styles.title}>Cadastrar Novo Aluno</h1>
+      <h1 className={styles.createTitle}>Cadastrar Novo Aluno</h1>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         {[
           { label: 'Nome', name: 'name', type: 'text' },
           { label: 'Email', name: 'email', type: 'email' },
@@ -78,33 +78,32 @@ export default function CreateStudentPage() {
           { label: 'Endereço', name: 'address', type: 'text' },
         ].map(({ label, name, type }) => (
           <div key={name} className={styles.formGroup}>
-            <label htmlFor={name} className={styles.label}>{label}</label>
+            <label htmlFor={name} className={styles.formLabel}>{label}</label>
             <input
               id={name}
               name={name}
               type={type}
               value={formData[name as keyof Student]}
               onChange={handleChange}
-              className={styles.input}
+              className={styles.formInput}
             />
             {errors[name as keyof Student] && (
-              <span className={styles.textDanger}>
-                {errors[name as keyof Student]}
-              </span>
+              <span className={styles.formError}>{errors[name as keyof Student]}</span>
             )}
           </div>
         ))}
 
-        <button type="submit" className={styles.submitButton}>Salvar</button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>Salvar</button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/students')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </form>
-
-      <button
-        type="button"
-        className={styles.btnSecondary}
-        onClick={() => router.push('/students')}
-      >
-        Voltar à Lista
-      </button>
     </div>
   );
 }

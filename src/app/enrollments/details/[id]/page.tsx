@@ -74,7 +74,9 @@ export default function EnrollmentDetailsPage() {
 
           <div className={styles.row}>
             <dt className={styles.dt}>Data da Matrícula</dt>
-            <dd className={styles.dd}>{new Date(enrollment.enrollmentDate).toLocaleDateString()}</dd>
+            <dd className={styles.dd}>
+              {new Date(enrollment.enrollmentDate).toLocaleDateString()}
+            </dd>
           </div>
         </dl>
       </div>

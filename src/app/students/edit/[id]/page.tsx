@@ -13,7 +13,7 @@ export default function EditStudentPage() {
   const router = useRouter();
   const { getStudentById, updateStudent } = useStudents();
 
-  const numericId = Number(id); // ✅ converte string -> number
+  const numericId = Number(id);
 
   const [formData, setFormData] = useState<Student>({
     id: numericId,
@@ -48,34 +48,44 @@ export default function EditStudentPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateStudent(numericId, formData); // ✅ usa número
+    updateStudent(numericId, formData);
     router.push('/students');
   };
 
   return (
-    <>
-      <h1 className={styles.title}>Editar Aluno</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={styles.createContainer}>
+      <h1 className={styles.createTitle}>Editar Aluno</h1>
+
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         {Object.entries(formData).map(([key, val]) => (
           <div key={key} className={styles.formGroup}>
-            <label htmlFor={key}>{key}</label>
+            <label htmlFor={key} className={styles.formLabel}>
+              {key === 'dateOfBirth' ? 'Data de Nascimento' : key.charAt(0).toUpperCase() + key.slice(1)}
+            </label>
             <input
               id={key}
               name={key}
               type={key === 'dateOfBirth' ? 'date' : 'text'}
               value={val as string}
               onChange={handleChange}
-              className={styles.inputField}
-              onFocus={(e) => e.currentTarget.classList.add(styles.inputFieldFocus)}
-              onBlur={(e) => e.currentTarget.classList.remove(styles.inputFieldFocus)}
+              className={styles.formInput}
             />
           </div>
         ))}
-        <div className={styles.actions}>
-          <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
-          <button type="button" className={styles.btnSecondary} onClick={() => router.push('/students')}>Voltar</button>
+
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>
+            Salvar Alterações
+          </button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/students')}
+          >
+            Voltar
+          </button>
         </div>
       </form>
-    </>
+    </div>
   );
 }

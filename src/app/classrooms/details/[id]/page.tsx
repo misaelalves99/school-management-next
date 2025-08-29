@@ -13,7 +13,19 @@ const ClassRoomDetailsPage: React.FC = () => {
   const classRoomId = Number(id);
   const classRoom = getClassRoomById(classRoomId);
 
-  if (!classRoom) return <p>Turma não encontrada.</p>;
+  if (!classRoom) {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Turma não encontrada</h2>
+        <button
+          className={styles.btnSecondary}
+          onClick={() => router.push('/classrooms')}
+        >
+          Voltar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

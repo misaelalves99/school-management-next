@@ -28,38 +28,37 @@ const ClassRoomCreate: React.FC = () => {
       return;
     }
 
-    // Cria a nova sala usando o contexto
     createClassRoom({
       name,
       capacity,
-      schedule: '', // ou algum padrão
+      schedule: '',
       subjects: [],
       teachers: [],
       classTeacher: null,
     });
 
-    // Redireciona para a lista
     router.push('/classrooms');
   };
 
   return (
     <div className={styles.createContainer}>
-      <h1 className={styles.title}>Cadastrar Nova Sala</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <h1 className={styles.createTitle}>Cadastrar Nova Sala</h1>
+
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         <div className={styles.formGroup}>
-          <label htmlFor="name" className={styles.label}>Nome</label>
+          <label htmlFor="name" className={styles.formLabel}>Nome</label>
           <input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={styles.input}
+            className={styles.formInput}
           />
-          {errors.name && <span className={styles.textDanger}>{errors.name}</span>}
+          {errors.name && <span className={styles.formError}>{errors.name}</span>}
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="capacity" className={styles.label}>Capacidade</label>
+          <label htmlFor="capacity" className={styles.formLabel}>Capacidade</label>
           <input
             id="capacity"
             type="number"
@@ -67,21 +66,22 @@ const ClassRoomCreate: React.FC = () => {
             max={100}
             value={capacity}
             onChange={(e) => setCapacity(Number(e.target.value))}
-            className={styles.input}
+            className={styles.formInput}
           />
-          {errors.capacity && <span className={styles.textDanger}>{errors.capacity}</span>}
+          {errors.capacity && <span className={styles.formError}>{errors.capacity}</span>}
         </div>
 
-        <button type="submit" className={styles.submitButton}>Salvar</button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>Salvar</button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/classrooms')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </form>
-
-      <button
-        type="button"
-        className={styles.btnSecondary}
-        onClick={() => router.push('/classrooms')}
-      >
-        Voltar à Lista
-      </button>
     </div>
   );
 };

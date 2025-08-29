@@ -7,8 +7,6 @@ import { useRouter } from 'next/navigation';
 import styles from './EditPage.module.css';
 import { useClassRooms } from '@/app/hooks/useClassRooms';
 import type { ClassRoom } from '@/app/types/Classroom';
-import type { Subject } from '@/app/types/Subject';
-import type { Teacher } from '@/app/types/Teacher';
 
 interface PageProps {
   params: { id: string };
@@ -23,8 +21,8 @@ export default function EditClassRoomPage({ params }: PageProps) {
     name: '',
     capacity: 0,
     schedule: '',
-    subjects: [] as Subject[],
-    teachers: [] as Teacher[],
+    subjects: [],
+    teachers: [],
     classTeacher: null,
   });
 
@@ -60,46 +58,47 @@ export default function EditClassRoomPage({ params }: PageProps) {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      <h1 className={styles.title}>Editar Sala</h1>
+    <div className={styles.createContainer}>
+      <h1 className={styles.createTitle}>Editar Sala</h1>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="name">Nome</label>
+          <label className={styles.formLabel} htmlFor="name">Nome</label>
           <input
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
             type="text"
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="capacity">Capacidade</label>
+          <label className={styles.formLabel} htmlFor="capacity">Capacidade</label>
           <input
             id="capacity"
             name="capacity"
             value={formData.capacity}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
             type="number"
             min={1}
             max={100}
           />
         </div>
 
-        <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/classrooms')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </form>
-
-      <button
-        type="button"
-        className={styles.btnSecondary}
-        onClick={() => router.push('/classrooms')}
-      >
-        Voltar à Lista
-      </button>
     </div>
   );
 }

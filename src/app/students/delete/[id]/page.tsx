@@ -25,18 +25,31 @@ export default function DeleteStudentPage() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Aluno</h1>
+
       <p className={styles.warning}>
         Tem certeza que deseja excluir o aluno <strong>ID: {id}</strong>?
       </p>
-      <form onSubmit={handleDelete} className={styles.form}>
-        <button type="submit" className={styles.btnDelete}>Confirmar Exclusão</button>
-        <button
-          type="button"
-          className={styles.btnCancel}
-          onClick={() => router.push('/students')}
-        >
-          Cancelar
-        </button>
+
+      {/* Caixa de informações adicionais */}
+      <div className={styles.infoBox}>
+        <h4>Atenção:</h4>
+        <p>Essa ação é <strong>irreversível</strong>. Todos os dados do aluno serão removidos do sistema.</p>
+      </div>
+
+      {/* Botões de ação */}
+      <form onSubmit={handleDelete}>
+        <div className={styles.actions}>
+          <button type="submit" className={styles.btnDelete}>
+            Confirmar Exclusão
+          </button>
+          <button
+            type="button"
+            className={styles.btnCancel}
+            onClick={() => router.push('/students')}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );

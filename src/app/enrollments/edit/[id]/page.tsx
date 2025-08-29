@@ -72,65 +72,70 @@ export default function EditEnrollmentPage() {
   };
 
   return (
-    <>
-      <h1 className={styles.title}>Editar Matrícula</h1>
+    <div className={styles.createContainer}>
+      <h1 className={styles.createTitle}>Editar Matrícula</h1>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         <input type="hidden" name="id" value={formData.id} />
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="studentId">Aluno</label>
+          <label className={styles.formLabel} htmlFor="studentId">Aluno</label>
           <select
             id="studentId"
             name="studentId"
             value={formData.studentId}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
           >
             <option value="">Selecione o Aluno</option>
             {students.map(s => (
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
-          {errors.studentId && <span className={styles.textDanger}>{errors.studentId}</span>}
+          {errors.studentId && <span className={styles.formError}>{errors.studentId}</span>}
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="classRoomId">Turma</label>
+          <label className={styles.formLabel} htmlFor="classRoomId">Turma</label>
           <select
             id="classRoomId"
             name="classRoomId"
             value={formData.classRoomId}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
           >
             <option value="">Selecione a Turma</option>
             {classRooms.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
-          {errors.classRoomId && <span className={styles.textDanger}>{errors.classRoomId}</span>}
+          {errors.classRoomId && <span className={styles.formError}>{errors.classRoomId}</span>}
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="enrollmentDate">Data da Matrícula</label>
+          <label className={styles.formLabel} htmlFor="enrollmentDate">Data da Matrícula</label>
           <input
             id="enrollmentDate"
             name="enrollmentDate"
             type="date"
             value={formData.enrollmentDate}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
           />
-          {errors.enrollmentDate && <span className={styles.textDanger}>{errors.enrollmentDate}</span>}
+          {errors.enrollmentDate && <span className={styles.formError}>{errors.enrollmentDate}</span>}
         </div>
 
-        <button type="submit" className={styles.btnSubmit}>Salvar Alterações</button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/enrollments')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </form>
-
-      <button className={styles.btnSecondary} onClick={() => router.push('/enrollments')}>
-        Voltar à Lista
-      </button>
-    </>
+    </div>
   );
 }

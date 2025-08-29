@@ -1,5 +1,7 @@
 // src/app/subjects/edit/[id]/page.tsx
 
+// src/app/subjects/edit/[id]/page.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -59,8 +61,8 @@ export default function EditSubjectPage() {
 
   if (!subject.id) {
     return (
-      <div className={styles.pageContainer}>
-        <h2>Disciplina não encontrada.</h2>
+      <div className={styles.createContainer}>
+        <h2 className={styles.createTitle}>Disciplina não encontrada.</h2>
         <button className={styles.btnSecondary} onClick={() => router.push('/subjects')}>
           Voltar à Lista
         </button>
@@ -69,56 +71,61 @@ export default function EditSubjectPage() {
   }
 
   return (
-    <div className={styles.pageContainer}>
-      <h1 className={styles.title}>Editar Disciplina</h1>
+    <div className={styles.createContainer}>
+      <h1 className={styles.createTitle}>Editar Disciplina</h1>
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.createForm}>
         <input type="hidden" name="id" value={subject.id} />
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="name">Nome da Disciplina</label>
+          <label className={styles.formLabel} htmlFor="name">Nome da Disciplina</label>
           <input
             id="name"
             name="name"
             type="text"
             value={subject.name}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
           />
-          {errors.name && <span className={styles.textDanger}>{errors.name}</span>}
+          {errors.name && <span className={styles.formError}>{errors.name}</span>}
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="description">Descrição</label>
+          <label className={styles.formLabel} htmlFor="description">Descrição</label>
           <textarea
             id="description"
             name="description"
             value={subject.description}
             onChange={handleChange}
-            className={styles.textareaField}
+            className={styles.formInput}
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label} htmlFor="workloadHours">Carga Horária</label>
+          <label className={styles.formLabel} htmlFor="workloadHours">Carga Horária</label>
           <input
             id="workloadHours"
             name="workloadHours"
             type="number"
             value={subject.workloadHours}
             onChange={handleChange}
-            className={styles.inputField}
+            className={styles.formInput}
           />
         </div>
 
-        <button type="submit" className={styles.btnPrimary}>
-          Salvar Alterações
-        </button>
+        <div className={styles.formActions}>
+          <button type="submit" className={styles.btnPrimary}>
+            Salvar Alterações
+          </button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={() => router.push('/subjects')}
+          >
+            Voltar à Lista
+          </button>
+        </div>
       </form>
-
-      <button className={styles.btnSecondary} onClick={() => router.push('/subjects')}>
-        Voltar à Lista
-      </button>
     </div>
   );
 }

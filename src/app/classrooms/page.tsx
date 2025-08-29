@@ -67,16 +67,16 @@ const ClassroomsPage: React.FC = () => {
                   <td>{room.capacity}</td>
                   <td>
                     <button
-                      className={`${styles.btn} ${styles.btnWarning}`}
-                      onClick={() => router.push(`/classrooms/edit/${room.id}`)}
-                    >
-                      Editar
-                    </button>
-                    <button
                       className={`${styles.btn} ${styles.btnInfo}`}
                       onClick={() => router.push(`/classrooms/details/${room.id}`)}
                     >
                       Detalhes
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnWarning}`}
+                      onClick={() => router.push(`/classrooms/edit/${room.id}`)}
+                    >
+                      Editar
                     </button>
                     <button
                       className={`${styles.btn} ${styles.btnDanger}`}

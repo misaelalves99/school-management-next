@@ -1,58 +1,95 @@
-/* src/pages/ClassRoom/Details/DetailsPage.module.css */
+/* src/pages/ClassRoom/Delete/DeletePage.module.css */
 
 .container {
-  max-width: 600px;
-  margin: 0 auto 24px auto;
-  background-color: #ffffff;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 700px;
+  width: 40%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #2c3e50;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
 }
 
 .title {
   font-size: 1.8rem;
-  text-align: center;
-  margin-bottom: 20px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #34495e;
+}
+
+.warning {
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 .details {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 8px 16px;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
+  text-align: left;
 }
 
 .details dt {
   font-weight: 600;
-  color: #555;
+  margin-top: 0.75rem;
 }
 
 .details dd {
-  margin: 0;
+  margin: 0.25rem 0 0.75rem 0;
 }
 
-.muted {
-  color: #6c757d;
+.details ul {
+  padding-left: 1.2rem;
+  margin: 0.25rem 0 0.75rem 0;
+}
+
+.details span.muted {
+  color: #888;
   font-style: italic;
 }
 
 .actions {
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.btn {
-  display: inline-block;
-  padding: 10px 16px;
-  margin: 0 4px 8px 0;
-  text-decoration: none;
+.btnDanger {
+  background-color: #dc3545;
   color: white;
-  border-radius: 4px;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
 }
 
-.btnWarning {
-  background-color: #ffc107;
-  color: #212529;
+.btnDanger:hover {
+  background-color: #bd2130;
 }
 
 .btnSecondary {
-  background-color: #6c757d;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.btnSecondary:hover {
+  background-color: #dfe6e9;
 }

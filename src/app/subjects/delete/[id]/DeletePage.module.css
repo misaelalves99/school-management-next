@@ -1,51 +1,79 @@
 /* src/pages/Subjects/Delete/DeletePage.module.css */
 
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #2c3e50;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
 .title {
   font-size: 1.8rem;
-  text-align: center;
-  margin-bottom: 16px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #34495e;
 }
 
 .warning {
-  text-align: center;
   color: #dc3545;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 .subjectBox {
-  max-width: 480px;
-  margin: 0 auto 24px auto;
-  padding: 16px;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
   background-color: #f8f9fa;
-  border-radius: 8px;
-  text-align: center;
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
 }
 
 .subjectBox h4,
 .subjectBox p {
-  margin: 8px 0;
+  margin: 0.5rem 0;
 }
 
-.form {
+.actions {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 1rem;
 }
 
 .btnDanger {
-  padding: 10px 16px;
   background-color: #dc3545;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.btnDanger:hover {
+  background-color: #bd2130;
 }
 
 .btnSecondary {
-  padding: 10px 16px;
-  background-color: #6c757d;
-  color: white;
+  background-color: #ecf0f1;
+  color: #2c3e50;
   border: none;
-  border-radius: 4px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.btnSecondary:hover {
+  background-color: #dfe6e9;
 }
