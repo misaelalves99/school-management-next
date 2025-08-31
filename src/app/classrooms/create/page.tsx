@@ -13,7 +13,8 @@ const ClassRoomCreate: React.FC = () => {
 
   const [name, setName] = useState('');
   const [capacity, setCapacity] = useState(1);
-  const [errors, setErrors] = useState<{ name?: string; capacity?: string }>({});
+  const [schedule, setSchedule] = useState('');
+  const [errors, setErrors] = useState<{ name?: string; capacity?: string; schedule?: string }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +23,7 @@ const ClassRoomCreate: React.FC = () => {
     if (!name.trim()) newErrors.name = 'Nome é obrigatório.';
     if (!capacity || capacity < 1 || capacity > 100)
       newErrors.capacity = 'Capacidade deve ser entre 1 e 100.';
+    if (!schedule.trim()) newErrors.schedule = 'Horário é obrigatório.';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -31,7 +33,7 @@ const ClassRoomCreate: React.FC = () => {
     createClassRoom({
       name,
       capacity,
-      schedule: '',
+      schedule,
       subjects: [],
       teachers: [],
       classTeacher: null,
@@ -71,6 +73,20 @@ const ClassRoomCreate: React.FC = () => {
           {errors.capacity && <span className={styles.formError}>{errors.capacity}</span>}
         </div>
 
+        {/* Novo campo horário */}
+        <div className={styles.formGroup}>
+          <label htmlFor="schedule" className={styles.formLabel}>Horário</label>
+          <input
+            id="schedule"
+            type="text"
+            placeholder="Ex: Seg-Qua 08:00-10:00"
+            value={schedule}
+            onChange={(e) => setSchedule(e.target.value)}
+            className={styles.formInput}
+          />
+          {errors.schedule && <span className={styles.formError}>{errors.schedule}</span>}
+        </div>
+
         <div className={styles.formActions}>
           <button type="submit" className={styles.btnPrimary}>Salvar</button>
           <button
@@ -78,7 +94,7 @@ const ClassRoomCreate: React.FC = () => {
             className={styles.btnSecondary}
             onClick={() => router.push('/classrooms')}
           >
-            Voltar à Lista
+            Cancelar
           </button>
         </div>
       </form>

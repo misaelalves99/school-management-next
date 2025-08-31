@@ -1,7 +1,9 @@
 // app/page.tsx
 
-import Link from 'next/link';
-import styles from './HomePage.module.css';
+'use client';
+
+import Link from "next/link";
+import styles from "./HomePage.module.css";
 
 export default function HomePage() {
   return (
@@ -13,20 +15,30 @@ export default function HomePage() {
       </p>
 
       <ul className={styles.features}>
-        <li className={styles['feature-card']}>
-          <Link href="/students">Gerenciar Alunos</Link>
+        <li className={styles.featureCard}>
+          <Link href="/students" className={styles.cardLink}>
+            Gerenciar Alunos
+          </Link>
         </li>
-        <li className={styles['feature-card']}>
-          <Link href="/teachers">Gerenciar Professores</Link>
+        <li className={styles.featureCard}>
+          <Link href="/teachers" className={styles.cardLink}>
+            Gerenciar Professores
+          </Link>
         </li>
-        <li className={styles['feature-card']}>
-          <Link href="/subjects">Gerenciar Disciplinas</Link>
+        <li className={styles.featureCard}>
+          <Link href="/subjects" className={styles.cardLink}>
+            Gerenciar Disciplinas
+          </Link>
         </li>
-        <li className={styles['feature-card']}>
-          <Link href="/classrooms">Gerenciar Salas</Link>
+        <li className={styles.featureCard}>
+          <Link href="/classrooms" className={styles.cardLink}>
+            Gerenciar Salas
+          </Link>
         </li>
-        <li className={styles['feature-card']}>
-          <Link href="/enrollments">Gerenciar Matrículas</Link>
+        <li className={styles.featureCard}>
+          <Link href="/enrollments" className={styles.cardLink}>
+            Gerenciar Matrículas
+          </Link>
         </li>
       </ul>
     </div>

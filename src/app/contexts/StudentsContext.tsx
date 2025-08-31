@@ -7,10 +7,13 @@ import type { Student } from '../types/Student';
 
 export type StudentsContextType = {
   students: Student[];
-  addStudent: (student: Omit<Student, 'id'>) => void;
-  updateStudent: (id: number, updatedStudent: Omit<Student, 'id'>) => void;
+  addStudent: (student: Omit<Student, 'id'>) => Student;
+  updateStudent: (id: number, updatedStudent: Omit<Student, 'id'>) => Student | null;
   deleteStudent: (id: number) => void;
   getStudentById: (id: number) => Student | undefined;
+  refreshStudents: () => void;
 };
 
-export const StudentsContext = createContext<StudentsContextType | undefined>(undefined);
+export const StudentsContext = createContext<StudentsContextType | undefined>(
+  undefined
+);

@@ -2,23 +2,23 @@
 
 'use client';
 
-import { useRouter, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import styles from './DeletePage.module.css';
 import { useClassRooms } from '@/app/hooks/useClassRooms';
 
-const DeleteClassRoomPage: React.FC = () => {
+export default function DeleteClassRoomPage() {
+  const params = useParams();
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const { getClassRoomById, deleteClassRoom } = useClassRooms();
-  const classRoomId = Number(params.id);
+  const { classRooms, deleteClassRoom } = useClassRooms();
 
-  const classRoom = getClassRoomById(classRoomId);
+  const id = params?.id ? Number(params.id) : null;
+  if (!id) return <div>ID inválido</div>;
 
-  if (!classRoom) return <p>Turma não encontrada.</p>;
+  const classRoom = classRooms.find(c => c.id === id);
+  if (!classRoom) return <div>Turma não encontrada</div>;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleDelete = (e: React.FormEvent) => {
     e.preventDefault();
-    // Exclui a sala via contexto
     deleteClassRoom(classRoom.id);
     router.push('/classrooms');
   };
@@ -26,51 +26,25 @@ const DeleteClassRoomPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Turma</h1>
-      <p className={styles.warning}>Tem certeza que deseja excluir esta turma?</p>
 
-      <dl className={styles.details}>
-        <dt>Nome</dt>
-        <dd>{classRoom.name}</dd>
+      <h3 className={styles.warning}>
+        Tem certeza que deseja excluir <strong>{classRoom.name}</strong>?
+      </h3>
 
-        <dt>Capacidade</dt>
-        <dd>{classRoom.capacity}</dd>
-
-        <dt>Horário</dt>
-        <dd>{classRoom.schedule}</dd>
-
-        <dt>Disciplinas</dt>
-        <dd>
-          {classRoom.subjects?.length ? (
-            <ul>{classRoom.subjects.map((s) => <li key={s.id}>{s.name}</li>)}</ul>
-          ) : (
-            <span className={styles.muted}>Sem disciplinas vinculadas.</span>
-          )}
-        </dd>
-
-        <dt>Professores</dt>
-        <dd>
-          {classRoom.teachers?.length ? (
-            <ul>{classRoom.teachers.map((t) => <li key={t.id}>{t.name}</li>)}</ul>
-          ) : (
-            <span className={styles.muted}>Sem professores vinculados.</span>
-          )}
-        </dd>
-      </dl>
-
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <button type="submit" className={styles.btnDanger}>
-          Confirmar Exclusão
-        </button>
-        <button
-          type="button"
-          className={styles.btnSecondary}
-          onClick={() => router.push('/classrooms')}
-        >
-          Cancelar
-        </button>
+      <form onSubmit={handleDelete}>
+        <div className={styles.actions}>
+          <button type="submit" className={`${styles.btn} ${styles.btnDelete}`}>
+            Excluir
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnCancel}`}
+            onClick={() => router.push('/classrooms')}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
-};
-
-export default DeleteClassRoomPage;
+}

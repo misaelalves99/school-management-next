@@ -3,9 +3,9 @@
 'use client';
 
 import { useContext } from 'react';
-import { ClassRoomsContext } from '../contexts/ClassRoomsContext';
+import { ClassRoomsContext, ClassRoomsContextType } from '../contexts/ClassRoomsContext';
 
-export function useClassRooms() {
+export function useClassRooms(): ClassRoomsContextType {
   const context = useContext(ClassRoomsContext);
   if (!context) {
     throw new Error('useClassRooms deve ser usado dentro de um ClassRoomsProvider');

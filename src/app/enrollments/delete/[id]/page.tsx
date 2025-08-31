@@ -8,24 +8,25 @@ import { useEnrollments } from '@/app/hooks/useEnrollments';
 import { useStudents } from '@/app/hooks/useStudents';
 import { useClassRooms } from '@/app/hooks/useClassRooms';
 
-const DeleteEnrollmentPage: React.FC = () => {
+export default function DeleteEnrollmentPage() {
+  const params = useParams();
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const enrollmentId = Number(params.id);
-
+  const id = params?.id ? Number(params.id) : null;
   const { enrollments, deleteEnrollment } = useEnrollments();
   const { students } = useStudents();
   const { classRooms } = useClassRooms();
 
-  // Busca a matrícula pelo ID
-  const enrollment = enrollments.find((e) => e.id === enrollmentId);
-  if (!enrollment) return <p>Matrícula não encontrada.</p>;
+  if (!id) return <div>ID inválido</div>;
 
-  const student = students.find((s) => s.id === enrollment.studentId);
-  const classRoom = classRooms.find((c) => c.id === enrollment.classRoomId);
+  const enrollment = enrollments.find(e => e.id === id);
+  if (!enrollment) return <div>Matrícula não encontrada</div>;
 
-  const handleDelete = () => {
-    deleteEnrollment(enrollmentId);
+  const student = students.find(s => s.id === enrollment.studentId);
+  const classRoom = classRooms.find(c => c.id === enrollment.classRoomId);
+
+  const handleDelete = (e: React.FormEvent) => {
+    e.preventDefault();
+    deleteEnrollment(id);
     alert('Matrícula excluída com sucesso!');
     router.push('/enrollments');
   };
@@ -33,27 +34,25 @@ const DeleteEnrollmentPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Matrícula</h1>
-      <p className={styles.warning}>
-        Tem certeza que deseja excluir esta matrícula?
-      </p>
 
-      <div className={styles.infoBox}>
-        <p><strong>Aluno:</strong> {student?.name ?? 'Aluno não informado'}</p>
-        <p><strong>Turma:</strong> {classRoom?.name ?? 'Turma não informada'}</p>
-        <p><strong>Status:</strong> {enrollment.status}</p>
-        <p><strong>Data da Matrícula:</strong> {new Date(enrollment.enrollmentDate).toLocaleDateString()}</p>
-      </div>
+      <h3 className={styles.warning}>
+        Tem certeza que deseja excluir a matrícula de <strong>{student?.name ?? 'Aluno desconhecido'}</strong>?
+      </h3>
 
-      <div className={styles.actions}>
-        <button className={`${styles.btn} ${styles.btnDanger}`} onClick={handleDelete}>
-          Excluir
-        </button>
-        <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => router.push('/enrollments')}>
-          Cancelar
-        </button>
-      </div>
+      <form onSubmit={handleDelete}>
+        <div className={styles.actions}>
+          <button type="submit" className={`${styles.btn} ${styles.btnDelete}`}>
+            Excluir
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnCancel}`}
+            onClick={() => router.push('/enrollments')}
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
   );
-};
-
-export default DeleteEnrollmentPage;
+}

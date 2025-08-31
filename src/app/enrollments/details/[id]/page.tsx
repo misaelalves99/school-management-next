@@ -1,5 +1,4 @@
 // src/app/enrollments/details/[id]/page.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -52,36 +51,32 @@ export default function EnrollmentDetailsPage() {
   if (!enrollment) return <div>Carregando matrícula...</div>;
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.container}>
       <h1 className={styles.title}>Detalhes da Matrícula</h1>
 
-      <div className={styles.detailsContainer}>
-        <dl className={styles.dlRow}>
-          <div className={styles.row}>
-            <dt className={styles.dt}>Aluno</dt>
-            <dd className={styles.dd}>{enrollment.studentName}</dd>
-          </div>
-
-          <div className={styles.row}>
-            <dt className={styles.dt}>Turma</dt>
-            <dd className={styles.dd}>{enrollment.classRoomName}</dd>
-          </div>
-
-          <div className={styles.row}>
-            <dt className={styles.dt}>Status</dt>
-            <dd className={styles.dd}>{enrollment.status}</dd>
-          </div>
-
-          <div className={styles.row}>
-            <dt className={styles.dt}>Data da Matrícula</dt>
-            <dd className={styles.dd}>
-              {new Date(enrollment.enrollmentDate).toLocaleDateString()}
-            </dd>
-          </div>
-        </dl>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Aluno:</span>
+        <span className={styles.detailsValue}>{enrollment.studentName}</span>
       </div>
 
-      <div className={styles.buttonsContainer}>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Turma:</span>
+        <span className={styles.detailsValue}>{enrollment.classRoomName}</span>
+      </div>
+
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Status:</span>
+        <span className={styles.detailsValue}>{enrollment.status}</span>
+      </div>
+
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Data da Matrícula:</span>
+        <span className={styles.detailsValue}>
+          {new Date(enrollment.enrollmentDate).toLocaleDateString()}
+        </span>
+      </div>
+
+      <div className={styles.actions}>
         <button
           className={styles.btnWarning}
           onClick={() => router.push(`/enrollments/edit/${enrollment.id}`)}

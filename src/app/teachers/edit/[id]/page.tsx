@@ -65,8 +65,7 @@ export default function TeacherEdit() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
-    if (!id) return;
+    if (!validate() || !id) return;
 
     updateTeacher(id, formData);
     alert('Professor atualizado com sucesso!');
@@ -80,40 +79,69 @@ export default function TeacherEdit() {
       <h1 className={styles.createTitle}>Editar Professor</h1>
 
       <form onSubmit={handleSubmit} className={styles.createForm}>
-        {[
-          { label: 'Nome', name: 'name', type: 'text' },
-          { label: 'Email', name: 'email', type: 'email' },
-          { label: 'Data de Nascimento', name: 'dateOfBirth', type: 'date' },
-          { label: 'Disciplina', name: 'subject', type: 'text' },
-          { label: 'Telefone', name: 'phone', type: 'tel' },
-          { label: 'Endereço', name: 'address', type: 'text' },
-        ].map(({ label, name, type }) => (
-          <div key={name} className={styles.formGroup}>
-            <label htmlFor={name} className={styles.formLabel}>{label}</label>
-            <input
-              id={name}
-              name={name}
-              type={type}
-              value={formData[name as keyof TeacherFormData]}
-              onChange={handleChange}
-              className={styles.formInput}
-            />
-            {errors[name as keyof TeacherFormData] && (
-              <span className={styles.formError}>
-                {errors[name as keyof TeacherFormData]}
-              </span>
-            )}
-          </div>
-        ))}
+        {Object.entries(formData).map(([key, value]) => {
+          let label = '';
+          let placeholder = '';
+
+          switch (key) {
+            case 'name':
+              label = 'Nome';
+              placeholder = 'Digite o nome do professor';
+              break;
+            case 'email':
+              label = 'Email';
+              placeholder = 'Digite o email';
+              break;
+            case 'dateOfBirth':
+              label = 'Data de Nascimento';
+              placeholder = '';
+              break;
+            case 'subject':
+              label = 'Disciplina';
+              placeholder = 'Digite a disciplina';
+              break;
+            case 'phone':
+              label = 'Telefone';
+              placeholder = 'Digite o telefone';
+              break;
+            case 'address':
+              label = 'Endereço';
+              placeholder = 'Digite o endereço';
+              break;
+            default:
+              label = key;
+              placeholder = '';
+          }
+
+          return (
+            <div key={key} className={styles.formGroup}>
+              <label htmlFor={key} className={styles.formLabel}>{label}</label>
+              <input
+                id={key}
+                name={key}
+                type={key === 'dateOfBirth' ? 'date' : 'text'}
+                value={value}
+                onChange={handleChange}
+                placeholder={placeholder}
+                className={styles.formInput}
+              />
+              {errors[key as keyof TeacherFormData] && (
+                <span className={styles.formError}>
+                  {errors[key as keyof TeacherFormData]}
+                </span>
+              )}
+            </div>
+          );
+        })}
 
         <div className={styles.formActions}>
-          <button type="submit" className={styles.btnPrimary}>Salvar</button>
+          <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
           <button
             type="button"
             className={styles.btnSecondary}
             onClick={() => router.push('/teachers')}
           >
-            Voltar à Lista
+            Voltar
           </button>
         </div>
       </form>

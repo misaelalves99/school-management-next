@@ -2,168 +2,152 @@
 
 .pageContainer {
   display: flex;
-  gap: 40px;
-  padding: 30px;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  font-family: 'Inter', sans-serif;
 }
 
 .leftPanel {
-  flex: 1;
-  min-width: 260px;
-  max-width: 320px;
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 250px;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .rightPanel {
-  flex: 3;
-  min-width: 400px;
+  flex: 1;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .title {
-  margin-bottom: 20px;
-  color: #333;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
+  color: #333;
 }
 
 .searchForm {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.5rem;
 }
 
-.searchForm input[type="text"] {
-  padding: 10px;
+.input {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .btn {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: background-color 0.3s ease;
   text-align: center;
+  transition: all 0.2s;
   display: inline-block;
 }
 
-.btnPrimary {
-  background-color: #007bff;
-  color: #fff;
-}
+.btnPrimary { background-color: #2563eb; color: #fff; }
+.btnPrimary:hover { background-color: #1e40af; }
 
-.btnPrimary:hover {
-  background-color: #0056b3;
-}
+.btnSuccess { background-color: #16a34a; color: #fff; }
+.btnSuccess:hover { background-color: #15803d; }
 
-.btnWarning {
-  background-color: #ffc107;
-  color: #212529;
-}
+.btnWarning { background-color: #f59e0b; color: #fff; }
+.btnWarning:hover { background-color: #d97706; }
 
-.btnWarning:hover {
-  background-color: #e0a800;
-}
+.btnInfo { background-color: #0ea5e9; color: #fff; }
+.btnInfo:hover { background-color: #0284c7; }
 
-.btnDanger {
-  background-color: #dc3545;
-  color: #fff;
-}
+.btnDanger { background-color: #dc2626; color: #fff; }
+.btnDanger:hover { background-color: #b91c1c; }
 
-.btnDanger:hover {
-  background-color: #bd2130;
-}
-
-.btnInfo {
-  background-color: #17a2b8;
-  color: #fff;
-}
-
-.btnInfo:hover {
-  background-color: #117a8b;
-}
-
-.btnSuccess {
-  background-color: #28a745;
-  color: #fff;
-  margin-top: 10px;
-}
-
-.btnSuccess:hover {
-  background-color: #218838;
+.tableWrapper {
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  min-width: 600px;
 }
 
-.table th,
-.table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #ddd;
+.table th, .table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
   text-align: left;
 }
 
 .table th {
-  background-color: #e9ecef;
-  font-weight: bold;
+  background-color: #f3f4f6;
+  font-weight: 600;
 }
 
 .table tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f1f5f9;
+}
+
+.actionsCell {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .pageLink {
-  padding: 8px 12px;
-  margin: 5px;
-  background-color: #f8f9fa;
-  color: #007bff;
-  border-radius: 4px;
-  text-decoration: none;
-  border: 1px solid #007bff;
-  transition: all 0.3s ease;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.pageLink:hover {
-  background-color: #007bff;
-  color: #fff;
+.pageLink:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageLink:not(:disabled):hover {
+  background-color: #f3f4f6;
 }
 
 .pageInfo {
-  margin: 0 10px;
-  font-weight: 600;
+  font-size: 0.95rem;
+  color: #555;
 }
 
-@media (max-width: 768px) {
-  .pageContainer {
-    flex-direction: column;
-  }
-
-  .rightPanel {
-    width: 100%;
-  }
-
-  .leftPanel {
-    width: 100%;
-    margin-bottom: 20px;
-  }
+.noResults {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  padding: 1rem;
 }

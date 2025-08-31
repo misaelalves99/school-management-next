@@ -5,23 +5,23 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './DetailsPage.module.css';
 import { useClassRooms } from '@/app/hooks/useClassRooms';
 
-const ClassRoomDetailsPage: React.FC = () => {
+export default function ClassRoomDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { getClassRoomById } = useClassRooms();
 
-  const classRoomId = Number(id);
-  const classRoom = getClassRoomById(classRoomId);
+  const numericId = Number(id);
+  const classRoom = getClassRoomById(numericId);
 
   if (!classRoom) {
     return (
       <div className={styles.container}>
-        <h2 className={styles.title}>Turma não encontrada</h2>
+        <h1 className={styles.title}>Turma não encontrada</h1>
         <button
           className={styles.btnSecondary}
           onClick={() => router.push('/classrooms')}
         >
-          Voltar
+          Voltar à Lista
         </button>
       </div>
     );
@@ -31,62 +31,72 @@ const ClassRoomDetailsPage: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Detalhes da Turma</h1>
 
-      <dl className={styles.details}>
-        <dt>Nome</dt>
-        <dd>{classRoom.name}</dd>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Nome:</span>
+        <span className={styles.detailsValue}>{classRoom.name}</span>
+      </div>
 
-        <dt>Capacidade</dt>
-        <dd>{classRoom.capacity}</dd>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Capacidade:</span>
+        <span className={styles.detailsValue}>{classRoom.capacity}</span>
+      </div>
 
-        <dt>Horário</dt>
-        <dd>{classRoom.schedule}</dd>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Horário:</span>
+        <span className={styles.detailsValue}>{classRoom.schedule}</span>
+      </div>
 
-        <dt>Disciplinas</dt>
-        <dd>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Disciplinas:</span>
+        <span className={styles.detailsValue}>
           {classRoom.subjects?.length ? (
             <ul>
-              {classRoom.subjects.map((s) => (
+              {classRoom.subjects.map(s => (
                 <li key={s.id}>{s.name}</li>
               ))}
             </ul>
           ) : (
             <span className={styles.muted}>Sem disciplinas vinculadas.</span>
           )}
-        </dd>
+        </span>
+      </div>
 
-        <dt>Professores</dt>
-        <dd>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Professores:</span>
+        <span className={styles.detailsValue}>
           {classRoom.teachers?.length ? (
             <ul>
-              {classRoom.teachers.map((t) => (
+              {classRoom.teachers.map(t => (
                 <li key={t.id}>{t.name}</li>
               ))}
             </ul>
           ) : (
             <span className={styles.muted}>Sem professores vinculados.</span>
           )}
-        </dd>
+        </span>
+      </div>
 
-        <dt>Professor Responsável</dt>
-        <dd>{classRoom.classTeacher?.name ?? 'Não definido'}</dd>
-      </dl>
+      <div className={styles.detailsRow}>
+        <span className={styles.detailsLabel}>Professor Responsável:</span>
+        <span className={styles.detailsValue}>
+          {classRoom.classTeacher?.name ?? 'Não definido'}
+        </span>
+      </div>
 
       <div className={styles.actions}>
         <button
-          className={`${styles.btn} ${styles.btnWarning}`}
-          onClick={() => router.push(`/classrooms/edit/${classRoom.id}`)}
+          className={styles.btnWarning}
+          onClick={() => router.push(`/classrooms/edit/${numericId}`)}
         >
           Editar
         </button>
         <button
-          className={`${styles.btn} ${styles.btnSecondary}`}
+          className={styles.btnSecondary}
           onClick={() => router.push('/classrooms')}
         >
-          Voltar
+          Voltar à Lista
         </button>
       </div>
     </div>
   );
-};
-
-export default ClassRoomDetailsPage;
+}

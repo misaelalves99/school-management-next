@@ -6,56 +6,46 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './DeletePage.module.css';
 import { useTeachers } from '../../../hooks/useTeachers';
 
-export default function TeacherDelete() {
+export default function DeleteTeacherPage() {
   const params = useParams();
   const router = useRouter();
-  const id = Number(params?.id);
+  const { teachers, deleteTeacher } = useTeachers();
 
-  const { getTeacherById, deleteTeacher } = useTeachers();
+  const id = params?.id ? Number(params.id) : null;
 
-  if (!id) return <div>Id inválido</div>;
+  if (!id) return <div>ID inválido</div>;
 
-  const teacher = getTeacherById(id);
-  if (!teacher) return <div>Professor não encontrado.</div>;
+  const teacher = teachers.find(t => t.id === id);
+  if (!teacher) return <div>Professor não encontrado</div>;
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.FormEvent) => {
+    e.preventDefault();
     deleteTeacher(teacher.id);
-    alert('Professor excluído com sucesso.');
     router.push('/teachers');
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1 className={styles.title}>Excluir Professor</h1>
-      <p className={styles.warning}>
-        Tem certeza que deseja excluir este professor?
-      </p>
 
-      {/* Caixa de informações do professor */}
-      <div className={styles.infoBox}>
-        <h4>{teacher.name}</h4>
-        <p>E-mail: {teacher.email}</p>
-        <p>Telefone: {teacher.phone}</p>
-      </div>
+      <h3 className={styles.warning}>
+        Tem certeza que deseja excluir <strong>{teacher.name}</strong>?
+      </h3>
 
       {/* Botões de ação */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleDelete();
-        }}
-        className={styles.form}
-      >
-        <button type="submit" className={`${styles.btn} ${styles.btnDanger}`}>
-          Excluir
-        </button>
-        <button
-          type="button"
-          className={`${styles.btn} ${styles.btnSecondary}`}
-          onClick={() => router.push('/teachers')}
-        >
-          Cancelar
-        </button>
+      <form onSubmit={handleDelete}>
+        <div className={styles.actions}>
+          <button type="submit" className={`${styles.btn} ${styles.btnDelete}`}>
+            Excluir
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnCancel}`}
+            onClick={() => router.push('/teachers')}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );

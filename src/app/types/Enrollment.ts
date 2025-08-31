@@ -14,3 +14,9 @@ export interface EnrollmentForm {
   classRoomId: number | '';
   enrollmentDate: string;
 }
+
+// Tipo usado na listagem com os nomes já resolvidos
+export interface EnrollmentWithNames extends Enrollment {
+  studentName: string;
+  classRoomName: string;
+}

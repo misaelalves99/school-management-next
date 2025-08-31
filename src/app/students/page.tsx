@@ -1,45 +1,54 @@
-// src/app/students/page.tsx
+// app/students/page.tsx
 
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './StudentsPage.module.css';
-import { useStudents } from '../hooks/useStudents';
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useStudents } from "../hooks/useStudents";
+import styles from "./StudentsPage.module.css";
 
 export default function StudentsPage() {
   const router = useRouter();
-  const { students } = useStudents(); // pega a lista do Context
-  const [searchTerm, setSearchTerm] = useState('');
+  const { students, refreshStudents } = useStudents();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
-  // Filtra os alunos com base no searchTerm
   const filteredStudents = useMemo(() => {
-    if (!searchTerm.trim()) return students;
-    const term = searchTerm.toLowerCase();
-    return students.filter(
-      s =>
-        s.name.toLowerCase().includes(term) ||
-        s.enrollmentNumber.toLowerCase().includes(term) ||
-        (s.phone?.toLowerCase().includes(term) ?? false) ||
-        (s.address?.toLowerCase().includes(term) ?? false)
-    );
-  }, [searchTerm, students]);
+    const term = search.toLowerCase();
+    return students.filter((s) => s.name.toLowerCase().includes(term));
+  }, [students, search]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const totalPages = Math.max(1, Math.ceil(filteredStudents.length / pageSize));
+  const pagedStudents = filteredStudents.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  useEffect(() => {
+    refreshStudents();
+  }, [refreshStudents]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1);
   };
 
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.leftPanel}>
+      <aside className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Alunos</h2>
-        <form onSubmit={e => e.preventDefault()} className={styles.searchForm}>
+        <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
           <input
             type="text"
-            placeholder="Digite nome, matrícula, telefone ou endereço..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className={styles.searchInput}
+            placeholder="Digite o nome do aluno..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.input}
           />
           <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
             Buscar
@@ -47,64 +56,87 @@ export default function StudentsPage() {
         </form>
         <button
           className={`${styles.btn} ${styles.btnSuccess}`}
-          onClick={() => router.push('/students/create')}
+          onClick={() => router.push("/students/create")}
         >
           Cadastrar Novo Aluno
         </button>
-      </div>
+      </aside>
 
-      <div className={styles.rightPanel}>
+      <main className={styles.rightPanel}>
         <h2 className={styles.title}>Lista de Alunos</h2>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Matrícula</th>
-              <th>Telefone</th>
-              <th>Endereço</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.length === 0 ? (
-              <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
-                  Nenhum aluno encontrado.
-                </td>
-              </tr>
-            ) : (
-              filteredStudents.map(student => (
-                <tr key={student.id}>
-                  <td>{student.name}</td>
-                  <td>{student.enrollmentNumber}</td>
-                  <td>{student.phone || '-'}</td>
-                  <td>{student.address || '-'}</td>
-                  <td>
-                    <button
-                      className={`${styles.btn} ${styles.btnInfo}`}
-                      onClick={() => router.push(`/students/details/${student.id}`)}
-                    >
-                      Detalhes
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.btnWarning}`}
-                      onClick={() => router.push(`/students/edit/${student.id}`)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.btnDanger}`}
-                      onClick={() => router.push(`/students/delete/${student.id}`)}
-                    >
-                      Excluir
-                    </button>
-                  </td>
-                </tr>
-              ))
+
+        {pagedStudents.length > 0 ? (
+          <>
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Matrícula</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pagedStudents.map((student) => (
+                    <tr key={student.id}>
+                      <td>{student.id}</td>
+                      <td>{student.name}</td>
+                      <td>{student.enrollmentNumber || '-'}</td>
+                      <td>{student.phone || '-'}</td>
+                      <td className={styles.actionsCell}>
+                        <button
+                          className={`${styles.btn} ${styles.btnInfo}`}
+                          onClick={() => router.push(`/students/details/${student.id}`)}
+                        >
+                          Detalhes
+                        </button>
+                        <button
+                          className={`${styles.btn} ${styles.btnWarning}`}
+                          onClick={() => router.push(`/students/edit/${student.id}`)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className={`${styles.btn} ${styles.btnDanger}`}
+                          onClick={() => router.push(`/students/delete/${student.id}`)}
+                        >
+                          Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className={styles.pagination}>
+                <button
+                  className={styles.pageLink}
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  Anterior
+                </button>
+                <span className={styles.pageInfo}>
+                  Página {page} de {totalPages}
+                </span>
+                <button
+                  className={styles.pageLink}
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  Próxima
+                </button>
+              </div>
             )}
-          </tbody>
-        </table>
-      </div>
+          </>
+        ) : (
+          <p className={styles.noResults}>Nenhum aluno encontrado.</p>
+        )}
+      </main>
     </div>
   );
 }

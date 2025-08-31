@@ -70,19 +70,20 @@ export default function CreateStudentPage() {
 
       <form onSubmit={handleSubmit} className={styles.createForm}>
         {[
-          { label: 'Nome', name: 'name', type: 'text' },
-          { label: 'Email', name: 'email', type: 'email' },
-          { label: 'Data de Nascimento', name: 'dateOfBirth', type: 'date' },
-          { label: 'Matrícula', name: 'enrollmentNumber', type: 'text' },
-          { label: 'Telefone', name: 'phone', type: 'tel' },
-          { label: 'Endereço', name: 'address', type: 'text' },
-        ].map(({ label, name, type }) => (
+          { label: 'Nome', name: 'name', type: 'text', placeholder: 'Digite o nome do aluno' },
+          { label: 'Email', name: 'email', type: 'email', placeholder: 'Digite o email' },
+          { label: 'Data de Nascimento', name: 'dateOfBirth', type: 'date', placeholder: '' },
+          { label: 'Matrícula', name: 'enrollmentNumber', type: 'text', placeholder: 'Número de matrícula' },
+          { label: 'Telefone', name: 'phone', type: 'tel', placeholder: 'Digite o telefone' },
+          { label: 'Endereço', name: 'address', type: 'text', placeholder: 'Digite o endereço' },
+        ].map(({ label, name, type, placeholder }) => (
           <div key={name} className={styles.formGroup}>
             <label htmlFor={name} className={styles.formLabel}>{label}</label>
             <input
               id={name}
               name={name}
               type={type}
+              placeholder={placeholder}
               value={formData[name as keyof Student]}
               onChange={handleChange}
               className={styles.formInput}
@@ -100,7 +101,7 @@ export default function CreateStudentPage() {
             className={styles.btnSecondary}
             onClick={() => router.push('/students')}
           >
-            Voltar à Lista
+            Cancelar
           </button>
         </div>
       </form>

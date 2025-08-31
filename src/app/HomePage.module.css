@@ -1,67 +1,63 @@
 /* src/pages/Home/HomePage.module.css */
 
 .container {
-  max-width: 960px;
-  margin: 40px auto;
-  padding: 0 15px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  gap: 2rem;
 }
 
 .title {
   font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937; /* cinza escuro */
   text-align: center;
-  margin-bottom: 16px;
-  color: #333;
 }
 
 .lead {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
+  color: #4b5563; /* cinza médio */
   text-align: center;
-  color: #555;
-  margin-bottom: 40px;
+  max-width: 700px;
 }
 
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  list-style: none;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
   padding: 0;
-  margin: 0;
+  list-style: none;
 }
 
-.feature-card {
-  background: #f8f9fa;
-  padding: 25px 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.featureCard {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.feature-card:hover {
+.featureCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
-.feature-card a {
+.cardLink {
   text-decoration: none;
-  color: #007bff;
   font-weight: 600;
   font-size: 1.1rem;
+  color: #2563eb; /* azul primário */
+  transition: color 0.2s;
 }
 
-.feature-card a:hover,
-.feature-card a:focus {
-  text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-  .title {
-    font-size: 2rem;
-  }
-
-  .feature-card {
-    padding: 20px 15px;
-  }
+.cardLink:hover {
+  color: #1d4ed8; /* azul mais escuro */
 }

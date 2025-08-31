@@ -1,7 +1,5 @@
 // src/app/enrollments/create/page.tsx
 
-// src/app/enrollments/create/page.tsx
-
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
@@ -13,7 +11,7 @@ import type { ClassRoom } from '../../types/Classroom';
 import type { EnrollmentForm } from '../../types/Enrollment';
 
 import studentsMock from '../../mocks/students';
-import classRoomsMock from '../../mocks/classRooms';
+import { mockClassRooms as classRoomsMock } from '../../mocks/classRooms';
 
 import { useEnrollments } from '../../hooks/useEnrollments';
 
@@ -122,7 +120,7 @@ export default function CreateEnrollmentPage() {
             className={styles.btnSecondary}
             onClick={() => router.push('/enrollments')}
           >
-            Voltar à Lista
+            Cancelar
           </button>
         </div>
       </form>

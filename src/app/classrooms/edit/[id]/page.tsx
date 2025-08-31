@@ -88,6 +88,19 @@ export default function EditClassRoomPage({ params }: PageProps) {
           />
         </div>
 
+        <div className={styles.formGroup}>
+          <label htmlFor="schedule" className={styles.formLabel}>Horário</label>
+          <input
+            id="schedule"
+            name="schedule"
+            type="text"
+            value={formData.schedule}
+            onChange={handleChange}
+            placeholder="Ex: 08:00 - 12:00"
+            className={styles.formInput}
+          />
+        </div>
+
         <div className={styles.formActions}>
           <button type="submit" className={styles.btnPrimary}>Salvar Alterações</button>
           <button
