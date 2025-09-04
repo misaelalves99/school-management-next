@@ -1,15 +1,24 @@
 // src/app/students/create/CreatePage.test.tsx
-
 import { render, screen, fireEvent } from '@testing-library/react';
 import CreateStudentPage from './page';
 import * as nextRouter from 'next/navigation';
+import * as useStudentsHook from '../../hooks/useStudents';
 
 describe('CreateStudentPage', () => {
   const pushMock = jest.fn();
+  const addStudentMock = jest.fn();
 
   beforeEach(() => {
+    // Mock do useRouter
     jest.spyOn(nextRouter, 'useRouter').mockReturnValue({ push: pushMock } as any);
     pushMock.mockClear();
+
+    // Mock do useStudents
+    jest.spyOn(useStudentsHook, 'useStudents').mockReturnValue({
+      addStudent: addStudentMock,
+      students: [],
+    } as any);
+    addStudentMock.mockClear();
   });
 
   it('renderiza todos os campos e botões', () => {
@@ -21,7 +30,7 @@ describe('CreateStudentPage', () => {
     expect(screen.getByLabelText(/telefone/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/endereço/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /salvar/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /voltar à lista/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
   });
 
   it('mostra erros de validação ao submeter campos obrigatórios vazios', () => {
@@ -33,6 +42,7 @@ describe('CreateStudentPage', () => {
     expect(screen.getByText(/data de nascimento é obrigatória/i)).toBeInTheDocument();
     expect(screen.getByText(/matrícula é obrigatória/i)).toBeInTheDocument();
     expect(pushMock).not.toHaveBeenCalled();
+    expect(addStudentMock).not.toHaveBeenCalled();
   });
 
   it('submete o formulário corretamente quando os campos obrigatórios são preenchidos', () => {
@@ -46,12 +56,20 @@ describe('CreateStudentPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /salvar/i }));
 
     expect(screen.queryByText(/é obrigatório/i)).not.toBeInTheDocument();
+    expect(addStudentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'João',
+        email: 'joao@email.com',
+        dateOfBirth: '2000-01-01',
+        enrollmentNumber: '20230001',
+      })
+    );
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 
-  it('botão "Voltar à Lista" navega corretamente', () => {
+  it('botão "Cancelar" navega corretamente', () => {
     render(<CreateStudentPage />);
-    fireEvent.click(screen.getByRole('button', { name: /voltar à lista/i }));
+    fireEvent.click(screen.getByRole('button', { name: /cancelar/i }));
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 });

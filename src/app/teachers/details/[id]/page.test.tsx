@@ -1,27 +1,25 @@
 // src/app/teachers/details/[id]/page.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
-import TeacherDetails from './page';
+import TeacherDetailsPage from './page';
 import * as nextNavigation from 'next/navigation';
-import * as teacherMocks from '../../../mocks/teachers';
+import { useTeachers } from '../../../hooks/useTeachers';
 
-describe('TeacherDetails Page', () => {
+jest.mock('next/navigation', () => ({ useRouter: jest.fn(), useParams: jest.fn() }));
+jest.mock('../../../hooks/useTeachers');
+
+describe('TeacherDetailsPage', () => {
   const pushMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(nextNavigation, 'useRouter').mockReturnValue({ push: pushMock } as any);
+    (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
   });
 
-  it('mostra mensagem de id inválido quando id não é fornecido', () => {
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({});
-    render(<TeacherDetails />);
-    expect(screen.getByText(/Id inválido/i)).toBeInTheDocument();
-  });
+  it('mostra mensagem de professor não encontrado quando id não existe ou inválido', () => {
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
+    (useTeachers as jest.Mock).mockReturnValue({ getTeacherById: () => undefined });
 
-  it('mostra mensagem de professor não encontrado quando id não existe', () => {
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '999' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(undefined);
-    render(<TeacherDetails />);
+    render(<TeacherDetailsPage />);
     expect(screen.getByText(/Professor não encontrado/i)).toBeInTheDocument();
   });
 
@@ -34,20 +32,19 @@ describe('TeacherDetails Page', () => {
       subject: 'Matemática',
       address: 'Rua A, 123',
       dateOfBirth: '1990-01-01',
-      photoUrl: '/foto.png',
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '1' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+    (useTeachers as jest.Mock).mockReturnValue({ getTeacherById: () => teacher });
 
-    render(<TeacherDetails />);
+    render(<TeacherDetailsPage />);
 
     expect(screen.getByText(/Detalhes do Professor/i)).toBeInTheDocument();
-    expect(screen.getByText(/Maria/i)).toBeInTheDocument();
-    expect(screen.getByText(/maria@mail.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/Matemática/i)).toBeInTheDocument();
-    expect(screen.getByText(/Rua A, 123/i)).toBeInTheDocument();
-    expect(screen.getByText(/987654/i)).toBeInTheDocument();
-    expect(screen.getByText(/01\/01\/1990/i)).toBeInTheDocument(); // data formatada
+    expect(screen.getByText('Maria')).toBeInTheDocument();
+    expect(screen.getByText('maria@mail.com')).toBeInTheDocument();
+    expect(screen.getByText('Matemática')).toBeInTheDocument();
+    expect(screen.getByText('Rua A, 123')).toBeInTheDocument();
+    expect(screen.getByText('987654')).toBeInTheDocument();
+    expect(screen.getByText('01/01/1990')).toBeInTheDocument(); // data formatada
   });
 
   it('navega para edição ao clicar em "Editar"', () => {
@@ -59,14 +56,12 @@ describe('TeacherDetails Page', () => {
       subject: 'Física',
       address: 'Av. B, 456',
       dateOfBirth: '1985-05-10',
-      photoUrl: '',
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '2' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '2' });
+    (useTeachers as jest.Mock).mockReturnValue({ getTeacherById: () => teacher });
 
-    render(<TeacherDetails />);
+    render(<TeacherDetailsPage />);
     fireEvent.click(screen.getByText(/Editar/i));
-
     expect(pushMock).toHaveBeenCalledWith('/teachers/edit/2');
   });
 
@@ -79,14 +74,12 @@ describe('TeacherDetails Page', () => {
       subject: 'História',
       address: 'Praça C, 789',
       dateOfBirth: '1992-07-15',
-      photoUrl: '',
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '3' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '3' });
+    (useTeachers as jest.Mock).mockReturnValue({ getTeacherById: () => teacher });
 
-    render(<TeacherDetails />);
+    render(<TeacherDetailsPage />);
     fireEvent.click(screen.getByText(/Voltar à Lista/i));
-
     expect(pushMock).toHaveBeenCalledWith('/teachers');
   });
 });

@@ -1,5 +1,7 @@
 // src/mocks/enrollments.test.ts
-import { mockEnrollments, type Enrollment } from './enrollments';
+
+import mockEnrollments from './enrollments';
+import type { Enrollment } from './enrollments';
 
 describe('mockEnrollments', () => {
   it('deve ser um array de enrollments', () => {
@@ -31,14 +33,36 @@ describe('mockEnrollments', () => {
   });
 
   it('deve permitir adição de novos enrollments mantendo o formato', () => {
+    const initialLength = mockEnrollments.length;
+
     const newEnrollment: Enrollment = {
-      id: mockEnrollments.length + 1,
+      id: initialLength + 1,
       studentId: 3,
       classRoomId: 1,
       enrollmentDate: '2025-03-01',
       status: 'Ativo',
     };
+
     mockEnrollments.push(newEnrollment);
-    expect(mockEnrollments[mockEnrollments.length - 1]).toEqual(newEnrollment);
+    const last = mockEnrollments[mockEnrollments.length - 1];
+
+    expect(mockEnrollments.length).toBe(initialLength + 1);
+    expect(last).toEqual(newEnrollment);
+  });
+
+  it('não deve modificar outros enrollments ao adicionar novo', () => {
+    const snapshot = [...mockEnrollments];
+    const newEnrollment: Enrollment = {
+      id: snapshot.length + 1,
+      studentId: 4,
+      classRoomId: 2,
+      enrollmentDate: '2025-04-01',
+      status: 'Ativo',
+    };
+    mockEnrollments.push(newEnrollment);
+
+    snapshot.forEach((enrollment, index) => {
+      expect(mockEnrollments[index]).toEqual(enrollment);
+    });
   });
 });

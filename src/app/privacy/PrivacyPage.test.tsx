@@ -1,7 +1,7 @@
 // src/pages/Privacy/PrivacyPage.test.tsx
 
 import { render, screen } from '@testing-library/react';
-import PrivacyPage from './PrivacyPage';
+import PrivacyPage from './page';
 
 describe('PrivacyPage', () => {
   it('deve renderizar o título da política de privacidade', () => {

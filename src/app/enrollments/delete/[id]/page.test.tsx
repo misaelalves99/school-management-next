@@ -1,59 +1,76 @@
-// src/app/classrooms/delete/[id]/page.test.tsx
+// src/app/enrollments/delete/[id]/page.test.tsx
 
 import { render, screen, fireEvent } from '@testing-library/react';
-import ClassRoomDeletePage from './page';
+import DeleteEnrollmentPage from './page';
 import * as nextNavigation from 'next/navigation';
-import mockClassRooms from '../../../mocks/classRooms';
+import { useEnrollments } from '@/app/hooks/useEnrollments';
+import { useStudents } from '@/app/hooks/useStudents';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
 }));
 
-describe('ClassRoomDeletePage', () => {
+jest.mock('@/app/hooks/useEnrollments');
+jest.mock('@/app/hooks/useStudents');
+jest.mock('@/app/hooks/useClassRooms');
+
+describe('DeleteEnrollmentPage', () => {
   const pushMock = jest.fn();
+  const deleteEnrollmentMock = jest.fn();
+
+  const mockStudent = { id: 1, name: 'Aluno 1' };
+  const mockClassRoom = { id: 1, name: 'Sala A', capacity: 30, schedule: '08:00', subjects: [], teachers: [], classTeacher: null };
+  const mockEnrollment = { id: 1, studentId: 1, classRoomId: 1, enrollmentDate: '2025-08-02', status: 'Ativo' };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
-
-    mockClassRooms.length = 3;
-    mockClassRooms[0] = { id: 1, name: 'Sala A', capacity: 30, schedule: 'Seg 08:00', subjects: [], teachers: [], classTeacher: null };
-    mockClassRooms[1] = { id: 2, name: 'Sala B', capacity: 20, schedule: 'Ter 10:00', subjects: [], teachers: [], classTeacher: null };
-    mockClassRooms[2] = { id: 3, name: 'Sala C', capacity: 15, schedule: 'Qua 14:00', subjects: [], teachers: [], classTeacher: null };
+    (useEnrollments as jest.Mock).mockReturnValue({
+      enrollments: [mockEnrollment],
+      deleteEnrollment: deleteEnrollmentMock,
+    });
+    (useStudents as jest.Mock).mockReturnValue({ students: [mockStudent] });
+    (useClassRooms as jest.Mock).mockReturnValue({ classRooms: [mockClassRoom] });
   });
 
-  it('deve mostrar mensagem de turma inválida quando id não existe', () => {
+  it('deve exibir ID inválido se params.id estiver ausente', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({});
-    render(<ClassRoomDeletePage />);
-    expect(screen.getByText('Turma inválida.')).toBeInTheDocument();
+    render(<DeleteEnrollmentPage />);
+    expect(screen.getByText('ID inválido')).toBeInTheDocument();
   });
 
-  it('deve mostrar mensagem de turma não encontrada quando id não existe no mock', () => {
+  it('deve exibir matrícula não encontrada se id não existir', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
-    render(<ClassRoomDeletePage />);
-    expect(screen.getByText('Turma não encontrada.')).toBeInTheDocument();
+    render(<DeleteEnrollmentPage />);
+    expect(screen.getByText('Matrícula não encontrada')).toBeInTheDocument();
   });
 
-  it('deve renderizar a turma corretamente e deletar', () => {
+  it('deve renderizar matrícula corretamente e deletar', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
-    render(<ClassRoomDeletePage />);
 
-    expect(screen.getByText('Excluir Turma')).toBeInTheDocument();
-    expect(screen.getByText(/Sala A/)).toBeInTheDocument();
+    // mock alert
+    window.alert = jest.fn();
+
+    render(<DeleteEnrollmentPage />);
+    expect(screen.getByText('Excluir Matrícula')).toBeInTheDocument();
+    expect(screen.getByText(/Aluno 1/)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Excluir'));
 
-    expect(mockClassRooms.find(c => c.id === 1)).toBeUndefined();
-    expect(pushMock).toHaveBeenCalledWith('/classrooms');
+    expect(deleteEnrollmentMock).toHaveBeenCalledWith(1);
+    expect(window.alert).toHaveBeenCalledWith('Matrícula excluída com sucesso!');
+    expect(pushMock).toHaveBeenCalledWith('/enrollments');
   });
 
-  it('botão cancelar deve redirecionar sem excluir', () => {
-    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '2' });
-    render(<ClassRoomDeletePage />);
+  it('botão cancelar deve redirecionar sem deletar', () => {
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+    render(<DeleteEnrollmentPage />);
 
     fireEvent.click(screen.getByText('Cancelar'));
 
-    expect(mockClassRooms.find(c => c.id === 2)).toBeDefined();
-    expect(pushMock).toHaveBeenCalledWith('/classrooms');
+    expect(deleteEnrollmentMock).not.toHaveBeenCalled();
+    expect(pushMock).toHaveBeenCalledWith('/enrollments');
   });
 });

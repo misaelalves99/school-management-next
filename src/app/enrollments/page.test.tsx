@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import EnrollmentsPage from './page';
 import mockEnrollments from '../mocks/enrollments';
 import mockStudents from '../mocks/students';
-import mockClassRooms from '../mocks/classRooms';
+import { mockClassRooms } from '../mocks/classRooms';
 
 describe('EnrollmentsPage', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('EnrollmentsPage', () => {
       { id: 3, studentId: 3, classRoomId: 3, enrollmentDate: '2025-03-01', status: 'Ativo' }
     );
 
-    // Reset dos estudantes
+    // Reset dos estudantes (Student completo)
     mockStudents.length = 0;
     mockStudents.push(
       {
@@ -24,71 +24,94 @@ describe('EnrollmentsPage', () => {
         name: 'Aluno 1',
         email: 'aluno1@email.com',
         dateOfBirth: '2000-01-01',
-        enrollmentNumber: '20250001',
-        phone: '111111111',
-        address: 'Rua A, 100'
+        enrollmentNumber: 'ENR001',
+        phone: '999999001',
+        address: 'Rua A, 1'
       },
       {
         id: 2,
         name: 'Aluno 2',
         email: 'aluno2@email.com',
-        dateOfBirth: '2001-02-02',
-        enrollmentNumber: '20250002',
-        phone: '222222222',
-        address: 'Rua B, 200'
+        dateOfBirth: '2000-02-02',
+        enrollmentNumber: 'ENR002',
+        phone: '999999002',
+        address: 'Rua B, 2'
       },
       {
         id: 3,
         name: 'Aluno 3',
         email: 'aluno3@email.com',
-        dateOfBirth: '2002-03-03',
-        enrollmentNumber: '20250003',
-        phone: '333333333',
-        address: 'Rua C, 300'
+        dateOfBirth: '2000-03-03',
+        enrollmentNumber: 'ENR003',
+        phone: '999999003',
+        address: 'Rua C, 3'
       }
     );
 
-    // Reset das salas de aula
+    // Reset das salas de aula (ClassRoom completo)
     mockClassRooms.length = 0;
     mockClassRooms.push(
       {
         id: 1,
         name: 'Sala 1',
-        capacity: 10,
-        schedule: 'Seg 08:00',
+        capacity: 30,
+        schedule: 'Seg - 08:00 às 10:00',
         subjects: [],
         teachers: [],
-        classTeacher: null
+        classTeacher: {
+          id: 1,
+          name: 'Professor 1',
+          email: 'prof1@email.com',
+          dateOfBirth: '1980-01-01',
+          subject: 'Matemática',
+          phone: '123456789',
+          address: 'Rua A'
+        }
       },
       {
         id: 2,
         name: 'Sala 2',
-        capacity: 20,
-        schedule: 'Ter 10:00',
+        capacity: 25,
+        schedule: 'Ter - 10:00 às 12:00',
         subjects: [],
         teachers: [],
-        classTeacher: null
+        classTeacher: {
+          id: 2,
+          name: 'Professor 2',
+          email: 'prof2@email.com',
+          dateOfBirth: '1980-02-02',
+          subject: 'História',
+          phone: '987654321',
+          address: 'Rua B'
+        }
       },
       {
         id: 3,
         name: 'Sala 3',
-        capacity: 30,
-        schedule: 'Qua 14:00',
+        capacity: 20,
+        schedule: 'Qua - 08:00 às 10:00',
         subjects: [],
         teachers: [],
-        classTeacher: null
+        classTeacher: {
+          id: 3,
+          name: 'Professor 3',
+          email: 'prof3@email.com',
+          dateOfBirth: '1980-03-03',
+          subject: 'Geografia',
+          phone: '111222333',
+          address: 'Rua C'
+        }
       }
     );
   });
 
   it('renderiza lista de matrículas com paginação', () => {
     render(<EnrollmentsPage />);
-    // PageSize = 2, então só aparecem 2 primeiras
+    
     expect(screen.getByText('Aluno 1')).toBeInTheDocument();
     expect(screen.getByText('Aluno 2')).toBeInTheDocument();
     expect(screen.queryByText('Aluno 3')).not.toBeInTheDocument();
 
-    // Botão próxima página
     fireEvent.click(screen.getByText('Próxima'));
     expect(screen.getByText('Aluno 3')).toBeInTheDocument();
   });
@@ -124,9 +147,17 @@ describe('EnrollmentsPage', () => {
 
   it('mostra página e total de páginas corretamente', () => {
     render(<EnrollmentsPage />);
-    expect(screen.getByText('Página 1 de 2')).toBeInTheDocument();
+    expect(screen.getByText('Página 1 de 1')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Próxima'));
-    expect(screen.getByText('Página 2 de 2')).toBeInTheDocument();
+    expect(screen.getByText('Página 1 de 1')).toBeInTheDocument();
+  });
+
+  it('exibe mensagem quando não há resultados', () => {
+    render(<EnrollmentsPage />);
+    const input = screen.getByPlaceholderText('Buscar Matrícula ou Status...');
+    fireEvent.change(input, { target: { value: 'inexistente' } });
+
+    expect(screen.getByText('Nenhuma matrícula encontrada.')).toBeInTheDocument();
   });
 });

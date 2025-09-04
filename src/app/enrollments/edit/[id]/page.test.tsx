@@ -2,22 +2,29 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EditEnrollmentPage from './page';
-import { mockEnrollments } from '../../../mocks/enrollments';
 import * as nextNavigation from 'next/navigation';
+import mockEnrollments from '../../../mocks/enrollments';
+import { useEnrollments } from '../../../hooks/useEnrollments';
+import { useStudents } from '../../../hooks/useStudents';
+import { useClassRooms } from '../../../hooks/useClassRooms';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useEnrollments');
+jest.mock('../../../hooks/useStudents');
+jest.mock('../../../hooks/useClassRooms');
+
 describe('EditEnrollmentPage', () => {
   const pushMock = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
 
-    pushMock.mockClear();
     mockEnrollments.length = 0;
     mockEnrollments.push({
       id: 1,
@@ -25,6 +32,29 @@ describe('EditEnrollmentPage', () => {
       classRoomId: 1,
       enrollmentDate: '2025-01-01',
       status: 'Ativo',
+    });
+
+    (useEnrollments as jest.Mock).mockReturnValue({
+      enrollments: mockEnrollments,
+      updateEnrollment: jest.fn((updated) => {
+        const index = mockEnrollments.findIndex(e => e.id === updated.id);
+        if (index !== -1) mockEnrollments[index] = { ...updated };
+      }),
+    });
+
+    (useStudents as jest.Mock).mockReturnValue({
+      students: [
+        { id: 1, name: 'Aluno 1' },
+        { id: 2, name: 'Aluno 2' },
+      ],
+    });
+
+    (useClassRooms as jest.Mock).mockReturnValue({
+      classRooms: [
+        { id: 1, name: 'Sala 1' },
+        { id: 2, name: 'Sala 2' },
+        { id: 3, name: 'Sala 3' },
+      ],
     });
   });
 

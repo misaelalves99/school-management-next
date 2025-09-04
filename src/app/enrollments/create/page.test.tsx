@@ -4,8 +4,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import CreateEnrollmentPage from './page';
 import * as nextNavigation from 'next/navigation';
 import studentsMock from '../../mocks/students';
-import classRoomsMock from '../../mocks/classRooms';
-import enrollmentsMock from '../../mocks/enrollments';
+import { mockClassRooms } from '../../mocks/classRooms';
+import { useEnrollments } from '../../hooks/useEnrollments';
+
+// Mock do hook de enrollments
+jest.mock('../../hooks/useEnrollments');
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -13,11 +16,15 @@ jest.mock('next/navigation', () => ({
 
 describe('CreateEnrollmentPage', () => {
   const pushMock = jest.fn();
+  const addEnrollmentMock = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
-    // Limpar o mock de enrollments antes de cada teste
-    enrollmentsMock.length = 0;
+    (useEnrollments as jest.Mock).mockReturnValue({
+      enrollments: [],
+      addEnrollment: addEnrollmentMock,
+    });
   });
 
   it('deve renderizar o formulário corretamente', () => {
@@ -27,7 +34,7 @@ describe('CreateEnrollmentPage', () => {
     expect(screen.getByLabelText('Turma')).toBeInTheDocument();
     expect(screen.getByLabelText('Data da Matrícula')).toBeInTheDocument();
     expect(screen.getByText('Salvar')).toBeInTheDocument();
-    expect(screen.getByText('Voltar à Lista')).toBeInTheDocument();
+    expect(screen.getByText('Cancelar')).toBeInTheDocument();
   });
 
   it('deve validar campos obrigatórios', () => {
@@ -41,25 +48,24 @@ describe('CreateEnrollmentPage', () => {
     render(<CreateEnrollmentPage />);
 
     fireEvent.change(screen.getByLabelText('Aluno'), { target: { value: studentsMock[0].id } });
-    fireEvent.change(screen.getByLabelText('Turma'), { target: { value: classRoomsMock[0].id } });
+    fireEvent.change(screen.getByLabelText('Turma'), { target: { value: mockClassRooms[0].id } });
     fireEvent.change(screen.getByLabelText('Data da Matrícula'), { target: { value: '2025-08-22' } });
 
     fireEvent.click(screen.getByText('Salvar'));
 
-    expect(enrollmentsMock.length).toBe(1);
-    expect(enrollmentsMock[0]).toMatchObject({
+    expect(addEnrollmentMock).toHaveBeenCalledWith(expect.objectContaining({
       studentId: studentsMock[0].id,
-      classRoomId: classRoomsMock[0].id,
+      classRoomId: mockClassRooms[0].id,
       enrollmentDate: '2025-08-22',
       status: 'Ativo',
-    });
+    }));
 
     expect(pushMock).toHaveBeenCalledWith('/enrollments');
   });
 
-  it('botão Voltar deve redirecionar', () => {
+  it('botão Cancelar deve redirecionar', () => {
     render(<CreateEnrollmentPage />);
-    fireEvent.click(screen.getByText('Voltar à Lista'));
+    fireEvent.click(screen.getByText('Cancelar'));
     expect(pushMock).toHaveBeenCalledWith('/enrollments');
   });
 });

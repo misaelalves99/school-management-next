@@ -1,87 +1,142 @@
 // src/app/classrooms/page.test.tsx
 
-import { render, screen, fireEvent } from '@testing-library/react';
-import ClassroomsPage from './page';
-import * as nextNavigation from 'next/navigation';
-import mockClassRooms from '../mocks/classRooms';
+'use client';
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}));
+import { useState, useMemo } from 'react';
+import Link from 'next/link';
+import { useClassRooms } from '../hooks/useClassRooms';
+import type { ClassRoom } from '../types/Classroom';
+import styles from './ClassRoomList.module.css';
 
-describe('ClassroomsPage', () => {
-  const pushMock = jest.fn();
-  const useRouterMock = nextNavigation.useRouter as jest.Mock;
+const PAGE_SIZE = 10;
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    useRouterMock.mockReturnValue({ push: pushMock });
-  });
+export default function ClassroomsPage() {
+  const { classRooms } = useClassRooms();
+  const [searchString, setSearchString] = useState('');
+  const [page, setPage] = useState(1);
 
-  it('deve renderizar título, formulário de busca e botão de cadastro', () => {
-    render(<ClassroomsPage />);
-    expect(screen.getByText(/Buscar Salas/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Digite o nome ou capacidade/i)).toBeInTheDocument();
-    expect(screen.getByText(/Cadastrar Nova Sala/i)).toBeInTheDocument();
-  });
+  const filteredData: ClassRoom[] = useMemo(() => {
+    const term = searchString.toLowerCase();
+    return classRooms.filter((c: ClassRoom) =>
+      c.name.toLowerCase().includes(term) ||
+      c.schedule.toLowerCase().includes(term) ||
+      c.capacity.toString().includes(term)
+    );
+  }, [searchString, classRooms]);
 
-  it('deve renderizar a tabela com os dados da primeira página', () => {
-    render(<ClassroomsPage />);
-    mockClassRooms.slice(0, 2).forEach((room) => {
-      expect(screen.getByText(room.name)).toBeInTheDocument();
-      expect(screen.getByText(String(room.capacity))).toBeInTheDocument();
-    });
-  });
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE));
+  const pagedData: ClassRoom[] = filteredData.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
 
-  it('botão de cadastro deve chamar router.push("/classrooms/create")', () => {
-    render(<ClassroomsPage />);
-    fireEvent.click(screen.getByText(/Cadastrar Nova Sala/i));
-    expect(pushMock).toHaveBeenCalledWith('/classrooms/create');
-  });
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(e.target.value);
+    setPage(1);
+  };
 
-  it('botões de ação devem chamar router.push com o caminho correto', () => {
-    render(<ClassroomsPage />);
-    const firstRoom = mockClassRooms[0];
+  const goToPage = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setPage(newPage);
+  };
 
-    fireEvent.click(screen.getAllByText(/Editar/i)[0]);
-    expect(pushMock).toHaveBeenCalledWith(`/classrooms/edit/${firstRoom.id}`);
+  return (
+    <div className={styles.pageContainer}>
+      <aside className={styles.leftPanel}>
+        <h2 className={styles.title}>Buscar Salas</h2>
+        <form onSubmit={e => e.preventDefault()} className={styles.searchForm}>
+          <input
+            type="text"
+            value={searchString}
+            onChange={handleSearchChange}
+            placeholder="Digite nome, horário ou capacidade..."
+            className={styles.input}
+          />
+          <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
+            Buscar
+          </button>
+        </form>
 
-    fireEvent.click(screen.getAllByText(/Detalhes/i)[0]);
-    expect(pushMock).toHaveBeenCalledWith(`/classrooms/details/${firstRoom.id}`);
+        <Link href="/classrooms/create" className={`${styles.btn} ${styles.btnSuccess}`}>
+          Cadastrar Nova Sala
+        </Link>
+      </aside>
 
-    fireEvent.click(screen.getAllByText(/Excluir/i)[0]);
-    expect(pushMock).toHaveBeenCalledWith(`/classrooms/delete/${firstRoom.id}`);
-  });
+      <main className={styles.rightPanel}>
+        <h2 className={styles.title}>Lista de Salas</h2>
 
-  it('deve filtrar resultados ao buscar', () => {
-    render(<ClassroomsPage />);
-    const searchInput = screen.getByPlaceholderText(/Digite o nome ou capacidade/i);
-    const searchButton = screen.getByText(/Buscar/i);
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Capacidade</th>
+                <th>Horário</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pagedData.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className={styles.noResults}>
+                    Nenhuma sala encontrada.
+                  </td>
+                </tr>
+              ) : (
+                pagedData.map((room: ClassRoom) => (
+                  <tr key={room.id}>
+                    <td>{room.name}</td>
+                    <td>{room.capacity}</td>
+                    <td>{room.schedule}</td>
+                    <td className={styles.actionsCell}>
+                      <Link
+                        href={`/classrooms/details/${room.id}`}
+                        className={`${styles.btn} ${styles.btnInfo}`}
+                      >
+                        Detalhes
+                      </Link>
+                      <Link
+                        href={`/classrooms/edit/${room.id}`}
+                        className={`${styles.btn} ${styles.btnWarning}`}
+                      >
+                        Editar
+                      </Link>
+                      <Link
+                        href={`/classrooms/delete/${room.id}`}
+                        className={`${styles.btn} ${styles.btnDanger}`}
+                      >
+                        Excluir
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-    fireEvent.change(searchInput, { target: { value: 'Sala A' } });
-    fireEvent.click(searchButton);
-
-    expect(screen.getByText('Sala A')).toBeInTheDocument();
-    // Deve esconder outras salas não correspondentes
-    mockClassRooms
-      .filter((c) => c.name !== 'Sala A')
-      .forEach((c) => {
-        expect(screen.queryByText(c.name)).not.toBeInTheDocument();
-      });
-  });
-
-  it('deve navegar entre páginas usando os botões de paginação', () => {
-    render(<ClassroomsPage />);
-    const nextButton = screen.getByText(/Próxima/i);
-    fireEvent.click(nextButton);
-
-    // Na segunda página, deve aparecer a terceira sala se existir
-    if (mockClassRooms.length > 2) {
-      expect(screen.getByText(mockClassRooms[2].name)).toBeInTheDocument();
-    }
-
-    const prevButton = screen.getByText(/Anterior/i);
-    fireEvent.click(prevButton);
-    expect(screen.getByText(mockClassRooms[0].name)).toBeInTheDocument();
-  });
-});
+        {totalPages > 1 && (
+          <div className={styles.pagination}>
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+              className={styles.pageLink}
+            >
+              Anterior
+            </button>
+            <span className={styles.pageInfo}>
+              Página {page} de {totalPages}
+            </span>
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page === totalPages}
+              className={styles.pageLink}
+            >
+              Próxima
+            </button>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

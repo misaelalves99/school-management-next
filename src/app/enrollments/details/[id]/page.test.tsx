@@ -5,19 +5,26 @@ import EnrollmentDetailsPage from './page';
 import * as nextNavigation from 'next/navigation';
 import mockEnrollments from '../../../mocks/enrollments';
 import mockStudents from '../../../mocks/students';
-import mockClassRooms from '../../../mocks/classRooms';
+import { mockClassRooms } from '../../../mocks/classRooms';
+import { useEnrollments } from '../../../hooks/useEnrollments';
+import { useStudents } from '../../../hooks/useStudents';
+import { useClassRooms } from '../../../hooks/useClassRooms';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useEnrollments');
+jest.mock('../../../hooks/useStudents');
+jest.mock('../../../hooks/useClassRooms');
+
 describe('EnrollmentDetailsPage', () => {
   const pushMock = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
-    pushMock.mockClear();
 
     mockEnrollments.length = 0;
     mockEnrollments.push({
@@ -47,8 +54,12 @@ describe('EnrollmentDetailsPage', () => {
       schedule: 'Seg 08:00',
       subjects: [],
       teachers: [],
-      classTeacher: null, // caso o tipo ClassRoom exija
+      classTeacher: null,
     });
+
+    (useEnrollments as jest.Mock).mockReturnValue({ enrollments: mockEnrollments });
+    (useStudents as jest.Mock).mockReturnValue({ students: mockStudents });
+    (useClassRooms as jest.Mock).mockReturnValue({ classRooms: mockClassRooms });
   });
 
   it('mostra "Carregando matrícula..." inicialmente', () => {
@@ -70,7 +81,7 @@ describe('EnrollmentDetailsPage', () => {
     });
   });
 
-  it('botão Editar deve chamar router.push com url correta', async () => {
+  it('botão Editar deve chamar router.push com URL correta', async () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
     render(<EnrollmentDetailsPage />);
 
@@ -90,14 +101,30 @@ describe('EnrollmentDetailsPage', () => {
     });
   });
 
-  it('alert e redireciona se matrícula não encontrada', async () => {
+  it('alerta e redireciona se matrícula não encontrada', async () => {
     window.alert = jest.fn();
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
+
     render(<EnrollmentDetailsPage />);
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith('Matrícula não encontrada');
       expect(pushMock).toHaveBeenCalledWith('/enrollments');
+    });
+  });
+
+  it('mostra "Aluno não informado" ou "Turma não informada" se dados estiverem ausentes', async () => {
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+
+    // Remove student e classRoom para testar fallback
+    (useStudents as jest.Mock).mockReturnValue({ students: [] });
+    (useClassRooms as jest.Mock).mockReturnValue({ classRooms: [] });
+
+    render(<EnrollmentDetailsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Aluno não informado')).toBeInTheDocument();
+      expect(screen.getByText('Turma não informada')).toBeInTheDocument();
     });
   });
 });

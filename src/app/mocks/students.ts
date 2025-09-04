@@ -50,5 +50,4 @@ export const mockStudents: Student[] = [
   }
 ];
 
-// Exporta de forma única, sempre com o mesmo nome
 export default mockStudents;

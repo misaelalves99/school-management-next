@@ -1,18 +1,13 @@
-// src/app/contexts/EnrollmentsContext.tsx
+// src/app/contexts/EnrollmentsContext.ts
 
 import { createContext } from 'react';
-import type { Enrollment } from '../types/Enrollment';
+import type { EnrollmentWithNames } from '../types/Enrollment';
 
-export interface EnrollmentsContextType {
-  enrollments: Enrollment[];
-  addEnrollment: (enrollment: Enrollment) => void;
-  updateEnrollment: (enrollment: Enrollment) => void;
+export type EnrollmentsContextType = {
+  enrollments: EnrollmentWithNames[];
+  addEnrollment: (enrollment: EnrollmentWithNames) => void;
+  updateEnrollment: (enrollment: EnrollmentWithNames) => void;
   deleteEnrollment: (id: number) => void;
-}
+};
 
-export const EnrollmentsContext = createContext<EnrollmentsContextType>({
-  enrollments: [],
-  addEnrollment: () => {},
-  updateEnrollment: () => {},
-  deleteEnrollment: () => {},
-});
+export const EnrollmentsContext = createContext<EnrollmentsContextType | undefined>(undefined);

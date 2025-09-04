@@ -1,12 +1,14 @@
-// src/mocks/classRooms.test.ts
+// src/app/mocks/classRooms.test.ts
 
-import mockClassRooms from './classRooms';
+import { mockClassRooms } from './classRooms';
+import type { ClassRoom } from '../types/Classroom';
 import type { Teacher } from '../types/Teacher';
+import type { Subject } from '../types/Subject';
 
 describe('mockClassRooms', () => {
   it('deve ser um array de ClassRoom', () => {
     expect(Array.isArray(mockClassRooms)).toBe(true);
-    mockClassRooms.forEach((room) => {
+    mockClassRooms.forEach((room: ClassRoom) => {
       expect(room).toHaveProperty('id');
       expect(room).toHaveProperty('name');
       expect(room).toHaveProperty('capacity');
@@ -18,15 +20,15 @@ describe('mockClassRooms', () => {
   });
 
   it('cada sala deve ter capacidade positiva', () => {
-    mockClassRooms.forEach((room) => {
+    mockClassRooms.forEach((room: ClassRoom) => {
       expect(typeof room.capacity).toBe('number');
       expect(room.capacity).toBeGreaterThan(0);
     });
   });
 
   it('cada subject deve ter id, name, description e workloadHours', () => {
-    mockClassRooms.forEach((room) => {
-      room.subjects.forEach((subject) => {
+    mockClassRooms.forEach((room: ClassRoom) => {
+      room.subjects.forEach((subject: Subject) => {
         expect(subject).toHaveProperty('id');
         expect(subject).toHaveProperty('name');
         expect(subject).toHaveProperty('description');
@@ -36,7 +38,7 @@ describe('mockClassRooms', () => {
   });
 
   it('cada teacher deve ter formato correto', () => {
-    mockClassRooms.forEach((room) => {
+    mockClassRooms.forEach((room: ClassRoom) => {
       room.teachers.forEach((teacher: Teacher) => {
         expect(teacher).toHaveProperty('id');
         expect(teacher).toHaveProperty('name');
@@ -50,11 +52,16 @@ describe('mockClassRooms', () => {
   });
 
   it('classTeacher deve ser null ou um Teacher válido', () => {
-    mockClassRooms.forEach((room) => {
+    mockClassRooms.forEach((room: ClassRoom) => {
       const ct = room.classTeacher;
       if (ct !== null) {
         expect(ct).toHaveProperty('id');
         expect(ct).toHaveProperty('name');
+        expect(ct).toHaveProperty('email');
+        expect(ct).toHaveProperty('phone');
+        expect(ct).toHaveProperty('subject');
+        expect(ct).toHaveProperty('dateOfBirth');
+        expect(ct).toHaveProperty('address');
       }
     });
   });

@@ -2,7 +2,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TeacherEdit from './page';
 import * as nextNavigation from 'next/navigation';
-import * as teacherMocks from '../../../mocks/teachers';
+import { useTeachers } from '../../../hooks/useTeachers';
+
+jest.mock('next/navigation', () => ({ useRouter: jest.fn(), useParams: jest.fn() }));
+jest.mock('../../../hooks/useTeachers');
 
 describe('TeacherEdit Page', () => {
   const pushMock = jest.fn();
@@ -10,24 +13,30 @@ describe('TeacherEdit Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(nextNavigation, 'useRouter').mockReturnValue({ push: pushMock } as any);
+    (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
   });
 
   it('exibe "Carregando..." inicialmente', () => {
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '1' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue({
-      id: 1, name: 'João', email: 'joao@mail.com',
-      dateOfBirth: '1990-01-01', subject: 'Matemática',
-      phone: '12345', address: 'Rua A, 123'
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => ({
+        id: 1, name: 'João', email: 'joao@mail.com',
+        dateOfBirth: '1990-01-01', subject: 'Matemática',
+        phone: '12345', address: 'Rua A, 123'
+      }),
+      updateTeacher: jest.fn(),
     });
 
-    const { getByText } = render(<TeacherEdit />);
-    expect(getByText(/Carregando/i)).toBeInTheDocument();
+    render(<TeacherEdit />);
+    expect(screen.getByText(/Carregando/i)).toBeInTheDocument();
   });
 
   it('redireciona se professor não for encontrado', async () => {
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '999' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(undefined);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => undefined,
+      updateTeacher: jest.fn(),
+    });
 
     render(<TeacherEdit />);
 
@@ -47,8 +56,11 @@ describe('TeacherEdit Page', () => {
       phone: '99999',
       address: 'Rua B, 456'
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '2' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '2' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => teacher,
+      updateTeacher: jest.fn(),
+    });
 
     render(<TeacherEdit />);
 
@@ -60,21 +72,19 @@ describe('TeacherEdit Page', () => {
     expect(screen.getByDisplayValue('Rua B, 456')).toBeInTheDocument();
   });
 
-  it('mostra erros de validação ao tentar salvar com campos vazios', async () => {
+  it('mostra erros de validação ao tentar salvar com campos obrigatórios vazios', async () => {
     const teacher = {
-      id: 3,
-      name: '',
-      email: '',
-      dateOfBirth: '',
-      subject: '',
-      phone: '',
-      address: ''
+      id: 3, name: '', email: '', dateOfBirth: '',
+      subject: '', phone: '', address: ''
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '3' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '3' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => teacher,
+      updateTeacher: jest.fn(),
+    });
 
     render(<TeacherEdit />);
-    const submitBtn = await screen.findByText(/Salvar/i);
+    const submitBtn = await screen.findByText(/Salvar Alterações/i);
     fireEvent.click(submitBtn);
 
     expect(await screen.findByText(/Nome é obrigatório/i)).toBeInTheDocument();
@@ -93,18 +103,20 @@ describe('TeacherEdit Page', () => {
       phone: '55555',
       address: 'Av. X, 123'
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '4' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
-    const updateSpy = jest.spyOn(teacherMocks, 'updateTeacher').mockReturnValue(true);
+    const updateSpy = jest.fn().mockReturnValue(true);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '4' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => teacher,
+      updateTeacher: updateSpy,
+    });
 
     render(<TeacherEdit />);
-    const submitBtn = await screen.findByText(/Salvar/i);
+    const submitBtn = await screen.findByText(/Salvar Alterações/i);
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
       expect(updateSpy).toHaveBeenCalledWith(4, expect.objectContaining({
-        name: 'Ana',
-        email: 'ana@mail.com'
+        name: 'Ana', email: 'ana@mail.com'
       }));
       expect(alertMock).toHaveBeenCalledWith('Professor atualizado com sucesso!');
       expect(pushMock).toHaveBeenCalledWith('/teachers');
@@ -121,12 +133,14 @@ describe('TeacherEdit Page', () => {
       phone: '11111',
       address: 'Rua Y, 789'
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '5' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
-    jest.spyOn(teacherMocks, 'updateTeacher').mockReturnValue(false);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '5' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => teacher,
+      updateTeacher: () => false,
+    });
 
     render(<TeacherEdit />);
-    const submitBtn = await screen.findByText(/Salvar/i);
+    const submitBtn = await screen.findByText(/Salvar Alterações/i);
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -134,7 +148,7 @@ describe('TeacherEdit Page', () => {
     });
   });
 
-  it('volta para lista ao clicar no botão "Voltar à Lista"', async () => {
+  it('volta para lista ao clicar no botão "Voltar"', async () => {
     const teacher = {
       id: 6,
       name: 'Carlos',
@@ -144,11 +158,14 @@ describe('TeacherEdit Page', () => {
       phone: '77777',
       address: 'Av. Z, 321'
     };
-    jest.spyOn(nextNavigation, 'useParams').mockReturnValue({ id: '6' });
-    jest.spyOn(teacherMocks, 'getTeacherById').mockReturnValue(teacher);
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '6' });
+    (useTeachers as jest.Mock).mockReturnValue({
+      getTeacherById: () => teacher,
+      updateTeacher: jest.fn(),
+    });
 
     render(<TeacherEdit />);
-    const backBtn = await screen.findByText(/Voltar à Lista/i);
+    const backBtn = await screen.findByText(/Voltar/i);
     fireEvent.click(backBtn);
 
     expect(pushMock).toHaveBeenCalledWith('/teachers');

@@ -1,39 +1,40 @@
 // src/app/teachers/create/page.test.tsx
-
 import { render, screen, fireEvent } from '@testing-library/react';
-import TeacherCreate from './page';
-import * as teachersMock from '../../mocks/teachers';
-import { useRouter } from 'next/navigation';
+import TeacherCreatePage from './page';
+import * as nextRouter from 'next/navigation';
+import { useTeachers } from '../../hooks/useTeachers';
+import { useSubjects } from '../../hooks/useSubjects';
+import { mockSubjects } from '../../mocks/subjects';
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}));
+jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
+jest.mock('../../hooks/useTeachers');
+jest.mock('../../hooks/useSubjects');
 
-describe('TeacherCreate', () => {
+describe('TeacherCreatePage', () => {
   const pushMock = jest.fn();
+  const createTeacherMock = jest.fn();
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
+    (nextRouter.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
+    (useTeachers as jest.Mock).mockReturnValue({ createTeacher: createTeacherMock });
+    (useSubjects as jest.Mock).mockReturnValue({ subjects: mockSubjects });
     jest.spyOn(window, 'alert').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('renderiza corretamente o formulário', () => {
-    render(<TeacherCreate />);
+    render(<TeacherCreatePage />);
     expect(screen.getByLabelText(/nome/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/data de nascimento/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/disciplina/i)).toBeInTheDocument();
-    expect(screen.getByText(/salvar/i)).toBeInTheDocument();
-    expect(screen.getByText(/voltar à lista/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /salvar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
   });
 
   it('valida campos obrigatórios e exibe erros', () => {
-    render(<TeacherCreate />);
-    fireEvent.click(screen.getByText(/salvar/i));
+    render(<TeacherCreatePage />);
+    fireEvent.click(screen.getByRole('button', { name: /salvar/i }));
     expect(screen.getByText(/nome é obrigatório/i)).toBeInTheDocument();
     expect(screen.getByText(/email é obrigatório/i)).toBeInTheDocument();
     expect(screen.getByText(/data de nascimento é obrigatória/i)).toBeInTheDocument();
@@ -41,34 +42,33 @@ describe('TeacherCreate', () => {
   });
 
   it('valida email inválido', () => {
-    render(<TeacherCreate />);
+    render(<TeacherCreatePage />);
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'invalid' } });
-    fireEvent.click(screen.getByText(/salvar/i));
+    fireEvent.click(screen.getByRole('button', { name: /salvar/i }));
     expect(screen.getByText(/email inválido/i)).toBeInTheDocument();
   });
 
   it('chama createTeacher e redireciona ao enviar formulário válido', () => {
-    const createTeacherSpy = jest.spyOn(teachersMock, 'createTeacher');
-    render(<TeacherCreate />);
+    render(<TeacherCreatePage />);
     fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'João' } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'joao@email.com' } });
     fireEvent.change(screen.getByLabelText(/data de nascimento/i), { target: { value: '2000-01-01' } });
-    fireEvent.change(screen.getByLabelText(/disciplina/i), { target: { value: 'Matemática' } });
-    fireEvent.click(screen.getByText(/salvar/i));
+    fireEvent.change(screen.getByLabelText(/disciplina/i), { target: { value: mockSubjects[0].name } });
+    fireEvent.click(screen.getByRole('button', { name: /salvar/i }));
 
-    expect(createTeacherSpy).toHaveBeenCalledWith(expect.objectContaining({
+    expect(createTeacherMock).toHaveBeenCalledWith(expect.objectContaining({
       name: 'João',
       email: 'joao@email.com',
       dateOfBirth: '2000-01-01',
-      subject: 'Matemática',
+      subject: mockSubjects[0].name,
     }));
-    expect(window.alert).toHaveBeenCalledWith('Professor salvo com sucesso!');
+    expect(window.alert).toHaveBeenCalledWith('Professor cadastrado com sucesso!');
     expect(pushMock).toHaveBeenCalledWith('/teachers');
   });
 
-  it('botão "Voltar à Lista" redireciona corretamente', () => {
-    render(<TeacherCreate />);
-    fireEvent.click(screen.getByText(/voltar à lista/i));
+  it('botão "Cancelar" redireciona corretamente', () => {
+    render(<TeacherCreatePage />);
+    fireEvent.click(screen.getByRole('button', { name: /cancelar/i }));
     expect(pushMock).toHaveBeenCalledWith('/teachers');
   });
 });

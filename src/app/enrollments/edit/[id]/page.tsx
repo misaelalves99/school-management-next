@@ -63,8 +63,21 @@ export default function EditEnrollmentPage() {
       return;
     }
 
+    // Busca os nomes correspondentes
+    const student = students.find(s => s.id === formData.studentId);
+    const classRoom = classRooms.find(c => c.id === formData.classRoomId);
+
+    if (!student || !classRoom) {
+      alert('Aluno ou Turma inválidos');
+      return;
+    }
+
     try {
-      updateEnrollment(formData); // Atualiza pelo contexto
+      updateEnrollment({
+        ...formData,
+        studentName: student.name,
+        classRoomName: classRoom.name,
+      });
       router.push('/enrollments');
     } catch (err) {
       console.error(err);

@@ -48,12 +48,21 @@ export default function CreateEnrollmentPage() {
     e.preventDefault();
     if (!validate()) return;
 
-    const newEnrollmentId = enrollments.length > 0 ? Math.max(...enrollments.map(e => e.id)) + 1 : 1;
+    const newEnrollmentId =
+      enrollments.length > 0 ? Math.max(...enrollments.map(e => e.id)) + 1 : 1;
+
+    // Encontra os nomes pelos IDs selecionados
+    const student = studentsMock.find(s => s.id === Number(form.studentId));
+    const classRoom = classRoomsMock.find(c => c.id === Number(form.classRoomId));
+
+    if (!student || !classRoom) return;
 
     addEnrollment({
       id: newEnrollmentId,
       studentId: Number(form.studentId),
       classRoomId: Number(form.classRoomId),
+      studentName: student.name,
+      classRoomName: classRoom.name,
       enrollmentDate: form.enrollmentDate,
       status: 'Ativo',
     });

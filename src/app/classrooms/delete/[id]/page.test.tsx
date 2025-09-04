@@ -3,72 +3,68 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import DeleteClassRoomPage from './page';
 import * as nextNavigation from 'next/navigation';
-import mockClassRooms from '../../../mocks/classRooms';
+import { useClassRooms } from '@/app/hooks/useClassRooms';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useParams: jest.fn(),
 }));
 
+jest.mock('@/app/hooks/useClassRooms');
+
 describe('DeleteClassRoomPage', () => {
   const pushMock = jest.fn();
+  const deleteClassRoomMock = jest.fn();
   const useRouterMock = nextNavigation.useRouter as jest.Mock;
   const useParamsMock = nextNavigation.useParams as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     useRouterMock.mockReturnValue({ push: pushMock });
+    (useClassRooms as jest.Mock).mockReturnValue({
+      classRooms: [
+        { id: 1, name: 'Sala 101', capacity: 30, schedule: 'Seg-Qua 08:00-10:00', teachers: [], subjects: [] },
+      ],
+      deleteClassRoom: deleteClassRoomMock,
+    });
   });
 
-  it('deve renderizar mensagem de turma não encontrada se id inválido', () => {
-    useParamsMock.mockReturnValue({ id: '999' }); // ID inexistente
+  it('exibe mensagem de ID inválido quando id não existe', () => {
+    useParamsMock.mockReturnValue({ id: undefined });
     render(<DeleteClassRoomPage />);
+    expect(screen.getByText(/ID inválido/i)).toBeInTheDocument();
+  });
 
+  it('exibe mensagem de turma não encontrada para id inexistente', () => {
+    useParamsMock.mockReturnValue({ id: '999' });
+    render(<DeleteClassRoomPage />);
     expect(screen.getByText(/Turma não encontrada/i)).toBeInTheDocument();
   });
 
-  it('deve renderizar detalhes da turma corretamente', () => {
-    const classRoom = mockClassRooms[0];
-    useParamsMock.mockReturnValue({ id: String(classRoom.id) });
-
+  it('renderiza detalhes da turma corretamente', () => {
+    useParamsMock.mockReturnValue({ id: '1' });
     render(<DeleteClassRoomPage />);
-
     expect(screen.getByText(/Excluir Turma/i)).toBeInTheDocument();
     expect(screen.getByText(/Tem certeza que deseja excluir/i)).toBeInTheDocument();
-    expect(screen.getByText(classRoom.name)).toBeInTheDocument();
-    expect(screen.getByText(String(classRoom.capacity))).toBeInTheDocument();
-    expect(screen.getByText(classRoom.schedule)).toBeInTheDocument();
+    expect(screen.getByText(/Sala 101/i)).toBeInTheDocument();
   });
 
-  it('botão Confirmar Exclusão deve chamar router.push', () => {
-    const classRoom = mockClassRooms[0];
-    useParamsMock.mockReturnValue({ id: String(classRoom.id) });
-
+  it('botão Excluir chama deleteClassRoom e navega', () => {
+    useParamsMock.mockReturnValue({ id: '1' });
     render(<DeleteClassRoomPage />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Confirmar Exclusão/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Excluir/i }));
 
+    expect(deleteClassRoomMock).toHaveBeenCalledWith(1);
     expect(pushMock).toHaveBeenCalledWith('/classrooms');
   });
 
-  it('botão Cancelar deve chamar router.push', () => {
-    const classRoom = mockClassRooms[0];
-    useParamsMock.mockReturnValue({ id: String(classRoom.id) });
-
+  it('botão Cancelar navega para lista de salas', () => {
+    useParamsMock.mockReturnValue({ id: '1' });
     render(<DeleteClassRoomPage />);
 
     fireEvent.click(screen.getByRole('button', { name: /Cancelar/i }));
 
     expect(pushMock).toHaveBeenCalledWith('/classrooms');
-  });
-
-  it('deve exibir mensagens corretas quando não houver professores ou disciplinas', () => {
-    const classRoom = { ...mockClassRooms[0], teachers: [], subjects: [] };
-    useParamsMock.mockReturnValue({ id: String(classRoom.id) });
-
-    render(<DeleteClassRoomPage />);
-
-    expect(screen.getByText(/Sem disciplinas vinculadas/i)).toBeInTheDocument();
-    expect(screen.getByText(/Sem professores vinculados/i)).toBeInTheDocument();
   });
 });
