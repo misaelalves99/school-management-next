@@ -1,5 +1,7 @@
 // src/app/students/edit/[id]/page.test.tsx
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import StudentEditPage from './page';
 import * as nextRouter from 'next/navigation';
 import * as useStudentsHook from '../../../hooks/useStudents';
@@ -34,7 +36,7 @@ describe('StudentEditPage', () => {
     updateStudentMock.mockClear();
   });
 
-  it('renderiza o formulário com os dados do aluno', async () => {
+  it('renderiza o formulário com os dados do aluno', () => {
     render(<StudentEditPage />);
     expect(screen.getByLabelText(/nome/i)).toHaveValue('João da Silva');
     expect(screen.getByLabelText(/email/i)).toHaveValue('joao@email.com');
@@ -46,11 +48,13 @@ describe('StudentEditPage', () => {
 
   it('mostra erros de validação se campos obrigatórios estiverem vazios', async () => {
     render(<StudentEditPage />);
-    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: '' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: '' } });
-    fireEvent.change(screen.getByLabelText(/matrícula/i), { target: { value: '' } });
+    const user = userEvent.setup();
 
-    fireEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
+    await user.clear(screen.getByLabelText(/nome/i));
+    await user.clear(screen.getByLabelText(/email/i));
+    await user.clear(screen.getByLabelText(/matrícula/i));
+
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
 
     expect(await screen.findByText(/nome é obrigatório/i)).toBeInTheDocument();
     expect(await screen.findByText(/email é obrigatório/i)).toBeInTheDocument();
@@ -60,10 +64,13 @@ describe('StudentEditPage', () => {
 
   it('submete formulário com sucesso e navega para /students', async () => {
     updateStudentMock.mockReturnValue(true);
-
     render(<StudentEditPage />);
-    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'Novo Nome' } });
-    fireEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
+    const user = userEvent.setup();
+
+    await user.clear(screen.getByLabelText(/nome/i));
+    await user.type(screen.getByLabelText(/nome/i), 'Novo Nome');
+
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
 
     await waitFor(() => {
       expect(updateStudentMock).toHaveBeenCalledWith(123, expect.objectContaining({ name: 'Novo Nome' }));
@@ -74,9 +81,10 @@ describe('StudentEditPage', () => {
 
   it('exibe alerta se atualização falhar', async () => {
     updateStudentMock.mockReturnValue(false);
-
     render(<StudentEditPage />);
-    fireEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
 
     await waitFor(() => {
       expect(alertMock).toHaveBeenCalledWith('Erro ao atualizar aluno');
@@ -84,9 +92,11 @@ describe('StudentEditPage', () => {
     });
   });
 
-  it('botão Voltar navega corretamente', () => {
+  it('botão Voltar navega corretamente', async () => {
     render(<StudentEditPage />);
-    fireEvent.click(screen.getByRole('button', { name: /voltar/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /voltar/i }));
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 

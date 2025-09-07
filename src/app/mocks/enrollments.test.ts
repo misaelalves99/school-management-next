@@ -1,7 +1,6 @@
 // src/mocks/enrollments.test.ts
 
-import mockEnrollments from './enrollments';
-import type { Enrollment } from './enrollments';
+import mockEnrollments, { mockEnrollmentsWithNames, Enrollment, EnrollmentWithNames } from './enrollments';
 
 describe('mockEnrollments', () => {
   it('deve ser um array de enrollments', () => {
@@ -49,20 +48,31 @@ describe('mockEnrollments', () => {
     expect(mockEnrollments.length).toBe(initialLength + 1);
     expect(last).toEqual(newEnrollment);
   });
+});
 
-  it('não deve modificar outros enrollments ao adicionar novo', () => {
-    const snapshot = [...mockEnrollments];
-    const newEnrollment: Enrollment = {
-      id: snapshot.length + 1,
-      studentId: 4,
-      classRoomId: 2,
-      enrollmentDate: '2025-04-01',
-      status: 'Ativo',
-    };
-    mockEnrollments.push(newEnrollment);
+describe('mockEnrollmentsWithNames', () => {
+  it('deve ser um array de EnrollmentWithNames', () => {
+    expect(Array.isArray(mockEnrollmentsWithNames)).toBe(true);
+    mockEnrollmentsWithNames.forEach((enrollment: EnrollmentWithNames) => {
+      expect(enrollment).toHaveProperty('id');
+      expect(enrollment).toHaveProperty('studentId');
+      expect(enrollment).toHaveProperty('classRoomId');
+      expect(enrollment).toHaveProperty('enrollmentDate');
+      expect(enrollment).toHaveProperty('status');
+      expect(enrollment).toHaveProperty('studentName');
+      expect(enrollment).toHaveProperty('classRoomName');
+    });
+  });
 
-    snapshot.forEach((enrollment, index) => {
-      expect(mockEnrollments[index]).toEqual(enrollment);
+  it('cada enrollment com nomes deve ter ids válidos e strings preenchidas', () => {
+    mockEnrollmentsWithNames.forEach((enrollment: EnrollmentWithNames) => {
+      expect(typeof enrollment.id).toBe('number');
+      expect(typeof enrollment.studentId).toBe('number');
+      expect(typeof enrollment.classRoomId).toBe('number');
+      expect(typeof enrollment.studentName).toBe('string');
+      expect(enrollment.studentName.length).toBeGreaterThan(0);
+      expect(typeof enrollment.classRoomName).toBe('string');
+      expect(enrollment.classRoomName.length).toBeGreaterThan(0);
     });
   });
 });

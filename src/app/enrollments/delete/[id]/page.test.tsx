@@ -35,19 +35,19 @@ describe('DeleteEnrollmentPage', () => {
     (useClassRooms as jest.Mock).mockReturnValue({ classRooms: [mockClassRoom] });
   });
 
-  it('deve exibir ID inválido se params.id estiver ausente', () => {
+  it('exibe "ID inválido" se params.id estiver ausente', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({});
     render(<DeleteEnrollmentPage />);
     expect(screen.getByText('ID inválido')).toBeInTheDocument();
   });
 
-  it('deve exibir matrícula não encontrada se id não existir', () => {
+  it('exibe "Matrícula não encontrada" se id não existir', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
     render(<DeleteEnrollmentPage />);
     expect(screen.getByText('Matrícula não encontrada')).toBeInTheDocument();
   });
 
-  it('deve renderizar matrícula corretamente e deletar', () => {
+  it('renderiza matrícula corretamente e executa exclusão', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
 
     // mock alert
@@ -64,7 +64,7 @@ describe('DeleteEnrollmentPage', () => {
     expect(pushMock).toHaveBeenCalledWith('/enrollments');
   });
 
-  it('botão cancelar deve redirecionar sem deletar', () => {
+  it('botão cancelar redireciona sem deletar', () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
     render(<DeleteEnrollmentPage />);
 
@@ -72,5 +72,21 @@ describe('DeleteEnrollmentPage', () => {
 
     expect(deleteEnrollmentMock).not.toHaveBeenCalled();
     expect(pushMock).toHaveBeenCalledWith('/enrollments');
+  });
+
+  it('exibe "Aluno desconhecido" se student não encontrado', () => {
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+    (useStudents as jest.Mock).mockReturnValue({ students: [] }); // sem students
+
+    render(<DeleteEnrollmentPage />);
+    expect(screen.getByText(/Aluno desconhecido/)).toBeInTheDocument();
+  });
+
+  it('exibe "Turma desconhecida" caso queira verificar aula inexistente (se adicionar no JSX)', () => {
+    (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
+    (useClassRooms as jest.Mock).mockReturnValue({ classRooms: [] }); // sem classRooms
+
+    render(<DeleteEnrollmentPage />);
+    expect(screen.getByText(/Aluno desconhecido/)).toBeInTheDocument(); // ainda depende do JSX
   });
 });

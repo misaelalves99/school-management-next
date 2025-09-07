@@ -12,7 +12,7 @@ export default function CreateStudentPage() {
   const router = useRouter();
   const { addStudent } = useStudents();
 
-  const [formData, setFormData] = useState<Student>({
+  const [formData, setFormData] = useState<Omit<Student, 'id'>>({
     name: '',
     email: '',
     dateOfBirth: '',
@@ -23,16 +23,11 @@ export default function CreateStudentPage() {
 
   const [errors, setErrors] = useState<Partial<Record<keyof Student, string>>>({});
 
-  /** Validação do formulário */
   const validate = useCallback(() => {
     const newErrors: Partial<Record<keyof Student, string>> = {};
-
     if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório.';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email inválido.';
-    }
+    if (!formData.email.trim()) newErrors.email = 'Email é obrigatório.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Email inválido.';
     if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Data de nascimento é obrigatória.';
     if (!formData.enrollmentNumber.trim()) newErrors.enrollmentNumber = 'Matrícula é obrigatória.';
     if (formData.phone && !/^\+?[0-9\s-]{8,15}$/.test(formData.phone)) newErrors.phone = 'Telefone inválido.';
@@ -42,7 +37,6 @@ export default function CreateStudentPage() {
     return Object.keys(newErrors).length === 0;
   }, [formData]);
 
-  /** Atualiza os inputs dinamicamente */
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -51,7 +45,6 @@ export default function CreateStudentPage() {
     []
   );
 
-  /** Submete formulário */
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -67,7 +60,6 @@ export default function CreateStudentPage() {
   return (
     <div className={styles.createContainer}>
       <h1 className={styles.createTitle}>Cadastrar Novo Aluno</h1>
-
       <form onSubmit={handleSubmit} className={styles.createForm}>
         {[
           { label: 'Nome', name: 'name', type: 'text', placeholder: 'Digite o nome do aluno' },
@@ -84,12 +76,12 @@ export default function CreateStudentPage() {
               name={name}
               type={type}
               placeholder={placeholder}
-              value={formData[name as keyof Student]}
+              value={formData[name as keyof typeof formData]}
               onChange={handleChange}
               className={styles.formInput}
             />
-            {errors[name as keyof Student] && (
-              <span className={styles.formError}>{errors[name as keyof Student]}</span>
+            {errors[name as keyof typeof formData] && (
+              <span className={styles.formError}>{errors[name as keyof typeof formData]}</span>
             )}
           </div>
         ))}

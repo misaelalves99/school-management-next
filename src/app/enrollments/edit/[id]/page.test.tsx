@@ -3,10 +3,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EditEnrollmentPage from './page';
 import * as nextNavigation from 'next/navigation';
-import mockEnrollments from '../../../mocks/enrollments';
 import { useEnrollments } from '../../../hooks/useEnrollments';
 import { useStudents } from '../../../hooks/useStudents';
 import { useClassRooms } from '../../../hooks/useClassRooms';
+import mockEnrollments from '../../../mocks/enrollments';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -19,6 +19,7 @@ jest.mock('../../../hooks/useClassRooms');
 
 describe('EditEnrollmentPage', () => {
   const pushMock = jest.fn();
+  const updateEnrollmentMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -36,10 +37,7 @@ describe('EditEnrollmentPage', () => {
 
     (useEnrollments as jest.Mock).mockReturnValue({
       enrollments: mockEnrollments,
-      updateEnrollment: jest.fn((updated) => {
-        const index = mockEnrollments.findIndex(e => e.id === updated.id);
-        if (index !== -1) mockEnrollments[index] = { ...updated };
-      }),
+      updateEnrollment: updateEnrollmentMock,
     });
 
     (useStudents as jest.Mock).mockReturnValue({
@@ -53,7 +51,6 @@ describe('EditEnrollmentPage', () => {
       classRooms: [
         { id: 1, name: 'Sala 1' },
         { id: 2, name: 'Sala 2' },
-        { id: 3, name: 'Sala 3' },
       ],
     });
   });
@@ -64,7 +61,7 @@ describe('EditEnrollmentPage', () => {
     expect(screen.getByText('Carregando matrícula...')).toBeInTheDocument();
   });
 
-  it('renderiza os inputs com os valores do mock', async () => {
+  it('renderiza os inputs com valores do mock', async () => {
     render(<EditEnrollmentPage />);
     await waitFor(() => {
       expect(screen.getByLabelText('Aluno')).toHaveValue(1);
@@ -87,19 +84,35 @@ describe('EditEnrollmentPage', () => {
     });
   });
 
-  it('atualiza o mock e chama router.push ao salvar alterações válidas', async () => {
+  it('mostra alert se student ou classRoom inválidos', async () => {
+    window.alert = jest.fn();
+
+    // Remove todos os students para forçar erro
+    (useStudents as jest.Mock).mockReturnValue({ students: [] });
+    render(<EditEnrollmentPage />);
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Salvar Alterações'));
+      expect(window.alert).toHaveBeenCalledWith('Aluno ou Turma inválidos');
+      expect(updateEnrollmentMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it('atualiza a matrícula corretamente e chama router.push', async () => {
     render(<EditEnrollmentPage />);
     await waitFor(() => {
       fireEvent.change(screen.getByLabelText('Aluno'), { target: { value: '2' } });
-      fireEvent.change(screen.getByLabelText('Turma'), { target: { value: '3' } });
+      fireEvent.change(screen.getByLabelText('Turma'), { target: { value: '2' } });
       fireEvent.change(screen.getByLabelText('Data da Matrícula'), { target: { value: '2025-02-01' } });
-
       fireEvent.click(screen.getByText('Salvar Alterações'));
-    });
 
-    await waitFor(() => {
-      const updated = mockEnrollments.find(e => e.id === 1);
-      expect(updated).toMatchObject({ studentId: 2, classRoomId: 3, enrollmentDate: '2025-02-01' });
+      expect(updateEnrollmentMock).toHaveBeenCalledWith(expect.objectContaining({
+        id: 1,
+        studentId: 2,
+        classRoomId: 2,
+        enrollmentDate: '2025-02-01',
+        studentName: 'Aluno 2',
+        classRoomName: 'Sala 2',
+      }));
       expect(pushMock).toHaveBeenCalledWith('/enrollments');
     });
   });
@@ -113,7 +126,6 @@ describe('EditEnrollmentPage', () => {
   it('alert e redireciona se matrícula não encontrada', async () => {
     window.alert = jest.fn();
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '999' });
-
     render(<EditEnrollmentPage />);
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith('Matrícula não encontrada');

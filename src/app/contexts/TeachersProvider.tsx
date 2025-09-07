@@ -19,24 +19,34 @@ export function TeachersProvider({ children }: TeachersProviderProps) {
   }, []);
 
   const createTeacher = (data: TeacherFormData) => {
+    // ✅ Gerar ID sequencial
+    const lastTeacher = teachers[teachers.length - 1];
+    const nextId = lastTeacher ? lastTeacher.id + 1 : 1;
+
     const newTeacher: Teacher = {
       ...data,
-      id: Date.now(),
+      id: nextId,
     };
+
     setTeachers(prev => [...prev, newTeacher]);
+    teachersData.push(newTeacher); // atualiza mock global
   };
 
   const updateTeacher = (id: number, data: TeacherFormData) => {
     setTeachers(prev => prev.map(t => (t.id === id ? { ...t, ...data } : t)));
+    const index = teachersData.findIndex(t => t.id === id);
+    if (index !== -1) teachersData[index] = { ...teachersData[index], ...data };
   };
 
   const deleteTeacher = (id: number) => {
     setTeachers(prev => prev.filter(t => t.id !== id));
+    teachersData.splice(
+      teachersData.findIndex(t => t.id === id),
+      1
+    );
   };
 
-  const getTeacherById = (id: number) => {
-    return teachers.find(t => t.id === id);
-  };
+  const getTeacherById = (id: number) => teachers.find(t => t.id === id);
 
   return (
     <TeachersContext.Provider

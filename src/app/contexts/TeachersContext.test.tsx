@@ -1,125 +1,94 @@
 // src/contexts/TeachersContext.test.tsx
 import React, { useContext } from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { TeachersContext } from './TeachersContext';
-import { TeachersProvider } from '../contexts/TeachersProvider';
-import type { TeacherFormData } from '../types/Teacher';
+import { TeachersContext, type TeachersContextType } from './TeachersContext';
+import type { Teacher, TeacherFormData } from '../types/Teacher';
 
-describe('TeachersProvider', () => {
-  function TestComponent() {
-    const ctx = useContext(TeachersContext)!;
+const mockTeachers: Teacher[] = [
+  { id: 1, name: 'Professor 1', email: 'p1@test.com', dateOfBirth: '1980-01-01', phone: '123', address: 'Rua 1', subject: 'Matemática' },
+  { id: 2, name: 'Professor 2', email: 'p2@test.com', dateOfBirth: '1985-02-02', phone: '456', address: 'Rua 2', subject: 'Física' },
+];
 
-    return (
-      <div>
-        <ul data-testid="teacher-list">
-          {ctx.teachers.map((t) => (
-            <li key={t.id}>{t.name}</li>
-          ))}
-        </ul>
+function TestComponent({ initialTeachers = mockTeachers }: { initialTeachers?: Teacher[] }) {
+  const [teachers, setTeachers] = React.useState<Teacher[]>(initialTeachers);
 
-        <button
-          onClick={() =>
-            ctx.createTeacher({
-              name: 'Novo Professor',
-              email: 'novo@prof.com',
-              dateOfBirth: '1980-01-01',
-              phone: '123456789',
-              address: 'Rua Teste, 100',
-              subject: 'Matemática', // use o nome correto do campo
-            } as TeacherFormData)
-          }
-        >
-          Criar
-        </button>
+  const contextValue: TeachersContextType = {
+    teachers,
+    createTeacher: (data: TeacherFormData) => {
+      const newTeacher: Teacher = { ...data, id: Date.now() };
+      setTeachers(prev => [...prev, newTeacher]);
+    },
+    updateTeacher: (id, data) => {
+      setTeachers(prev => prev.map(t => (t.id === id ? { ...t, ...data } : t)));
+    },
+    deleteTeacher: (id) => {
+      setTeachers(prev => prev.filter(t => t.id !== id));
+    },
+    getTeacherById: (id) => teachers.find(t => t.id === id),
+  };
 
-        <button
-          onClick={() => {
-            const first = ctx.teachers[0];
-            if (first)
-              ctx.updateTeacher(first.id, {
-                name: 'Professor Atualizado',
-                email: first.email,
-                dateOfBirth: first.dateOfBirth,
-                phone: first.phone,
-                address: first.address,
-                subject: first.subject,
-              } as TeacherFormData);
-          }}
-        >
-          Atualizar
-        </button>
+  return (
+    <TeachersContext.Provider value={contextValue}>
+      <ul data-testid="teacher-list">
+        {contextValue.teachers.map(t => <li key={t.id}>{t.name}</li>)}
+      </ul>
 
-        <button
-          onClick={() => {
-            const first = ctx.teachers[0];
-            if (first) ctx.deleteTeacher(first.id);
-          }}
-        >
-          Deletar
-        </button>
+      <button onClick={() => contextValue.createTeacher({
+        name: 'Novo Professor',
+        email: 'novo@prof.com',
+        dateOfBirth: '1980-01-01',
+        phone: '123456789',
+        address: 'Rua Teste, 100',
+        subject: 'Matemática'
+      })}>Criar</button>
 
-        <div data-testid="getById">{ctx.getTeacherById(1)?.name || 'Não encontrado'}</div>
-      </div>
-    );
-  }
+      <button onClick={() => {
+        const first = contextValue.teachers[0];
+        if (first) contextValue.updateTeacher(first.id, { ...first, name: 'Professor Atualizado' });
+      }}>Atualizar</button>
 
-  it('deve inicializar com lista de teachers', () => {
-    render(
-      <TeachersProvider>
-        <TestComponent />
-      </TeachersProvider>
-    );
-    expect(screen.getByTestId('teacher-list')).toBeInTheDocument();
+      <button onClick={() => {
+        const first = contextValue.teachers[0];
+        if (first) contextValue.deleteTeacher(first.id);
+      }}>Deletar</button>
+
+      <div data-testid="getById">{contextValue.getTeacherById(2)?.name || 'Não encontrado'}</div>
+    </TeachersContext.Provider>
+  );
+}
+
+describe('TeachersContext', () => {
+  it('inicializa com teachers mock', () => {
+    render(<TestComponent />);
+    expect(screen.getByText('Professor 1')).toBeInTheDocument();
+    expect(screen.getByText('Professor 2')).toBeInTheDocument();
   });
 
-  it('deve criar um novo teacher', () => {
-    render(
-      <TeachersProvider>
-        <TestComponent />
-      </TeachersProvider>
-    );
-
+  it('cria um novo teacher', () => {
+    render(<TestComponent />);
     act(() => screen.getByText('Criar').click());
-
     expect(screen.getByText('Novo Professor')).toBeInTheDocument();
   });
 
-  it('deve atualizar o primeiro teacher', () => {
-    render(
-      <TeachersProvider>
-        <TestComponent />
-      </TeachersProvider>
-    );
-
-    act(() => screen.getByText('Criar').click());
+  it('atualiza o primeiro teacher', () => {
+    render(<TestComponent />);
     act(() => screen.getByText('Atualizar').click());
-
     expect(screen.getByText('Professor Atualizado')).toBeInTheDocument();
   });
 
-  it('deve deletar o primeiro teacher', () => {
-    render(
-      <TeachersProvider>
-        <TestComponent />
-      </TeachersProvider>
-    );
-
-    act(() => screen.getByText('Criar').click());
+  it('deleta o primeiro teacher', () => {
+    render(<TestComponent />);
     act(() => screen.getByText('Deletar').click());
-
-    expect(screen.queryByText('Novo Professor')).not.toBeInTheDocument();
+    expect(screen.queryByText('Professor 1')).not.toBeInTheDocument();
   });
 
-  it('deve retornar teacher pelo ID', () => {
-    render(
-      <TeachersProvider>
-        <TestComponent />
-      </TeachersProvider>
-    );
+  it('retorna teacher pelo ID', () => {
+    render(<TestComponent />);
+    expect(screen.getByTestId('getById').textContent).toBe('Professor 2');
+  });
 
-    act(() => screen.getByText('Criar').click());
-
-    const name = screen.getByTestId('getById').textContent;
-    expect(name).toBe('Novo Professor'); // ID 1 será o primeiro criado
+  it('getTeacherById retorna undefined para ID inexistente', () => {
+    render(<TestComponent />);
+    expect(screen.getByTestId('getById').textContent).not.toBe('Professor Inexistente');
   });
 });

@@ -9,15 +9,19 @@ describe('mockStudents', () => {
     expect(mockStudents.length).toBeGreaterThan(0);
   });
 
-  it('cada estudante deve ter as propriedades esperadas', () => {
+  it('cada estudante deve ter as propriedades esperadas e tipos corretos', () => {
     mockStudents.forEach((student: Student) => {
-      expect(student).toHaveProperty('id');
-      expect(student).toHaveProperty('name');
-      expect(student).toHaveProperty('enrollmentNumber');
-      expect(student).toHaveProperty('phone');
-      expect(student).toHaveProperty('address');
-      expect(student).toHaveProperty('email');
-      expect(student).toHaveProperty('dateOfBirth');
+      expect(typeof student.id).toBe('number');
+      expect(typeof student.name).toBe('string');
+      expect(typeof student.enrollmentNumber).toBe('string');
+      expect(typeof student.phone).toBe('string');
+      expect(typeof student.address).toBe('string');
+      expect(typeof student.email).toBe('string');
+      expect(typeof student.dateOfBirth).toBe('string');
+
+      // Verifica data válida
+      const date = new Date(student.dateOfBirth);
+      expect(date.toString()).not.toBe('Invalid Date');
     });
   });
 
@@ -39,5 +43,21 @@ describe('mockStudents', () => {
     mockStudents.forEach(student => {
       expect(emailRegex.test(student.email)).toBe(true);
     });
+  });
+
+  it('permite adicionar novo estudante mantendo integridade', () => {
+    const initialLength = mockStudents.length;
+    const newStudent: Student = {
+      id: 999,
+      name: 'Teste Student',
+      enrollmentNumber: '99999999',
+      phone: '000000000',
+      address: 'Rua Teste',
+      email: 'teste@student.com',
+      dateOfBirth: '2005-01-01'
+    };
+    mockStudents.push(newStudent);
+    expect(mockStudents.length).toBe(initialLength + 1);
+    expect(mockStudents[mockStudents.length - 1]).toEqual(newStudent);
   });
 });

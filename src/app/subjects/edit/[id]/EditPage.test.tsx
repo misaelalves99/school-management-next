@@ -1,5 +1,6 @@
 // src/app/subjects/edit/[id]/EditPage.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import EditSubjectPage from './page';
 import { mockSubjects } from '../../../mocks/subjects';
 import * as nextRouter from 'next/navigation';
@@ -8,6 +9,7 @@ import * as useSubjectsHook from '../../../hooks/useSubjects';
 describe('EditSubjectPage', () => {
   const pushMock = jest.fn();
   const updateSubjectMock = jest.fn();
+  const subject = mockSubjects[0];
 
   beforeEach(() => {
     jest.spyOn(nextRouter, 'useRouter').mockReturnValue({ push: pushMock } as any);
@@ -15,14 +17,16 @@ describe('EditSubjectPage', () => {
     updateSubjectMock.mockClear();
   });
 
-  it('preenche formulário com dados da disciplina existente', () => {
-    const subject = mockSubjects[0];
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: String(subject.id) });
+  const setupMocks = (id: string, getSubjectByIdImpl = (id: number) => (id === subject.id ? subject : undefined)) => {
+    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id });
     jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: (id: number) => (id === subject.id ? subject : undefined),
+      getSubjectById: getSubjectByIdImpl,
       updateSubject: updateSubjectMock,
     } as any);
+  };
 
+  it('preenche formulário com dados da disciplina existente', () => {
+    setupMocks(String(subject.id));
     render(<EditSubjectPage />);
 
     expect(screen.getByDisplayValue(subject.name)).toBeInTheDocument();
@@ -30,89 +34,81 @@ describe('EditSubjectPage', () => {
     expect(screen.getByDisplayValue(String(subject.workloadHours))).toBeInTheDocument();
   });
 
-  it('mostra erro se campo nome estiver vazio ao submeter', () => {
-    const subject = mockSubjects[0];
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: String(subject.id) });
-    jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: (id: number) => (id === subject.id ? subject : undefined),
-      updateSubject: updateSubjectMock,
-    } as any);
-
+  it('mostra erro se nome estiver vazio ao submeter', async () => {
+    setupMocks(String(subject.id));
     render(<EditSubjectPage />);
-    const nameInput = screen.getByLabelText(/nome da disciplina/i);
-    fireEvent.change(nameInput, { target: { value: '' } });
+    const user = userEvent.setup();
 
-    fireEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
+    const nameInput = screen.getByLabelText(/nome da disciplina/i);
+    await user.clear(nameInput);
+
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
 
     expect(screen.getByText(/o nome da disciplina é obrigatório/i)).toBeInTheDocument();
     expect(updateSubjectMock).not.toHaveBeenCalled();
     expect(pushMock).not.toHaveBeenCalled();
   });
 
-  it('submete formulário corretamente quando nome preenchido', () => {
-    const subject = mockSubjects[0];
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: String(subject.id) });
-    jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: (id: number) => (id === subject.id ? subject : undefined),
-      updateSubject: updateSubjectMock,
-    } as any);
-
+  it('submete formulário corretamente quando nome preenchido', async () => {
+    setupMocks(String(subject.id));
     render(<EditSubjectPage />);
+    const user = userEvent.setup();
+
     const nameInput = screen.getByLabelText(/nome da disciplina/i);
-    fireEvent.change(nameInput, { target: { value: 'Nova Disciplina' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /salvar alterações/i }));
-
-    expect(screen.queryByText(/o nome da disciplina é obrigatório/i)).not.toBeInTheDocument();
-    expect(updateSubjectMock).toHaveBeenCalledWith(subject.id, expect.objectContaining({ name: 'Nova Disciplina' }));
-    expect(pushMock).toHaveBeenCalledWith('/subjects');
-  });
-
-  it('botão Voltar à Lista redireciona corretamente', () => {
-    const subject = mockSubjects[0];
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: String(subject.id) });
-    jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: (id: number) => (id === subject.id ? subject : undefined),
-      updateSubject: updateSubjectMock,
-    } as any);
-
-    render(<EditSubjectPage />);
-    fireEvent.click(screen.getByRole('button', { name: /voltar à lista/i }));
-
-    expect(pushMock).toHaveBeenCalledWith('/subjects');
-  });
-
-  it('atualiza campos description e workloadHours corretamente', () => {
-    const subject = mockSubjects[0];
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: String(subject.id) });
-    jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: (id: number) => (id === subject.id ? subject : undefined),
-      updateSubject: updateSubjectMock,
-    } as any);
-
-    render(<EditSubjectPage />);
-
-    const descriptionInput = screen.getByLabelText(/descrição/i);
+    const descInput = screen.getByLabelText(/descrição/i);
     const workloadInput = screen.getByLabelText(/carga horária/i);
 
-    fireEvent.change(descriptionInput, { target: { value: 'Nova descrição' } });
-    fireEvent.change(workloadInput, { target: { value: '80' } });
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Nova Disciplina');
+    await user.clear(descInput);
+    await user.type(descInput, 'Nova descrição');
+    await user.clear(workloadInput);
+    await user.type(workloadInput, '80');
 
-    expect(screen.getByDisplayValue('Nova descrição')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('80')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
+
+    expect(updateSubjectMock).toHaveBeenCalledWith(subject.id, expect.objectContaining({
+      name: 'Nova Disciplina',
+      description: 'Nova descrição',
+      workloadHours: 80,
+    }));
+    expect(pushMock).toHaveBeenCalledWith('/subjects');
   });
 
-  it('mostra mensagem quando disciplina não encontrada', () => {
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: '999' });
-    jest.spyOn(useSubjectsHook, 'useSubjects').mockReturnValue({
-      getSubjectById: () => undefined,
-      updateSubject: updateSubjectMock,
-    } as any);
-
+  it('botão Voltar à Lista redireciona corretamente', async () => {
+    setupMocks(String(subject.id));
     render(<EditSubjectPage />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /voltar à lista/i }));
+    expect(pushMock).toHaveBeenCalledWith('/subjects');
+  });
+
+  it('mostra mensagem quando disciplina não encontrada', async () => {
+    setupMocks('999', () => undefined);
+    render(<EditSubjectPage />);
+    const user = userEvent.setup();
+
     expect(screen.getByText(/disciplina não encontrada/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /voltar à lista/i }));
+    await user.click(screen.getByRole('button', { name: /voltar à lista/i }));
     expect(pushMock).toHaveBeenCalledWith('/subjects');
+  });
+
+  it('atualiza campos description e workloadHours corretamente', async () => {
+    setupMocks(String(subject.id));
+    render(<EditSubjectPage />);
+    const user = userEvent.setup();
+
+    const descInput = screen.getByLabelText(/descrição/i);
+    const workloadInput = screen.getByLabelText(/carga horária/i);
+
+    await user.clear(descInput);
+    await user.type(descInput, 'Descrição Atualizada');
+    await user.clear(workloadInput);
+    await user.type(workloadInput, '100');
+
+    expect(screen.getByDisplayValue('Descrição Atualizada')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('100')).toBeInTheDocument();
   });
 });

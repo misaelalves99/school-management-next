@@ -2,90 +2,55 @@
 
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./EnrollmentsPage.module.css";
 import { useEnrollments } from "../hooks/useEnrollments";
 import { useStudents } from "../hooks/useStudents";
 import { useClassRooms } from "../hooks/useClassRooms";
 import type { EnrollmentWithNames } from "../types/Enrollment";
 
-const PAGE_SIZE = 10;
-
 export default function EnrollmentIndexPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const [searchString, setSearchString] = useState(
     searchParams.get("searchString") || ""
   );
-  const currentPage = Number(searchParams.get("page") || "1");
 
   const { enrollments } = useEnrollments();
   const { students = [] } = useStudents();
   const { classRooms = [] } = useClassRooms();
 
-  const [data, setData] = useState<{
-    items: EnrollmentWithNames[];
-    currentPage: number;
-    totalItems: number;
-  }>({ items: [], currentPage, totalItems: 0 });
-
-  const mapToWithNames = useCallback(
-    (enrollment: (typeof enrollments)[number]): EnrollmentWithNames => {
-      const student = students.find((s) => s.id === enrollment.studentId);
-      const classRoom = classRooms.find((c) => c.id === enrollment.classRoomId);
-      return {
-        ...enrollment,
-        studentName: student?.name ?? "Aluno não informado",
-        classRoomName: classRoom?.name ?? "Turma não informada",
-      };
-    },
-    [students, classRooms]
-  );
-
-  const loadData = useCallback(() => {
-    const filtered = enrollments.filter((e) =>
-      searchString
-        ? e.status.toLowerCase().includes(searchString.toLowerCase())
-        : true
-    );
-
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const paginated = filtered.slice(start, start + PAGE_SIZE);
-    const itemsWithNames = paginated.map(mapToWithNames);
-
-    setData({
-      items: itemsWithNames,
-      currentPage,
-      totalItems: filtered.length,
-    });
-  }, [enrollments, searchString, currentPage, mapToWithNames]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(data.totalItems / PAGE_SIZE)),
-    [data.totalItems]
-  );
+  const filteredData: EnrollmentWithNames[] = useMemo(() => {
+    return enrollments
+      .filter((e) =>
+        searchString
+          ? e.status.toLowerCase().includes(searchString.toLowerCase())
+          : true
+      )
+      .map((e) => {
+        const student = students.find((s) => s.id === e.studentId);
+        const classRoom = classRooms.find((c) => c.id === e.classRoomId);
+        return {
+          ...e,
+          studentName: student?.name ?? "Aluno não informado",
+          classRoomName: classRoom?.name ?? "Turma não informada",
+        };
+      });
+  }, [enrollments, students, classRooms, searchString]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchString(value);
-    router.push(`?searchString=${value}&page=1`);
+    router.push(`?searchString=${value}`);
   };
 
   return (
     <div className={styles.pageContainer}>
       <aside className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Matrículas</h2>
-        <form
-          className={styles.searchForm}
-          onSubmit={(e) => e.preventDefault()}
-        >
+        <form className={styles.searchForm} onSubmit={(e) => e.preventDefault()}>
           <input
             type="text"
             value={searchString}
@@ -93,18 +58,12 @@ export default function EnrollmentIndexPage() {
             onChange={handleSearchChange}
             className={styles.input}
           />
-          <button
-            type="submit"
-            className={`${styles.btn} ${styles.btnPrimary}`}
-          >
+          <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
             Buscar
           </button>
         </form>
 
-        <Link
-          href="/enrollments/create"
-          className={`${styles.btn} ${styles.btnSuccess}`}
-        >
+        <Link href="/enrollments/create" className={`${styles.btn} ${styles.btnSuccess}`}>
           Cadastrar Nova Matrícula
         </Link>
       </aside>
@@ -116,6 +75,7 @@ export default function EnrollmentIndexPage() {
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Aluno</th>
                 <th>Turma</th>
                 <th>Status</th>
@@ -124,21 +84,20 @@ export default function EnrollmentIndexPage() {
               </tr>
             </thead>
             <tbody>
-              {data.items.length === 0 ? (
+              {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className={styles.noResults}>
+                  <td colSpan={6} className={styles.noResults}>
                     Nenhuma matrícula encontrada.
                   </td>
                 </tr>
               ) : (
-                data.items.map((e) => (
+                filteredData.map((e) => (
                   <tr key={e.id}>
+                    <td>{e.id}</td>
                     <td>{e.studentName}</td>
                     <td>{e.classRoomName}</td>
                     <td>{e.status}</td>
-                    <td>
-                      {new Date(e.enrollmentDate).toLocaleDateString()}
-                    </td>
+                    <td>{new Date(e.enrollmentDate).toLocaleDateString()}</td>
                     <td className={styles.actionsCell}>
                       <Link
                         href={`/enrollments/details/${e.id}`}
@@ -165,36 +124,6 @@ export default function EnrollmentIndexPage() {
             </tbody>
           </table>
         </div>
-
-        {totalPages > 1 && (
-          <div className={styles.pagination}>
-            <Link
-              href={`?page=${Math.max(
-                1,
-                data.currentPage - 1
-              )}&searchString=${searchString}`}
-              className={styles.pageLink}
-              aria-disabled={data.currentPage === 1}
-            >
-              Anterior
-            </Link>
-
-            <span className={styles.pageInfo}>
-              Página {data.currentPage} de {totalPages}
-            </span>
-
-            <Link
-              href={`?page=${Math.min(
-                totalPages,
-                data.currentPage + 1
-              )}&searchString=${searchString}`}
-              className={styles.pageLink}
-              aria-disabled={data.currentPage === totalPages}
-            >
-              Próxima
-            </Link>
-          </div>
-        )}
       </main>
     </div>
   );

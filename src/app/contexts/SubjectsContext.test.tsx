@@ -2,159 +2,93 @@
 
 import React, { useContext } from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { SubjectsContext, SubjectsContextType } from './SubjectsContext';
+import { SubjectsContext, type SubjectsContextType } from './SubjectsContext';
 import type { Subject } from '../types/Subject';
 
 const mockSubjects: Subject[] = [
-  { id: 1, name: 'Matemática', description: 'Matemática básica' },
-  { id: 2, name: 'História', description: 'História mundial' },
+  { id: 1, name: 'Matemática', description: 'Matemática básica', workloadHours: 60 },
+  { id: 2, name: 'História', description: 'História mundial', workloadHours: 50 },
 ];
 
-describe('SubjectsContext', () => {
-  // Provider mock para testes
-  function SubjectsProviderMock({ children }: { children: React.ReactNode }) {
-    const [subjects, setSubjects] = React.useState<Subject[]>([...mockSubjects]);
+function TestComponent({ initialSubjects = mockSubjects }: { initialSubjects?: Subject[] }) {
+  const [subjects, setSubjects] = React.useState<Subject[]>(initialSubjects);
 
-    const createSubject = (data: Omit<Subject, 'id'>) => {
+  const contextValue: SubjectsContextType = {
+    subjects,
+    createSubject: (data) => {
       const newSubject: Subject = { ...data, id: Date.now() };
-      setSubjects((prev) => [...prev, newSubject]);
-    };
+      setSubjects(prev => [...prev, newSubject]);
+    },
+    updateSubject: (id, data) => {
+      setSubjects(prev => prev.map(s => (s.id === id ? { ...s, ...data } : s)));
+    },
+    deleteSubject: (id) => {
+      setSubjects(prev => prev.filter(s => s.id !== id));
+    },
+    getSubjectById: (id) => subjects.find(s => s.id === id),
+  };
 
-    const updateSubject = (id: number, data: Omit<Subject, 'id'>) => {
-      setSubjects((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, ...data, id } : s))
-      );
-    };
+  return (
+    <SubjectsContext.Provider value={contextValue}>
+      <ul data-testid="subject-list">
+        {contextValue.subjects.map(s => (
+          <li key={s.id}>{s.name}</li>
+        ))}
+      </ul>
 
-    const deleteSubject = (id: number) => {
-      setSubjects((prev) => prev.filter((s) => s.id !== id));
-    };
+      <button onClick={() => contextValue.createSubject({ name: 'Química', description: 'Estudo da química', workloadHours: 45 })}>
+        Criar
+      </button>
 
-    const getSubjectById = (id: number) => subjects.find((s) => s.id === id);
+      <button onClick={() => {
+        const first = contextValue.subjects[0];
+        if (first) contextValue.updateSubject(first.id, { ...first, name: 'Matemática Avançada' });
+      }}>
+        Atualizar
+      </button>
 
-    const value: SubjectsContextType = {
-      subjects,
-      createSubject,
-      updateSubject,
-      deleteSubject,
-      getSubjectById,
-    };
+      <button onClick={() => {
+        const first = contextValue.subjects[0];
+        if (first) contextValue.deleteSubject(first.id);
+      }}>
+        Deletar
+      </button>
 
-    return (
-      <SubjectsContext.Provider value={value}>{children}</SubjectsContext.Provider>
-    );
-  }
-
-  function TestComponent() {
-    const ctx = useContext(SubjectsContext)!;
-
-    return (
-      <div>
-        <ul data-testid="subject-list">
-          {ctx.subjects.map((s) => (
-            <li key={s.id}>{s.name}</li>
-          ))}
-        </ul>
-
-        <button
-          onClick={() =>
-            ctx.createSubject({ name: 'Novo Subject', description: 'Descrição do novo subject' })
-          }
-        >
-          Criar
-        </button>
-
-        <button
-          onClick={() => {
-            const first = ctx.subjects[0];
-            if (first) {
-              ctx.updateSubject(first.id, {
-                name: 'Subject Atualizado',
-                description: 'Descrição atualizada',
-              });
-            }
-          }}
-        >
-          Atualizar
-        </button>
-
-        <button
-          onClick={() => {
-            const first = ctx.subjects[0];
-            if (first) ctx.deleteSubject(first.id);
-          }}
-        >
-          Deletar
-        </button>
+      <div data-testid="getById">
+        {contextValue.getSubjectById(2)?.name || 'Não encontrado'}
       </div>
-    );
-  }
+    </SubjectsContext.Provider>
+  );
+}
 
-  it('deve inicializar com subjects mock', () => {
-    render(
-      <SubjectsProviderMock>
-        <TestComponent />
-      </SubjectsProviderMock>
-    );
-
-    const items = screen.getAllByRole('listitem');
-    expect(items.length).toBe(mockSubjects.length);
-    mockSubjects.forEach((s) => expect(screen.getByText(s.name)).toBeInTheDocument());
+describe('SubjectsContext', () => {
+  it('inicializa com subjects mock', () => {
+    render(<TestComponent />);
+    expect(screen.getByText('Matemática')).toBeInTheDocument();
+    expect(screen.getByText('História')).toBeInTheDocument();
   });
 
-  it('deve criar um novo subject', () => {
-    render(
-      <SubjectsProviderMock>
-        <TestComponent />
-      </SubjectsProviderMock>
-    );
-
+  it('cria um novo subject', () => {
+    render(<TestComponent />);
     act(() => screen.getByText('Criar').click());
-
-    expect(screen.getByText('Novo Subject')).toBeInTheDocument();
+    expect(screen.getByText('Química')).toBeInTheDocument();
   });
 
-  it('deve atualizar o primeiro subject', () => {
-    render(
-      <SubjectsProviderMock>
-        <TestComponent />
-      </SubjectsProviderMock>
-    );
-
+  it('atualiza o primeiro subject', () => {
+    render(<TestComponent />);
     act(() => screen.getByText('Atualizar').click());
-
-    expect(screen.getByText('Subject Atualizado')).toBeInTheDocument();
+    expect(screen.getByText('Matemática Avançada')).toBeInTheDocument();
   });
 
-  it('deve deletar o primeiro subject', () => {
-    render(
-      <SubjectsProviderMock>
-        <TestComponent />
-      </SubjectsProviderMock>
-    );
-
-    const firstName = mockSubjects[0].name;
+  it('deleta o primeiro subject', () => {
+    render(<TestComponent />);
+    const firstName = 'Matemática';
     act(() => screen.getByText('Deletar').click());
-
     expect(screen.queryByText(firstName)).not.toBeInTheDocument();
   });
 
-  it('deve retornar subject pelo ID', () => {
-    let foundSubject: Subject | undefined;
-
-    function GetByIdComponent() {
-      const ctx = useContext(SubjectsContext)!;
-      foundSubject = ctx.getSubjectById(1);
-      return null;
-    }
-
-    render(
-      <SubjectsProviderMock>
-        <GetByIdComponent />
-      </SubjectsProviderMock>
-    );
-
-    expect(foundSubject).toBeDefined();
-    expect(foundSubject?.name).toBe('Matemática');
+  it('retorna subject pelo ID', () => {
+    render(<TestComponent />);
+    expect(screen.getByTestId('getById').textContent).toBe('História');
   });
 });

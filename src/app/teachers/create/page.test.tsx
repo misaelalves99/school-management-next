@@ -27,6 +27,8 @@ describe('TeacherCreatePage', () => {
     expect(screen.getByLabelText(/nome/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/data de nascimento/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/telefone/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/endereço/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/disciplina/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /salvar/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();

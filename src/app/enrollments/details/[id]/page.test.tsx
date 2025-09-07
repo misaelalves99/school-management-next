@@ -3,12 +3,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EnrollmentDetailsPage from './page';
 import * as nextNavigation from 'next/navigation';
-import mockEnrollments from '../../../mocks/enrollments';
-import mockStudents from '../../../mocks/students';
-import { mockClassRooms } from '../../../mocks/classRooms';
 import { useEnrollments } from '../../../hooks/useEnrollments';
 import { useStudents } from '../../../hooks/useStudents';
 import { useClassRooms } from '../../../hooks/useClassRooms';
+import mockEnrollments from '../../../mocks/enrollments';
+import mockStudents from '../../../mocks/students';
+import { mockClassRooms } from '../../../mocks/classRooms';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -26,6 +26,7 @@ describe('EnrollmentDetailsPage', () => {
     jest.clearAllMocks();
     (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: pushMock });
 
+    // Reset mocks
     mockEnrollments.length = 0;
     mockEnrollments.push({
       id: 1,
@@ -81,7 +82,7 @@ describe('EnrollmentDetailsPage', () => {
     });
   });
 
-  it('botão Editar deve chamar router.push com URL correta', async () => {
+  it('botão Editar chama router.push com URL correta', async () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
     render(<EnrollmentDetailsPage />);
 
@@ -91,7 +92,7 @@ describe('EnrollmentDetailsPage', () => {
     });
   });
 
-  it('botão Voltar deve chamar router.push para /enrollments', async () => {
+  it('botão Voltar chama router.push para /enrollments', async () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
     render(<EnrollmentDetailsPage />);
 
@@ -113,10 +114,9 @@ describe('EnrollmentDetailsPage', () => {
     });
   });
 
-  it('mostra "Aluno não informado" ou "Turma não informada" se dados estiverem ausentes', async () => {
+  it('mostra fallback "Aluno não informado" e "Turma não informada" se dados ausentes', async () => {
     (nextNavigation.useParams as jest.Mock).mockReturnValue({ id: '1' });
 
-    // Remove student e classRoom para testar fallback
     (useStudents as jest.Mock).mockReturnValue({ students: [] });
     (useClassRooms as jest.Mock).mockReturnValue({ classRooms: [] });
 

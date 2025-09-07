@@ -1,5 +1,7 @@
 // src/app/students/details/[id]/page.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
+
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import StudentDetailsPage from './page';
 import * as nextRouter from 'next/navigation';
 import * as useStudentsHook from '../../../hooks/useStudents';
@@ -41,25 +43,32 @@ describe('StudentDetailsPage', () => {
     expect(screen.getByText(/rua exemplo, 123/i)).toBeInTheDocument();
   });
 
-  it('botão Editar navega para a página de edição', () => {
+  it('botão Editar navega para a página de edição', async () => {
     render(<StudentDetailsPage />);
-    fireEvent.click(screen.getByRole('button', { name: /editar/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /editar/i }));
     expect(pushMock).toHaveBeenCalledWith('/students/edit/123');
   });
 
-  it('botão Voltar à Lista navega corretamente', () => {
+  it('botão Voltar à Lista navega corretamente', async () => {
     render(<StudentDetailsPage />);
-    fireEvent.click(screen.getByRole('button', { name: /voltar à lista/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /voltar à lista/i }));
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 
-  it('mostra mensagem de aluno não encontrado se ID inválido', () => {
+  it('mostra mensagem de aluno não encontrado se ID inválido', async () => {
     jest.spyOn(useStudentsHook, 'useStudents').mockReturnValue({
       getStudentById: () => undefined
     } as any);
+
     render(<StudentDetailsPage />);
     expect(screen.getByRole('heading', { name: /aluno não encontrado/i })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /voltar à lista/i }));
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /voltar à lista/i }));
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 });

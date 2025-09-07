@@ -8,12 +8,9 @@ import { useClassRooms } from '../hooks/useClassRooms';
 import styles from './ClassRoomList.module.css';
 import type { ClassRoom } from '../types/Classroom';
 
-const PAGE_SIZE = 10;
-
 export default function ClassroomsPage() {
   const { classRooms } = useClassRooms();
   const [searchString, setSearchString] = useState('');
-  const [page, setPage] = useState(1);
 
   const filteredData: ClassRoom[] = useMemo(() => {
     const term = searchString.toLowerCase();
@@ -25,20 +22,8 @@ export default function ClassroomsPage() {
     );
   }, [searchString, classRooms]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE));
-  const pagedData: ClassRoom[] = filteredData.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(e.target.value);
-    setPage(1);
-  };
-
-  const goToPage = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    setPage(newPage);
   };
 
   return (
@@ -70,6 +55,7 @@ export default function ClassroomsPage() {
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Capacidade</th>
                 <th>Horário</th>
@@ -77,15 +63,16 @@ export default function ClassroomsPage() {
               </tr>
             </thead>
             <tbody>
-              {pagedData.length === 0 ? (
+              {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className={styles.noResults}>
+                  <td colSpan={5} className={styles.noResults}>
                     Nenhuma sala encontrada.
                   </td>
                 </tr>
               ) : (
-                pagedData.map((room: ClassRoom) => (
+                filteredData.map((room: ClassRoom) => (
                   <tr key={room.id}>
+                    <td>{room.id}</td>
                     <td>{room.name}</td>
                     <td>{room.capacity}</td>
                     <td>{room.schedule}</td>
@@ -115,28 +102,6 @@ export default function ClassroomsPage() {
             </tbody>
           </table>
         </div>
-
-        {totalPages > 1 && (
-          <div className={styles.pagination}>
-            <button
-              onClick={() => goToPage(page - 1)}
-              disabled={page === 1}
-              className={styles.pageLink}
-            >
-              Anterior
-            </button>
-            <span className={styles.pageInfo}>
-              Página {page} de {totalPages}
-            </span>
-            <button
-              onClick={() => goToPage(page + 1)}
-              disabled={page === totalPages}
-              className={styles.pageLink}
-            >
-              Próxima
-            </button>
-          </div>
-        )}
       </main>
     </div>
   );

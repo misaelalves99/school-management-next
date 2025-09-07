@@ -40,6 +40,8 @@ describe('DeleteTeacherPage', () => {
     render(<DeleteTeacherPage />);
     expect(screen.getByText(/Excluir Professor/i)).toBeInTheDocument();
     expect(screen.getByText(/João/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /excluir/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
   });
 
   it('exclui professor e navega após confirmação', () => {
@@ -48,8 +50,7 @@ describe('DeleteTeacherPage', () => {
     (useTeachers as jest.Mock).mockReturnValue({ teachers: [teacher], deleteTeacher: deleteTeacherMock });
 
     render(<DeleteTeacherPage />);
-    const deleteButton = screen.getByRole('button', { name: /excluir/i });
-    fireEvent.click(deleteButton);
+    fireEvent.click(screen.getByRole('button', { name: /excluir/i }));
 
     expect(deleteTeacherMock).toHaveBeenCalledWith(1);
     expect(pushMock).toHaveBeenCalledWith('/teachers');
@@ -61,8 +62,7 @@ describe('DeleteTeacherPage', () => {
     (useTeachers as jest.Mock).mockReturnValue({ teachers: [teacher], deleteTeacher: deleteTeacherMock });
 
     render(<DeleteTeacherPage />);
-    const cancelButton = screen.getByRole('button', { name: /cancelar/i });
-    fireEvent.click(cancelButton);
+    fireEvent.click(screen.getByRole('button', { name: /cancelar/i }));
 
     expect(pushMock).toHaveBeenCalledWith('/teachers');
   });

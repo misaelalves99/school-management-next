@@ -1,5 +1,7 @@
 // src/app/students/page.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
+
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import StudentsPage from './page';
 import * as nextRouter from 'next/navigation';
 import * as useStudentsHook from '../hooks/useStudents';
@@ -25,60 +27,64 @@ describe('StudentsPage', () => {
 
   it('renderiza a lista de alunos e botões de ação', () => {
     render(<StudentsPage />);
-
     expect(screen.getByText(/lista de alunos/i)).toBeInTheDocument();
     expect(screen.getByText(/joão/i)).toBeInTheDocument();
     expect(screen.getByText(/maria/i)).toBeInTheDocument();
     expect(screen.getByText(/pedro/i)).toBeInTheDocument();
-
-    // Botões de ação por aluno
     expect(screen.getAllByRole('button', { name: /detalhes/i }).length).toBe(3);
     expect(screen.getAllByRole('button', { name: /editar/i }).length).toBe(3);
     expect(screen.getAllByRole('button', { name: /excluir/i }).length).toBe(3);
-
-    // Botão de criar novo aluno
     expect(screen.getByRole('button', { name: /cadastrar novo aluno/i })).toBeInTheDocument();
   });
 
-  it('botão Cadastrar Novo Aluno navega para /students/create', () => {
+  it('botão Cadastrar Novo Aluno navega para /students/create', async () => {
     render(<StudentsPage />);
-    fireEvent.click(screen.getByRole('button', { name: /cadastrar novo aluno/i }));
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /cadastrar novo aluno/i }));
     expect(pushMock).toHaveBeenCalledWith('/students/create');
   });
 
-  it('botões de Detalhes, Editar e Excluir funcionam corretamente', () => {
+  it('botões Detalhes, Editar e Excluir funcionam corretamente', async () => {
     render(<StudentsPage />);
-    fireEvent.click(screen.getAllByRole('button', { name: /detalhes/i })[0]);
+    const user = userEvent.setup();
+
+    await user.click(screen.getAllByRole('button', { name: /detalhes/i })[0]);
     expect(pushMock).toHaveBeenCalledWith('/students/details/1');
 
-    fireEvent.click(screen.getAllByRole('button', { name: /editar/i })[1]);
+    await user.click(screen.getAllByRole('button', { name: /editar/i })[1]);
     expect(pushMock).toHaveBeenCalledWith('/students/edit/2');
 
-    fireEvent.click(screen.getAllByRole('button', { name: /excluir/i })[2]);
+    await user.click(screen.getAllByRole('button', { name: /excluir/i })[2]);
     expect(pushMock).toHaveBeenCalledWith('/students/delete/3');
   });
 
-  it('filtra alunos corretamente pelo campo de busca', () => {
+  it('filtra alunos corretamente pelo campo de busca', async () => {
     render(<StudentsPage />);
+    const user = userEvent.setup();
     const input = screen.getByPlaceholderText(/digite o nome do aluno/i);
-    fireEvent.change(input, { target: { value: 'Maria' } });
-    fireEvent.click(screen.getByRole('button', { name: /buscar/i }));
+
+    await user.clear(input);
+    await user.type(input, 'Maria');
+    await user.click(screen.getByRole('button', { name: /buscar/i }));
 
     expect(screen.queryByText(/joão/i)).not.toBeInTheDocument();
     expect(screen.getByText(/maria/i)).toBeInTheDocument();
     expect(screen.queryByText(/pedro/i)).not.toBeInTheDocument();
   });
 
-  it('exibe mensagem "Nenhum aluno encontrado" quando busca não retorna resultados', () => {
+  it('exibe mensagem "Nenhum aluno encontrado" quando busca não retorna resultados', async () => {
     render(<StudentsPage />);
+    const user = userEvent.setup();
     const input = screen.getByPlaceholderText(/digite o nome do aluno/i);
-    fireEvent.change(input, { target: { value: 'XYZ' } });
-    fireEvent.click(screen.getByRole('button', { name: /buscar/i }));
+
+    await user.clear(input);
+    await user.type(input, 'XYZ');
+    await user.click(screen.getByRole('button', { name: /buscar/i }));
 
     expect(screen.getByText(/nenhum aluno encontrado/i)).toBeInTheDocument();
   });
 
-  it('mostra paginação quando há mais de uma página', () => {
+  it('simula paginação corretamente', async () => {
     jest.spyOn(useStudentsHook, 'useStudents').mockReturnValue({
       students: Array.from({ length: 25 }, (_, i) => ({
         id: i + 1,
@@ -91,12 +97,17 @@ describe('StudentsPage', () => {
     } as any);
 
     render(<StudentsPage />);
+    const user = userEvent.setup();
+
+    // Página inicial
     expect(screen.getByText(/página 1 de 3/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText(/próxima/i));
+    // Próxima página
+    await user.click(screen.getByText(/próxima/i));
     expect(screen.getByText(/página 2 de 3/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText(/anterior/i));
+    // Página anterior
+    await user.click(screen.getByText(/anterior/i));
     expect(screen.getByText(/página 1 de 3/i)).toBeInTheDocument();
   });
 });

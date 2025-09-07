@@ -7,15 +7,12 @@ import { useRouter } from "next/navigation";
 import { useTeachers } from "../hooks/useTeachers";
 import styles from "./TeachersPage.module.css";
 
-const PAGE_SIZE = 10;
-
 export default function TeachersPage() {
   const router = useRouter();
   const { teachers } = useTeachers();
-
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
 
+  // Filtra os professores pelo nome ou disciplina
   const filteredTeachers = useMemo(() => {
     if (!searchTerm.trim()) return teachers;
     const term = searchTerm.toLowerCase();
@@ -26,34 +23,19 @@ export default function TeachersPage() {
     );
   }, [searchTerm, teachers]);
 
-  const totalItems = filteredTeachers.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-  const currentItems = filteredTeachers.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1);
   };
 
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
   };
 
   return (
     <div className={styles.pageContainer}>
       <aside className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Professores</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            goToPage(1);
-          }}
-          className={styles.searchForm}
-        >
+        <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
           <input
             type="text"
             placeholder="Digite o nome ou disciplina..."
@@ -79,25 +61,19 @@ export default function TeachersPage() {
       <main className={styles.rightPanel}>
         <h2 className={styles.title}>Lista de Professores</h2>
 
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Disciplina</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length === 0 ? (
+        {filteredTeachers.length > 0 ? (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
                 <tr>
-                  <td colSpan={4} className={styles.noResults}>
-                    Nenhum professor encontrado.
-                  </td>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Disciplina</th>
+                  <th>Ações</th>
                 </tr>
-              ) : (
-                currentItems.map((t) => (
+              </thead>
+              <tbody>
+                {filteredTeachers.map((t) => (
                   <tr key={t.id}>
                     <td>{t.id}</td>
                     <td>{t.name}</td>
@@ -123,32 +99,12 @@ export default function TeachersPage() {
                       </button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {totalPages > 1 && (
-          <div className={styles.pagination}>
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={styles.pageLink}
-            >
-              Anterior
-            </button>
-            <span className={styles.pageInfo}>
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={styles.pageLink}
-            >
-              Próxima
-            </button>
+                ))}
+              </tbody>
+            </table>
           </div>
+        ) : (
+          <p className={styles.noResults}>Nenhum professor encontrado.</p>
         )}
       </main>
     </div>

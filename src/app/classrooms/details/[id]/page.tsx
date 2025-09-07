@@ -46,43 +46,6 @@ export default function ClassRoomDetailsPage() {
         <span className={styles.detailsValue}>{classRoom.schedule}</span>
       </div>
 
-      <div className={styles.detailsRow}>
-        <span className={styles.detailsLabel}>Disciplinas:</span>
-        <span className={styles.detailsValue}>
-          {classRoom.subjects?.length ? (
-            <ul>
-              {classRoom.subjects.map(s => (
-                <li key={s.id}>{s.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <span className={styles.muted}>Sem disciplinas vinculadas.</span>
-          )}
-        </span>
-      </div>
-
-      <div className={styles.detailsRow}>
-        <span className={styles.detailsLabel}>Professores:</span>
-        <span className={styles.detailsValue}>
-          {classRoom.teachers?.length ? (
-            <ul>
-              {classRoom.teachers.map(t => (
-                <li key={t.id}>{t.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <span className={styles.muted}>Sem professores vinculados.</span>
-          )}
-        </span>
-      </div>
-
-      <div className={styles.detailsRow}>
-        <span className={styles.detailsLabel}>Professor Responsável:</span>
-        <span className={styles.detailsValue}>
-          {classRoom.classTeacher?.name ?? 'Não definido'}
-        </span>
-      </div>
-
       <div className={styles.actions}>
         <button
           className={styles.btnWarning}

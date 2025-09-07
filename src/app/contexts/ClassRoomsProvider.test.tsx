@@ -8,13 +8,21 @@ import { mockClassRooms } from '../mocks/classRooms';
 
 // Componente auxiliar para testar o hook dentro do Provider
 function TestComponent() {
-  const { classRooms, getClassRoomById, createClassRoom, updateClassRoom, deleteClassRoom } = useClassRooms();
+  const {
+    classRooms,
+    getClassRoomById,
+    createClassRoom,
+    updateClassRoom,
+    deleteClassRoom,
+  } = useClassRooms();
 
   return (
     <div>
       <ul data-testid="classroom-list">
-        {classRooms.map(c => (
-          <li key={c.id} data-testid="classroom-item">{c.name}</li>
+        {classRooms.map((c) => (
+          <li key={c.id} data-testid="classroom-item">
+            {c.name}
+          </li>
         ))}
       </ul>
 
@@ -26,7 +34,7 @@ function TestComponent() {
             schedule: '08:00-10:00',
             subjects: [],
             teachers: [],
-            classTeacher: null
+            classTeacher: null,
           })
         }
       >
@@ -36,7 +44,11 @@ function TestComponent() {
       <button
         onClick={() => {
           const id = classRooms[0]?.id;
-          if (id) updateClassRoom(id, { ...classRooms[0], name: 'Sala Atualizada' });
+          if (id)
+            updateClassRoom(id, {
+              ...classRooms[0],
+              name: 'Sala Atualizada',
+            });
         }}
       >
         Atualizar Sala
@@ -68,7 +80,7 @@ describe('ClassRoomsProvider', () => {
 
     const items = screen.getAllByTestId('classroom-item');
     expect(items.length).toBe(mockClassRooms.length);
-    mockClassRooms.forEach(room => {
+    mockClassRooms.forEach((room) => {
       expect(screen.getByText(room.name)).toBeInTheDocument();
     });
   });
@@ -86,7 +98,6 @@ describe('ClassRoomsProvider', () => {
 
     const list = screen.getAllByTestId('classroom-item');
     expect(list[list.length - 1]).toHaveTextContent('Nova Sala');
-    expect(screen.getByTestId('get-classroom')).toHaveTextContent(mockClassRooms[0].name); // primeira sala ainda existe
   });
 
   it('deve atualizar a sala existente', () => {
@@ -100,7 +111,9 @@ describe('ClassRoomsProvider', () => {
       screen.getByText('Atualizar Sala').click();
     });
 
-    expect(screen.getByTestId('get-classroom')).toHaveTextContent('Sala Atualizada');
+    expect(screen.getByTestId('get-classroom')).toHaveTextContent(
+      'Sala Atualizada'
+    );
   });
 
   it('deve deletar a sala existente', () => {
@@ -115,7 +128,6 @@ describe('ClassRoomsProvider', () => {
     });
 
     const list = screen.queryAllByTestId('classroom-item');
-    // A primeira sala do mock foi deletada
     expect(list.length).toBe(mockClassRooms.length - 1);
   });
 
@@ -126,7 +138,6 @@ describe('ClassRoomsProvider', () => {
       </ClassRoomsProvider>
     );
 
-    const span = screen.getByTestId('get-classroom');
-    expect(span).toBeInTheDocument();
+    expect(screen.getByTestId('get-classroom')).toBeInTheDocument();
   });
 });

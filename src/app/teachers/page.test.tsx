@@ -25,7 +25,6 @@ describe('TeachersPage', () => {
 
     render(<TeachersPage />);
 
-    // PAGE_SIZE = 10, então todos aparecem
     expect(screen.getByText('João')).toBeInTheDocument();
     expect(screen.getByText('Maria')).toBeInTheDocument();
     expect(screen.getByText('Pedro')).toBeInTheDocument();
@@ -74,36 +73,5 @@ describe('TeachersPage', () => {
 
     fireEvent.click(screen.getByText(/Cadastrar Novo Professor/i));
     expect(pushMock).toHaveBeenCalledWith('/teachers/create');
-  });
-
-  it('paginação funciona corretamente quando há mais de uma página', () => {
-    const teachers = Array.from({ length: 12 }, (_, i) => ({
-      id: i + 1,
-      name: `Professor ${i + 1}`,
-      subject: `Disciplina ${i + 1}`,
-    }));
-    (useTeachers as jest.Mock).mockReturnValue({ teachers });
-
-    render(<TeachersPage />);
-
-    // Página 1: Professores 1-10
-    expect(screen.getByText('Professor 1')).toBeInTheDocument();
-    expect(screen.getByText('Professor 10')).toBeInTheDocument();
-    expect(screen.queryByText('Professor 11')).not.toBeInTheDocument();
-
-    const nextBtn = screen.getByText(/Próxima/i);
-    fireEvent.click(nextBtn);
-
-    // Página 2: Professores 11-12
-    expect(screen.getByText('Professor 11')).toBeInTheDocument();
-    expect(screen.getByText('Professor 12')).toBeInTheDocument();
-    expect(screen.queryByText('Professor 1')).not.toBeInTheDocument();
-
-    const prevBtn = screen.getByText(/Anterior/i);
-    fireEvent.click(prevBtn);
-
-    // Volta para página 1
-    expect(screen.getByText('Professor 1')).toBeInTheDocument();
-    expect(screen.queryByText('Professor 11')).not.toBeInTheDocument();
   });
 });

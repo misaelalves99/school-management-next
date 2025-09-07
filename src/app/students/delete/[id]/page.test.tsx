@@ -1,6 +1,7 @@
 // src/app/students/delete/[id]/page.test.tsx
 
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import DeleteStudentPage from './page';
 import * as nextRouter from 'next/navigation';
 import * as useStudentsHook from '../../../hooks/useStudents';
@@ -17,7 +18,6 @@ describe('DeleteStudentPage', () => {
     jest.spyOn(nextRouter, 'useRouter').mockReturnValue({ push: pushMock } as any);
     // Mock de alert
     jest.spyOn(window, 'alert').mockImplementation(alertMock);
-
     // Mock do hook useStudents
     jest.spyOn(useStudentsHook, 'useStudents').mockReturnValue({
       students: [
@@ -45,24 +45,30 @@ describe('DeleteStudentPage', () => {
     expect(screen.getByText(/joão silva/i)).toBeInTheDocument();
   });
 
-  it('ao confirmar exclusão exibe alerta e redireciona para /students', () => {
+  it('ao confirmar exclusão exibe alerta e redireciona para /students', async () => {
     render(<DeleteStudentPage />);
-    fireEvent.click(screen.getByRole('button', { name: /excluir/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /excluir/i }));
+
     expect(deleteStudentMock).toHaveBeenCalledWith(1);
     expect(alertMock).toHaveBeenCalledWith('Aluno "João Silva" excluído com sucesso!');
     expect(pushMock).toHaveBeenCalledWith('/students');
   });
 
-  it('ao clicar em Cancelar redireciona para /students sem exibir alerta', () => {
+  it('ao clicar em Cancelar redireciona para /students sem exibir alerta', async () => {
     render(<DeleteStudentPage />);
-    fireEvent.click(screen.getByRole('button', { name: /cancelar/i }));
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /cancelar/i }));
+
     expect(pushMock).toHaveBeenCalledWith('/students');
     expect(alertMock).not.toHaveBeenCalled();
     expect(deleteStudentMock).not.toHaveBeenCalled();
   });
 
   it('mostra mensagem de ID inválido se params.id for string vazia', () => {
-    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: '' }); // string vazia = inválido
+    jest.spyOn(nextRouter, 'useParams').mockReturnValue({ id: '' }); 
     render(<DeleteStudentPage />);
     expect(screen.getByText(/id inválido/i)).toBeInTheDocument();
   });

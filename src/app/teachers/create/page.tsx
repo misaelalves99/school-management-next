@@ -1,42 +1,39 @@
 // src/app/teachers/create/page.tsx
 
-// src/app/teachers/create/page.tsx
+'use client';
 
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./CreatePage.module.css";
-import type { TeacherFormData } from "../../types/Teacher";
-import { useTeachers } from "../../hooks/useTeachers";
-import { useSubjects } from "../../hooks/useSubjects";
-import type { Subject } from "../../types/Subject";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './CreatePage.module.css';
+import type { TeacherFormData } from '../../types/Teacher';
+import { useTeachers } from '../../hooks/useTeachers';
+import { useSubjects } from '../../hooks/useSubjects';
+import type { Subject } from '../../types/Subject';
 
 export default function TeacherCreatePage() {
   const router = useRouter();
-  const { createTeacher } = useTeachers(); // ✅ usar createTeacher
+  const { createTeacher } = useTeachers();
   const { subjects } = useSubjects();
 
   const [formData, setFormData] = useState<TeacherFormData>({
-    name: "",
-    email: "",
-    dateOfBirth: "",
-    subject: "",
-    phone: "",
-    address: "",
+    name: '',
+    email: '',
+    dateOfBirth: '',
+    subject: '',
+    phone: '',
+    address: '',
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof TeacherFormData, string>>>({});
 
-  // validação dos campos
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof TeacherFormData, string>> = {};
 
-    if (!formData.name.trim()) newErrors.name = "Nome é obrigatório.";
-    if (!formData.email.trim()) newErrors.email = "Email é obrigatório.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email inválido.";
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Data de nascimento é obrigatória.";
-    if (!formData.subject.trim()) newErrors.subject = "Disciplina é obrigatória.";
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório.';
+    if (!formData.email.trim()) newErrors.email = 'Email é obrigatório.';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email inválido.';
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Data de nascimento é obrigatória.';
+    if (!formData.subject.trim()) newErrors.subject = 'Disciplina é obrigatória.';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -52,21 +49,20 @@ export default function TeacherCreatePage() {
     if (!validate()) return;
 
     createTeacher(formData);
-    alert("Professor cadastrado com sucesso!");
-    router.push("/teachers");
+    alert('Professor cadastrado com sucesso!');
+    router.push('/teachers');
   };
 
   return (
     <div className={styles.createContainer}>
       <h1 className={styles.createTitle}>Cadastrar Novo Professor</h1>
       <form onSubmit={handleSubmit} className={styles.createForm}>
-        {/* Inputs comuns */}
         {[
-          { label: "Nome", name: "name", type: "text" },
-          { label: "Email", name: "email", type: "email" },
-          { label: "Data de Nascimento", name: "dateOfBirth", type: "date" },
-          { label: "Telefone", name: "phone", type: "tel" },
-          { label: "Endereço", name: "address", type: "text" },
+          { label: 'Nome', name: 'name', type: 'text' },
+          { label: 'Email', name: 'email', type: 'email' },
+          { label: 'Data de Nascimento', name: 'dateOfBirth', type: 'date' },
+          { label: 'Telefone', name: 'phone', type: 'tel' },
+          { label: 'Endereço', name: 'address', type: 'text' },
         ].map(({ label, name, type }) => (
           <div key={name} className={styles.formGroup}>
             <label htmlFor={name} className={styles.formLabel}>{label}</label>
@@ -79,14 +75,12 @@ export default function TeacherCreatePage() {
               onChange={handleChange}
             />
             {errors[name as keyof TeacherFormData] && (
-              <span className={styles.formError}>
-                {errors[name as keyof TeacherFormData]}
-              </span>
+              <span className={styles.formError}>{errors[name as keyof TeacherFormData]}</span>
             )}
           </div>
         ))}
 
-        {/* Select para disciplinas */}
+        {/* Select de disciplinas */}
         <div className={styles.formGroup}>
           <label htmlFor="subject" className={styles.formLabel}>Disciplina</label>
           <select
@@ -109,7 +103,7 @@ export default function TeacherCreatePage() {
           <button
             type="button"
             className={styles.btnSecondary}
-            onClick={() => router.push("/teachers")}
+            onClick={() => router.push('/teachers')}
           >
             Cancelar
           </button>

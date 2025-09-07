@@ -29,14 +29,17 @@ describe('enrollmentsService', () => {
 
   it('deleteEnrollment remove matrícula existente e retorna true', () => {
     const idToDelete = enrollments[0].id;
+    const initialLength = enrollments.length;
     const result = deleteEnrollment(idToDelete);
     expect(result).toBe(true);
     expect(enrollments.find(e => e.id === idToDelete)).toBeUndefined();
+    expect(enrollments.length).toBe(initialLength - 1);
   });
 
   it('deleteEnrollment retorna false se matrícula não existir', () => {
     const result = deleteEnrollment(99999);
     expect(result).toBe(false);
+    expect(enrollments.length).toBe(initialEnrollments.length);
   });
 
   it('updateEnrollment atualiza matrícula existente e retorna true', () => {
@@ -58,6 +61,7 @@ describe('enrollmentsService', () => {
   });
 
   it('addEnrollment adiciona nova matrícula', () => {
+    const initialLength = enrollments.length;
     const newEnrollment: Enrollment = {
       id: 99999,
       studentId: 5,
@@ -67,5 +71,6 @@ describe('enrollmentsService', () => {
     };
     addEnrollment(newEnrollment);
     expect(enrollments).toContainEqual(newEnrollment);
+    expect(enrollments.length).toBe(initialLength + 1);
   });
 });

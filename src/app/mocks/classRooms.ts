@@ -4,6 +4,7 @@ import type { ClassRoom } from '../types/Classroom';
 import type { Subject } from '../types/Subject';
 import type { Teacher } from '../types/Teacher';
 
+// Mock inicial com tipagem completa
 const initialClassRooms: ClassRoom[] = [
   {
     id: 1,
