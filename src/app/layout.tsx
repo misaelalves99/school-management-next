@@ -1,13 +1,12 @@
 // app/layout.tsx
-
 'use client';
 
 import { ReactNode } from 'react';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer/Footer';
 import './globals.css';
 
 // Providers
+import { AuthProvider } from './contexts/AuthProvider';
+import ProtectedApp from './ProtectedApp';
 import { TeachersProvider } from './contexts/TeachersProvider';
 import { StudentsProvider } from './contexts/StudentsProvider';
 import { ClassRoomsProvider } from './contexts/ClassRoomsProvider';
@@ -22,19 +21,21 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="pt-BR">
       <body>
-        <TeachersProvider>
-          <StudentsProvider>
-            <ClassRoomsProvider>
-              <SubjectsProvider>
-                <EnrollmentsProvider>
-                  <Navbar />
-                  <main>{children}</main>
-                  <Footer />
-                </EnrollmentsProvider>
-              </SubjectsProvider>
-            </ClassRoomsProvider>
-          </StudentsProvider>
-        </TeachersProvider>
+        <AuthProvider>
+          <ProtectedApp>
+            <TeachersProvider>
+              <StudentsProvider>
+                <ClassRoomsProvider>
+                  <SubjectsProvider>
+                    <EnrollmentsProvider>
+                      {children}
+                    </EnrollmentsProvider>
+                  </SubjectsProvider>
+                </ClassRoomsProvider>
+              </StudentsProvider>
+            </TeachersProvider>
+          </ProtectedApp>
+        </AuthProvider>
       </body>
     </html>
   );

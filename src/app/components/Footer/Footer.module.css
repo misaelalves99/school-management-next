@@ -3,8 +3,8 @@
 .footer {
   width: 100%;
   padding: 1rem 2rem;
-  background-color: #1f2937; /* Cinza escuro */
-  color: #f9fafb; /* Branco suave */
+  background-color: #f9fafb; /* Cinza escuro */
+  color: #000000; /* Branco suave */
   text-align: center;
   font-size: 0.9rem;
   font-weight: 500;

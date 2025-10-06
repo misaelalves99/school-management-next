@@ -1,21 +1,25 @@
 // src/app/enrollments/page.tsx
 
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import styles from "./EnrollmentsPage.module.css";
-import { useEnrollments } from "../hooks/useEnrollments";
-import { useStudents } from "../hooks/useStudents";
-import { useClassRooms } from "../hooks/useClassRooms";
-import type { EnrollmentWithNames } from "../types/Enrollment";
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import styles from './EnrollmentsPage.module.css';
+import { useEnrollments } from '../hooks/useEnrollments';
+import { useStudents } from '../hooks/useStudents';
+import { useClassRooms } from '../hooks/useClassRooms';
+import type { EnrollmentWithNames } from '../types/Enrollment';
+
+// React Icons
+import { FaSearch, FaPlus, FaInfoCircle, FaTrash } from "react-icons/fa";
+import { FiEdit } from 'react-icons/fi';
 
 export default function EnrollmentIndexPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchString, setSearchString] = useState(
-    searchParams.get("searchString") || ""
+    searchParams.get('searchString') || ''
   );
 
   const { enrollments } = useEnrollments();
@@ -34,8 +38,8 @@ export default function EnrollmentIndexPage() {
         const classRoom = classRooms.find((c) => c.id === e.classRoomId);
         return {
           ...e,
-          studentName: student?.name ?? "Aluno não informado",
-          classRoomName: classRoom?.name ?? "Turma não informada",
+          studentName: student?.name ?? 'Aluno não informado',
+          classRoomName: classRoom?.name ?? 'Turma não informada',
         };
       });
   }, [enrollments, students, classRooms, searchString]);
@@ -59,12 +63,12 @@ export default function EnrollmentIndexPage() {
             className={styles.input}
           />
           <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
-            Buscar
+            <FaSearch />Buscar
           </button>
         </form>
 
         <Link href="/enrollments/create" className={`${styles.btn} ${styles.btnSuccess}`}>
-          Cadastrar Nova Matrícula
+          <FaPlus />Nova Matrícula
         </Link>
       </aside>
 
@@ -102,20 +106,23 @@ export default function EnrollmentIndexPage() {
                       <Link
                         href={`/enrollments/details/${e.id}`}
                         className={`${styles.btn} ${styles.btnInfo}`}
+                        title="Detalhes"
                       >
-                        Detalhes
+                        <FaInfoCircle size={16} />
                       </Link>
                       <Link
                         href={`/enrollments/edit/${e.id}`}
                         className={`${styles.btn} ${styles.btnWarning}`}
+                        title="Editar"
                       >
-                        Editar
+                        <FiEdit size={16} />
                       </Link>
                       <Link
                         href={`/enrollments/delete/${e.id}`}
                         className={`${styles.btn} ${styles.btnDanger}`}
+                        title="Excluir"
                       >
-                        Excluir
+                        <FaTrash size={16} />
                       </Link>
                     </td>
                   </tr>

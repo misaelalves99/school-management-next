@@ -1,10 +1,9 @@
-// app/students/page.tsx
-
 'use client';
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useStudents } from "../hooks/useStudents";
+import { FaInfoCircle, FaEdit, FaTrash, FaPlus, FaSearch } from "react-icons/fa";
 import styles from "./StudentsPage.module.css";
 
 export default function StudentsPage() {
@@ -35,14 +34,16 @@ export default function StudentsPage() {
             className={styles.input}
           />
           <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
-            Buscar
+            <FaSearch />Buscar
           </button>
         </form>
+
         <button
           className={`${styles.btn} ${styles.btnSuccess}`}
           onClick={() => router.push("/students/create")}
+          title="Novo Aluno"
         >
-          Cadastrar Novo Aluno
+          <FaPlus />Novo Aluno
         </button>
       </aside>
 
@@ -72,20 +73,23 @@ export default function StudentsPage() {
                       <button
                         className={`${styles.btn} ${styles.btnInfo}`}
                         onClick={() => router.push(`/students/details/${student.id}`)}
+                        title="Detalhes"
                       >
-                        Detalhes
+                        <FaInfoCircle size={16} />
                       </button>
                       <button
                         className={`${styles.btn} ${styles.btnWarning}`}
                         onClick={() => router.push(`/students/edit/${student.id}`)}
+                        title="Editar"
                       >
-                        Editar
+                        <FaEdit size={16} />
                       </button>
                       <button
                         className={`${styles.btn} ${styles.btnDanger}`}
                         onClick={() => router.push(`/students/delete/${student.id}`)}
+                        title="Excluir"
                       >
-                        Excluir
+                        <FaTrash size={16} />
                       </button>
                     </td>
                   </tr>

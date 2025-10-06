@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { FaInfoCircle, FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa';
 import styles from './SubjectsPage.module.css';
 import { useSubjects } from '../hooks/useSubjects';
 
@@ -11,7 +12,7 @@ export default function SubjectsPage() {
   const [search, setSearch] = useState('');
   const { subjects } = useSubjects();
 
-  // filtra usando memo para otimização
+  // Filtragem otimizada com useMemo
   const filtered = useMemo(() => {
     const term = search.toLowerCase();
     return subjects.filter(
@@ -27,6 +28,7 @@ export default function SubjectsPage() {
 
   return (
     <div className={styles.pageContainer}>
+      {/* Painel esquerdo */}
       <div className={styles.leftPanel}>
         <h2 className={styles.title}>Buscar Disciplinas</h2>
         <form onSubmit={(e) => e.preventDefault()} className={styles.searchForm}>
@@ -37,7 +39,8 @@ export default function SubjectsPage() {
             onChange={handleSearchChange}
             className={styles.input}
           />
-          <button className={`${styles.btn} ${styles.btnPrimary}`}>
+          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`}>
+            <FaSearch />
             Buscar
           </button>
         </form>
@@ -46,12 +49,14 @@ export default function SubjectsPage() {
           href="/subjects/create"
           className={`${styles.btn} ${styles.btnSuccess}`}
         >
-          Cadastrar Nova Disciplina
+          <FaPlus /> Nova Disciplina
         </Link>
       </div>
 
+      {/* Painel direito */}
       <div className={styles.rightPanel}>
         <h2 className={styles.title}>Lista de Disciplinas</h2>
+
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
@@ -63,10 +68,11 @@ export default function SubjectsPage() {
                 <th>Ações</th>
               </tr>
             </thead>
+
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
+                  <td colSpan={5} className={styles.noResults}>
                     Nenhuma disciplina encontrada.
                   </td>
                 </tr>
@@ -80,21 +86,26 @@ export default function SubjectsPage() {
                     <td className={styles.actionsCell}>
                       <Link
                         href={`/subjects/details/${subject.id}`}
-                        className={`${styles.btn} ${styles.btnInfo}`}
+                        className={`${styles.iconBtn} ${styles.btnInfo}`}
+                        title="Ver detalhes"
                       >
-                        Detalhes
+                        <FaInfoCircle size={16} />
                       </Link>
+
                       <Link
                         href={`/subjects/edit/${subject.id}`}
-                        className={`${styles.btn} ${styles.btnWarning}`}
+                        className={`${styles.iconBtn} ${styles.btnWarning}`}
+                        title="Editar disciplina"
                       >
-                        Editar
+                        <FaEdit size={16} />
                       </Link>
+
                       <Link
                         href={`/subjects/delete/${subject.id}`}
-                        className={`${styles.btn} ${styles.btnDanger}`}
+                        className={`${styles.iconBtn} ${styles.btnDanger}`}
+                        title="Excluir disciplina"
                       >
-                        Excluir
+                        <FaTrash size={16} />
                       </Link>
                     </td>
                   </tr>

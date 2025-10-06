@@ -1,51 +1,70 @@
+/* src/app/globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* ===== Tailwind Base ===== */
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* app/globals.css */
-
-/* Reset básico e fontes */
-html, body {
+/* ===== Reset e box-sizing ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #f3f4f6; /* Cinza claro */
-  color: #111827; /* Texto escuro */
 }
 
-/* Layout principal */
-main {
-  min-height: 100vh; /* Garante altura mínima da tela */
-  padding: 1rem;
+/* ===== Variáveis globais ===== */
+:root {
+  --color-primary: #00CEFF; /* Azul vibrante */
+  --color-secondary: #6E00FF; /* Roxo intenso */
+  --color-accent: #E573FF; /* Rosa */
+  --color-text: #fff;
+  --color-bg: #f3f3f6;
+}
+
+/* ===== Corpo da página ===== */
+html {
+  font-family: 'Inter', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text-dark);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Links padrão */
+/* ===== Links ===== */
 a {
+  color: var(--color-primary);
   text-decoration: none;
-  color: inherit;
+  transition: color 0.3s;
 }
 
-/* Botões padrão */
+a:hover {
+  color: var(--color-secondary);
+}
+
+/* ===== Botões globais simples ===== */
 button {
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  border: none;
-  outline: none;
-  font-family: inherit;
+  transition: all 0.3s ease;
 }
 
-/* Scroll suave */
-html {
-  scroll-behavior: smooth;
+/* ===== Containers globais ===== */
+main {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }

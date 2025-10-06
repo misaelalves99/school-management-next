@@ -3,61 +3,128 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
+  padding: 4rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: 'Inter', sans-serif;
   background-color: #f5f7fa;
   min-height: 100vh;
-  gap: 2rem;
+  gap: 3rem;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 800;
   color: #1f2937; /* cinza escuro */
   text-align: center;
+  background: linear-gradient(90deg, #00CEFF, #6E00FF, #E573FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .lead {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: #4b5563; /* cinza médio */
   text-align: center;
-  max-width: 700px;
+  max-width: 720px;
+  line-height: 1.7;
 }
 
+/* === Features Cards === */
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
   width: 100%;
-  padding: 0;
   list-style: none;
 }
 
 .featureCard {
   background-color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.cardIcon {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #00CEFF, #6E00FF, #E573FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.cardText {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
 }
 
 .cardLink {
   text-decoration: none;
   font-weight: 600;
   font-size: 1.1rem;
-  color: #2563eb; /* azul primário */
-  transition: color 0.2s;
+  color: #00CEFF; /* azul primário */
+  transition: color 0.3s, transform 0.3s;
 }
 
 .cardLink:hover {
-  color: #1d4ed8; /* azul mais escuro */
+  color: #6E00FF; /* roxo */
+  transform: translateY(-2px);
+}
+
+/* === Responsividade === */
+@media (max-width: 1024px) {
+  .container {
+    padding: 3rem 1.5rem;
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+  }
+
+  .features {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .featureCard {
+    padding: 1.5rem 1rem;
+  }
 }
