@@ -17,9 +17,9 @@
 
 /* ===== Variáveis globais ===== */
 :root {
-  --color-primary: #00CEFF; /* Azul vibrante */
-  --color-secondary: #6E00FF; /* Roxo intenso */
-  --color-accent: #E573FF; /* Rosa */
+  --color-primary: #00CEFF;
+  --color-secondary: #6E00FF;
+  --color-accent: #E573FF;
   --color-text: #fff;
   --color-bg: #f3f3f6;
 }
