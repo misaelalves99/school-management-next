@@ -6,12 +6,19 @@ import styles from './SocialButton.module.css';
 
 interface Props {
   icon: IconType;
-  color: string;           // cor de fundo do botão
-  onClick?: () => void;
-  ariaLabel: string;       // acessibilidade
+  color: string;
+  onClick?: () => void | Promise<void>;
+  ariaLabel: string;
+  disabled?: boolean;
 }
 
-export default function SocialButton({ icon: Icon, color, onClick, ariaLabel }: Props) {
+export default function SocialButton({
+  icon: Icon,
+  color,
+  onClick,
+  ariaLabel,
+  disabled,
+}: Props) {
   return (
     <button
       type="button"
@@ -19,6 +26,8 @@ export default function SocialButton({ icon: Icon, color, onClick, ariaLabel }: 
       style={{ backgroundColor: color }}
       onClick={onClick}
       aria-label={ariaLabel}
+      disabled={disabled}
+      aria-disabled={disabled}
     >
       <Icon className={styles.icon} />
     </button>

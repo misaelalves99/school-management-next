@@ -1,88 +1,106 @@
 // app/contexts/AuthProvider.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect, useCallback } from 'react';
 import { AuthContext, User } from './AuthContext';
-import { auth, googleProvider, facebookProvider } from '../lib/firebase';
+import { auth, googleProvider, facebookProvider } from '@/app/lib/firebase';
 import {
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  onAuthStateChanged,
   updateProfile,
+  User as FbUser,
 } from 'firebase/auth';
 
-interface Props {
-  children: ReactNode;
-}
+const toUser = (u: FbUser): User => ({
+  id: u.uid,
+  name: u.displayName ?? '',
+  email: u.email ?? '',
+  photoURL: u.photoURL ?? undefined,
+});
+
+export const mapAuthError = (code?: string) => {
+  switch (code) {
+    case 'auth/invalid-email':
+      return 'E-mail inválido.';
+    case 'auth/user-not-found':
+      return 'Usuário não encontrado.';
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return 'E-mail ou senha incorretos.';
+    case 'auth/email-already-in-use':
+      return 'Este e-mail já está cadastrado.';
+    case 'auth/weak-password':
+      return 'A senha deve ter pelo menos 6 caracteres.';
+    case 'auth/too-many-requests':
+      return 'Muitas tentativas. Tente novamente mais tarde.';
+    case 'auth/unauthorized-domain':
+      return 'Domínio não autorizado nas configurações do Firebase.';
+    default:
+      return 'Falha na autenticação. Tente novamente.';
+  }
+};
+
+interface Props { children: ReactNode; }
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const mapFirebaseUser = (firebaseUser: any): User => ({
-    id: firebaseUser.uid,
-    name: firebaseUser.displayName || '',
-    email: firebaseUser.email || '',
-    photoURL: firebaseUser.photoURL || undefined,
-  });
-
-  // Persistência e observador do Firebase
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) setUser(mapFirebaseUser(firebaseUser));
-      else setUser(null);
-      setLoading(false);
+    const unsub = onAuthStateChanged(auth, (fbUser) => {
+      if (fbUser) {
+        const u = toUser(fbUser);
+        setUser(u);
+        try { localStorage.setItem('authUser', JSON.stringify(u)); } catch {}
+      } else {
+        setUser(null);
+        try { localStorage.removeItem('authUser'); } catch {}
+      }
     });
-    return () => unsubscribe();
+    return () => unsub();
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
-      setUser(mapFirebaseUser(res.user));
+      await signInWithEmailAndPassword(auth, email.trim(), password.trim());
       return true;
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao logar com email/senha.');
+    } catch (e: any) {
+      console.error('login error:', e?.code, e?.message);
       return false;
     }
   }, []);
 
   const register = useCallback(async (name: string, email: string, password: string) => {
     try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name });
-      setUser(mapFirebaseUser(res.user));
+      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password.trim());
+      if (cred.user && name.trim()) {
+        await updateProfile(cred.user, { displayName: name.trim() });
+      }
       return true;
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao registrar usuário.');
+    } catch (e: any) {
+      console.error('register error:', e?.code, e?.message);
       return false;
     }
   }, []);
 
   const loginWithGoogle = useCallback(async () => {
     try {
-      const res = await signInWithPopup(auth, googleProvider);
-      setUser(mapFirebaseUser(res.user));
+      await signInWithPopup(auth, googleProvider);
       return true;
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao entrar com Google.');
+    } catch (e: any) {
+      console.error('google login error:', e?.code, e?.message);
       return false;
     }
   }, []);
 
   const loginWithFacebook = useCallback(async () => {
     try {
-      const res = await signInWithPopup(auth, facebookProvider);
-      setUser(mapFirebaseUser(res.user));
+      await signInWithPopup(auth, facebookProvider);
       return true;
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao entrar com Facebook.');
+    } catch (e: any) {
+      console.error('facebook login error:', e?.code, e?.message);
       return false;
     }
   }, []);
@@ -90,13 +108,22 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const logout = useCallback(async () => {
     await signOut(auth);
     setUser(null);
+    try { localStorage.removeItem('authUser'); } catch {}
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, loginWithGoogle, loginWithFacebook, logout }}
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        loginWithGoogle,
+        loginWithFacebook,
+        mapAuthError,
+      }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

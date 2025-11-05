@@ -12,12 +12,12 @@ export interface User {
 
 export interface AuthContextType {
   user: User | null;
-  loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<boolean>;
   loginWithFacebook: () => Promise<boolean>;
+  mapAuthError: (code?: string) => string;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
