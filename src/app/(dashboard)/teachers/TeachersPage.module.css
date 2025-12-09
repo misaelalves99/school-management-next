@@ -1,0 +1,362 @@
+/* src/app/(dashboard)/teachers/TeachersPage.module.css */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Header (layout igual Subjects) ===== */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.headerText {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #e5e7eb;
+}
+
+.titleIcon {
+  font-size: 1.45rem;
+  color: #a855f7;
+  filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.7));
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* ===== Filters ===== */
+
+.filtersSection {
+  display: flex;
+}
+
+.filtersCard {
+  width: 100%;
+  padding: 1rem 1.1rem;
+}
+
+.filtersForm {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.fieldLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+  margin-bottom: 0.35rem;
+}
+
+.searchGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchControl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 75%);
+  border-radius: 999px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  padding: 0.35rem 0.8rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.searchControl:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.7);
+}
+
+.searchIcon {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
+}
+
+.subjectGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.subjectChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 80%);
+  color: #9ca3af;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.chip:hover {
+  border-color: #6366f1;
+  transform: translateY(-1px);
+}
+
+.chipActive {
+  border-color: #6366f1;
+  background: radial-gradient(circle at 0 0, #4f46e5 0, #020617 90%);
+  color: #e5e7eb;
+}
+
+/* ===== Table ===== */
+
+.tableSection {
+  display: flex;
+}
+
+.tableCard {
+  width: 100%;
+  padding: 1rem 1.1rem 0.9rem;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.tableTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.tableMeta {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.tableWrapper {
+  border-radius: 0.9rem;
+  overflow: hidden;
+  border: 1px solid rgba(31, 41, 55, 0.85);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.table thead {
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 60%);
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+  background: rgba(15, 23, 42, 0.98);
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.table tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.99);
+}
+
+.table tbody tr:hover {
+  background: radial-gradient(circle at 0 0, #111827 0, #020617 70%);
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.name {
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+.specialization {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.addressCell {
+  max-width: 220px;
+  white-space: normal;
+}
+
+/* ===== Actions (igual Subjects/Students, refinado) ===== */
+
+.actionsCell {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease,
+    border-color 0.15s ease;
+  outline: none;
+}
+
+.iconBtn:hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.5),
+    0 10px 20px rgba(15, 23, 42, 0.9);
+}
+
+.iconBtn:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 1),
+    0 0 0 4px rgba(129, 140, 248, 0.9);
+}
+
+/* Mesmo padrão de cores global: info/edição/exclusão */
+
+.btnInfo {
+  background: radial-gradient(circle at top left, #0ea5e9, #0369a1);
+  color: #e0f2fe;
+}
+
+.btnWarning {
+  background: radial-gradient(circle at top left, #f59e0b, #d97706);
+  color: #fffbeb;
+}
+
+.btnDanger {
+  background: radial-gradient(circle at top left, #ef4444, #b91c1c);
+  color: #fee2e2;
+}
+
+/* ===== Empty state ===== */
+
+.emptyState {
+  padding: 1.4rem 1.1rem 1.1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.emptyTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.emptyText {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  max-width: 420px;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 900px) {
+  .filtersForm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableWrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 720px;
+  }
+}

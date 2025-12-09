@@ -1,0 +1,421 @@
+/* src/app/(dashboard)/subjects/SubjectsPage.module.css */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Cabeçalho ===== */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.headerText {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #e5e7eb;
+}
+
+.titleIcon {
+  font-size: 1.45rem;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.7));
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* ===== Grid de conteúdo ===== */
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+/* ===== Painel de filtros ===== */
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.sectionSubtitle {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  line-height: 1.5;
+}
+
+/* Campo de busca */
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 75%);
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.searchField:focus-within {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+}
+
+.searchIcon {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  background: transparent;
+  color: #e5e7eb;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
+}
+
+.searchActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Divider */
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(148, 163, 184, 0.85),
+    transparent
+  );
+}
+
+/* Bloco de ação */
+
+.actionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actionText {
+  font-size: 0.86rem;
+  color: #9ca3af;
+}
+
+/* ===== Chips de filtro ===== */
+
+.filterChips {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 80%);
+  color: #9ca3af;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.chip:hover {
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.65);
+  color: #e5e7eb;
+}
+
+.chipActive {
+  border-color: #38bdf8;
+  background: radial-gradient(circle at 0 0, #0ea5e9 0, #0369a1 90%);
+  color: #e5e7eb;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 1),
+    0 12px 24px rgba(8, 47, 73, 0.9);
+}
+
+/* ===== Tabela / lista ===== */
+
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tableHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.tableMeta {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.tableWrapper {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(31, 41, 55, 0.85);
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.2), transparent 60%),
+    rgba(15, 23, 42, 0.97);
+  overflow: hidden;
+}
+
+/* Estilos de tabela opcionais (caso DataTable use <table>) */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table thead {
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 60%);
+}
+
+.table th,
+.table td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  background: rgba(15, 23, 42, 0.98);
+}
+
+.table td {
+  color: #e2e8f0;
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.96);
+}
+
+.table tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.99);
+}
+
+.table tbody tr:hover {
+  background: radial-gradient(circle at 0 0, #111827 0, #020617 70%);
+}
+
+/* ===== Célula da disciplina ===== */
+
+.subjectCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.subjectName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.subjectDescription {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+/* ===== Ações ===== */
+
+.actionsCell {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+.iconBtn:hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.4),
+    0 10px 18px rgba(15, 23, 42, 0.6);
+}
+
+/* Cores das ações */
+
+.btnInfo {
+  background: radial-gradient(circle at top left, #0ea5e9, #0369a1);
+  color: #e0f2fe;
+}
+
+.btnWarning {
+  background: radial-gradient(circle at top left, #f59e0b, #d97706);
+  color: #fffbeb;
+}
+
+.btnDanger {
+  background: radial-gradient(circle at top left, #ef4444, #b91c1c);
+  color: #fee2e2;
+}
+
+/* ===== Empty state ===== */
+
+.emptyState {
+  border-radius: 0.9rem;
+  padding: 1.3rem 1.4rem;
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.98),
+      rgba(15, 23, 42, 0.98) 4px,
+      rgba(30, 64, 175, 0.1) 4px,
+      rgba(30, 64, 175, 0.1) 8px
+    );
+  text-align: center;
+}
+
+.emptyTitle {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #e5e7eb;
+}
+
+.emptySubtitle {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 980px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    justify-content: flex-start;
+  }
+
+  .contentGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tableWrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 720px;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .iconBtn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,195 @@
+/* src/app/(dashboard)/students/create/CreatePage.module.css */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Header (layout padronizado) ===== */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-width: 720px;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #e5e7eb;
+}
+
+.titleIconWrapper {
+  width: 46px;
+  height: 46px;
+  border-radius: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at 0 0,
+    #22c55e 0,
+    #16a34a 32%,
+    #020617 100%
+  );
+  color: #ecfdf5;
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.9);
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+}
+
+/* ===== Form ===== */
+
+.formSection {
+  display: flex;
+}
+
+.formCard {
+  width: 100%;
+  padding: 1rem 1.1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.required {
+  color: #fb7185;
+  margin-left: 0.15rem;
+}
+
+.input {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(55, 65, 81, 0.85);
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 80%);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+  resize: vertical;
+  min-height: 0;
+}
+
+.input::placeholder {
+  color: #6b7280;
+}
+
+.input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7);
+}
+
+/* textarea variante */
+
+.textarea {
+  min-height: 80px;
+}
+
+/* Erros */
+
+.error {
+  font-size: 0.78rem;
+  color: #fb7185;
+}
+
+/* Footer do formulário */
+
+.footer {
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 900px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    align-self: flex-end;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .formCard {
+    padding: 0.9rem;
+  }
+
+  .footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.86rem;
+  }
+}

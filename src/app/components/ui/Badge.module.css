@@ -1,0 +1,107 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+
+  white-space: nowrap;
+  user-select: none;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* ===== Tamanhos ===== */
+
+.size_sm {
+  padding: 0.1rem 0.5rem;
+  font-size: 0.68rem;
+}
+
+.size_md {
+  padding: 0.18rem 0.7rem;
+  font-size: 0.72rem;
+}
+
+/* ===== Variantes ===== */
+
+.variant_neutral {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(148, 163, 184, 0.6);
+  color: #e5e7eb;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.85),
+    0 6px 16px rgba(15, 23, 42, 0.7);
+}
+
+.variant_success {
+  background: rgba(22, 163, 74, 0.18);
+  border-color: rgba(34, 197, 94, 0.7);
+  color: #bbf7d0;
+  box-shadow:
+    0 0 0 1px rgba(6, 95, 70, 0.85),
+    0 8px 20px rgba(22, 163, 74, 0.65);
+}
+
+.variant_warning {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.8);
+  color: #fed7aa;
+  box-shadow:
+    0 0 0 1px rgba(120, 53, 15, 0.8),
+    0 8px 20px rgba(245, 158, 11, 0.6);
+}
+
+.variant_danger {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.85);
+  color: #fecaca;
+  box-shadow:
+    0 0 0 1px rgba(127, 29, 29, 0.9),
+    0 8px 20px rgba(239, 68, 68, 0.65);
+}
+
+.variant_info {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.8);
+  color: #e0f2fe;
+  box-shadow:
+    0 0 0 1px rgba(30, 64, 175, 0.9),
+    0 8px 20px rgba(59, 130, 246, 0.7);
+}
+
+/* ===== Estado clicável (quando usado como botão/link) ===== */
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(148, 163, 184, 0.5),
+    0 10px 26px rgba(15, 23, 42, 0.75);
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 640px) {
+  .badge {
+    font-size: 0.68rem;
+    padding: 0.14rem 0.55rem;
+  }
+}

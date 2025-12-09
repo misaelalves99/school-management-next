@@ -1,0 +1,223 @@
+/* src/app/(dashboard)/DashboardHome.module.css */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* container (se você usar em algum layout externo) */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: 1.75rem 1.5rem 2rem;
+  min-height: 100vh;
+
+  color: #e5e7eb;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== Header ===== */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.headerMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.headerTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.headerSubtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  max-width: 560px;
+}
+
+.headerBadge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.25), transparent 60%),
+    rgba(15, 23, 42, 0.98);
+  font-size: 0.8rem;
+  color: #e5e7eb;
+}
+
+/* ===== Cards de métricas (os 4 cards de cima) ===== */
+
+.gridMain {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* ===== Grid secundário: últimas matrículas + resumo de turmas ===== */
+
+.gridSecondary {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+  gap: 1.25rem;
+}
+
+.section {
+  border-radius: 1rem;
+  padding: 1.25rem 1.1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9)),
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 60%);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.95),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.sectionSubtitle {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Wrapper da tabela (DataTable) */
+
+.tableWrapper {
+  margin-top: 0.5rem;
+}
+
+/* ===== Empty state genérico (se DataTable não renderizar nada) ===== */
+
+.emptyState {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  padding: 1rem 0.3rem;
+}
+
+/* Se você usar lista manual de matrículas em algum lugar */
+
+.enrollmentList {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.enrollmentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.5rem;
+  border-radius: 0.7rem;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(51, 65, 85, 0.9);
+}
+
+.enrollmentMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.enrollmentId {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.enrollmentDate {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.enrollmentStatus {
+  display: flex;
+  align-items: center;
+}
+
+/* Pills de status (usadas no mapStatusToClassName) */
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.statusActive {
+  background: rgba(22, 163, 74, 0.25);
+  border-color: rgba(22, 163, 74, 0.8);
+  color: #bbf7d0;
+}
+
+.statusPending {
+  background: rgba(234, 179, 8, 0.22);
+  border-color: rgba(234, 179, 8, 0.8);
+  color: #fef9c3;
+}
+
+.statusCanceled {
+  background: rgba(248, 113, 113, 0.18);
+  border-color: rgba(248, 113, 113, 0.85);
+  color: #fee2e2;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 1024px) {
+  /* Cards: 2 por linha em telas médias */
+  .gridMain {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gridSecondary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.2rem 1rem 1.6rem;
+    gap: 1.25rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  /* Cards: 1 por linha no mobile */
+  .gridMain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

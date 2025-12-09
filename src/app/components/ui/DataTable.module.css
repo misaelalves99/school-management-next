@@ -1,0 +1,91 @@
+/* src/app/components/ui/DataTable.module.css */
+
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(30, 64, 175, 0.7);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+  min-width: 100%;
+}
+
+.tableDense {
+  font-size: 0.8rem;
+}
+
+.table thead {
+  background: linear-gradient(
+    90deg,
+    rgba(37, 99, 235, 0.98),
+    rgba(59, 130, 246, 0.95)
+  );
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.85rem;
+  white-space: nowrap;
+}
+
+.table th {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: #e5e7eb;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(15, 23, 42, 0.9);
+}
+
+/* Alinhamentos */
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+/* Célula de vazio */
+
+.emptyCell {
+  text-align: center;
+  padding: 1.25rem 0.85rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Responsividade */
+
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 0.45rem 0.6rem;
+  }
+}

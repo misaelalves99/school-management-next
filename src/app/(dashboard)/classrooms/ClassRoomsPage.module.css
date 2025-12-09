@@ -1,0 +1,345 @@
+/* src/app/(dashboard)/classrooms/ClassRoomsPage.module.css */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Header (layout igual Subjects/Students/Teachers) ===== */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.headerText {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #e5e7eb;
+}
+
+.titleIcon {
+  font-size: 1.45rem;
+  color: #4ade80;
+  filter: drop-shadow(0 0 16px rgba(34, 197, 94, 0.7));
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* ===== Stats (cards) ===== */
+
+.statsRow {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.statCard,
+.statCardSecondary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  background:
+    radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96)),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 60%);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.95),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before,
+.statCardSecondary::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  pointer-events: none;
+}
+
+.statLabel {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+}
+
+.statValue {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.statHint {
+  font-size: 0.8rem;
+  color: #6b7280;
+  padding-left: 0.7rem;
+}
+
+.statCardSecondary {
+  gap: 0.45rem;
+}
+
+.statInline {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+}
+
+.statDotMorning,
+.statDotAfternoon,
+.statDotNight {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+}
+
+.statDotMorning {
+  background: #4ade80;
+}
+
+.statDotAfternoon {
+  background: #facc15;
+}
+
+.statDotNight {
+  background: #60a5fa;
+}
+
+/* ===== Filters ===== */
+
+.filtersRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.filtersLeft {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.filtersRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchWrapper {
+  position: relative;
+  width: min(360px, 100%);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.55rem 0.8rem 0.55rem 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 41, 55, 1);
+  background: radial-gradient(circle at 0 0, #0f172a 0, #020617 52%);
+  color: #e5e7eb;
+  font-size: 0.86rem;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
+}
+
+.searchInput:focus {
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.8);
+  background: radial-gradient(circle at 0 0, #020617 0, #020617 52%);
+}
+
+.select {
+  min-width: 170px;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 41, 55, 1);
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.84rem;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ===== Table cells ===== */
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.nameMain {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.nameMeta {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.gradeText {
+  font-size: 0.86rem;
+  color: #e5e7eb;
+}
+
+.capacityText {
+  font-size: 0.86rem;
+  color: #e5e7eb;
+}
+
+/* ===== Actions (mesmo padrão dos outros módulos) ===== */
+
+.actionsCell {
+  display: inline-flex;
+  gap: 0.35rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease,
+    border-color 0.15s ease;
+  outline: none;
+}
+
+.iconBtn:hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.5),
+    0 10px 20px rgba(15, 23, 42, 0.9);
+}
+
+.iconBtn:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 1),
+    0 0 0 4px rgba(59, 130, 246, 0.9);
+}
+
+/* Paleta global: info / warning / danger */
+
+.btnInfo {
+  background: radial-gradient(circle at top left, #0ea5e9, #0369a1);
+  color: #e0f2fe;
+}
+
+.btnWarning {
+  background: radial-gradient(circle at top left, #f59e0b, #d97706);
+  color: #fffbeb;
+}
+
+.btnDanger {
+  background: radial-gradient(circle at top left, #ef4444, #b91c1c);
+  color: #fee2e2;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 1024px) {
+  .statsRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtersRight {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.84rem;
+  }
+}

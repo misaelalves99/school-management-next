@@ -1,0 +1,50 @@
+/* src/app/(auth)/AuthLayout.module.css */
+
+.authShell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  background: radial-gradient(circle at top left, #111827 0, #020617 45%, #020617 100%);
+  color: #f9fafb;
+}
+
+.brandArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  gap: 1.5rem;
+}
+
+.logo {
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.logo span {
+  color: #22c55e;
+}
+
+.subtitle {
+  max-width: 420px;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+.formArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: #f9fafb;
+}
+
+@media (max-width: 900px) {
+  .authShell {
+    grid-template-columns: 1fr;
+  }
+
+  .brandArea {
+    display: none;
+  }
+}

@@ -1,0 +1,236 @@
+/* src/app/components/layout/Sidebar.module.css */
+
+.sidebar {
+  /* Sidebar fixa em toda a altura da tela */
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  height: 100vh;
+  width: 260px;
+  padding: 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.15), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.18), transparent 55%),
+    #020617;
+  border-right: 1px solid rgba(148, 163, 184, 0.5);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.75);
+  z-index: 40;
+
+  /* Caso o conteúdo da sidebar fique maior que a tela */
+  overflow-y: auto;
+}
+
+.sidebarCollapsed {
+  width: 78px;
+}
+
+/* Header (logo + botão) */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+}
+
+.logoMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: conic-gradient(
+    from 180deg,
+    #22c55e,
+    #22c55e,
+    #0ea5e9,
+    #6366f1,
+    #ec4899,
+    #22c55e
+  );
+  color: #020617;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.9),
+    0 12px 24px rgba(15, 23, 42, 0.9);
+}
+
+.logoTextWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logoTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.logoSubtitle {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Botão de colapso (hamburger minimalista) */
+.collapseButton {
+  border: none;
+  outline: none;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 999px;
+  padding: 0.25rem 0.35rem;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
+}
+
+.collapseButton:hover {
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+  transform: translateY(-1px);
+}
+
+.collapseBar {
+  width: 14px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #a855f7);
+}
+
+/* Navegação */
+.nav {
+  margin-top: 0.4rem;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #64748b;
+  margin-bottom: 0.4rem;
+  padding: 0 0.25rem;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  width: 100%;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.navLink:hover {
+  background: radial-gradient(
+      circle at top left,
+      rgba(56, 189, 248, 0.14),
+      transparent 55%
+    ),
+    rgba(15, 23, 42, 0.9);
+  border-color: rgba(56, 189, 248, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.9);
+}
+
+.navLinkActive {
+  background: linear-gradient(90deg, #38bdf8, #6366f1, #ec4899);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.95);
+  color: #0b1120;
+  border-color: transparent;
+}
+
+.navIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.88);
+  color: #e5e7eb;
+}
+
+.navLinkActive .navIcon {
+  background: rgba(15, 23, 42, 0.96);
+  color: #f9fafb;
+}
+
+.navLabel {
+  white-space: nowrap;
+}
+
+/* Rodapé */
+.footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.footerTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.footerText {
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.footerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.3);
+}

@@ -1,0 +1,196 @@
+/* src/app/(dashboard)/privacy-policy/PrivacyPolicy.module.css */
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Header (padrão Subjects/Students/ClassRooms/Enrollments) ===== */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.headerText {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #f9fafb;
+}
+
+.titleIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 1.4rem;
+  background: radial-gradient(
+    circle at 0 0,
+    #0ea5e9 0,
+    #0369a1 32%,
+    #020617 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 24px rgba(56, 189, 248, 0.65),
+    0 0 0 1px rgba(56, 189, 248, 0.32);
+}
+
+.titleIcon {
+  font-size: 1.4rem;
+  color: #e0f2fe;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ===== Content grid ===== */
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  gap: 1rem;
+}
+
+/* ===== Cards ===== */
+
+.card {
+  padding: 1rem 1.1rem 0.9rem;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.cardIcon {
+  font-size: 1.3rem;
+  color: #38bdf8;
+  margin-top: 0.1rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.cardSubtitle {
+  font-size: 0.84rem;
+  color: #9ca3af;
+  margin-top: 0.15rem;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paragraph {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  line-height: 1.7;
+}
+
+/* Key-value list */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0.1rem 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.listLabel {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  margin-right: 0.35rem;
+}
+
+.listValue {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+/* Bullet list */
+
+.bulletList {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.bulletList li {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 0.9rem 0.9rem 0.8rem;
+  }
+
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .subtitle {
+    font-size: 0.86rem;
+  }
+}

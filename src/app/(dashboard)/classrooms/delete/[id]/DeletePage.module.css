@@ -1,0 +1,288 @@
+/* src/app/(dashboard)/classrooms/delete/[id]/DeletePage.module.css */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ===== Header (layout alinhado com DeleteTeacher/DeleteStudent/DeleteSubject) ===== */
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-width: 720px;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #e5e7eb;
+}
+
+.titleIconWrapper {
+  width: 46px;
+  height: 46px;
+  border-radius: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at 0 0,
+    #f97316 0,
+    #ea580c 32%,
+    #020617 100%
+  );
+  color: #ffedd5;
+  box-shadow: 0 0 30px rgba(248, 113, 113, 0.9);
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+}
+
+/* ===== Conteúdo principal ===== */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Bloco de aviso vermelho */
+
+.warningBlock {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  background: radial-gradient(
+      circle at top left,
+      rgba(248, 113, 113, 0.22),
+      transparent 65%
+    ),
+    rgba(15, 23, 42, 0.96);
+}
+
+.warningIcon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.6);
+  flex-shrink: 0;
+}
+
+.warningText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.warningTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.warningSubtitle {
+  font-size: 0.85rem;
+  color: #fca5a5;
+}
+
+/* Card de resumo da turma */
+
+.summaryCard {
+  margin-top: 0.25rem;
+  padding: 1.1rem 1.1rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: radial-gradient(
+      circle at top right,
+      rgba(59, 130, 246, 0.18),
+      transparent 60%
+    ),
+    rgba(15, 23, 42, 0.98);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.summaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.summaryLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+}
+
+.summaryName {
+  margin-top: 0.15rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.summaryId {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.summaryItemLabel {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.summaryItemValue {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+/* Erro de operação */
+
+.errorMessage {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  color: #fecaca;
+}
+
+/* Ações */
+
+.actionsRow {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ===== Estados de loading/erro ===== */
+
+.stateContainer {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.stateCard {
+  border-radius: 1rem;
+  padding: 1.5rem 1.8rem;
+  background: radial-gradient(
+      circle at top left,
+      rgba(248, 113, 113, 0.22),
+      transparent 55%
+    ),
+    rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.8),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stateTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stateSubtitle {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.stateActions {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 960px) {
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .headerActions {
+    align-self: flex-end;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsRow {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .summaryCard {
+    padding: 1rem 1rem 0.9rem;
+  }
+
+  .warningBlock {
+    flex-direction: column;
+  }
+}

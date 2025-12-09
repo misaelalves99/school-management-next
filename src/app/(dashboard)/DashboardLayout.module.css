@@ -1,0 +1,80 @@
+/* src/app/(dashboard)/DashboardLayout.module.css */
+
+.dashboardRoot {
+  height: 100vh;
+  background: #020617; /* bg-slate-950 */
+  color: #e5e7eb; /* text-slate-50 */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter',
+    sans-serif;
+}
+
+/* Coluna principal à direita do sidebar fixo */
+.mainColumn {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-left: 0; /* mobile: sidebar ocupa a tela toda quando aberto */
+}
+
+/* md+: aplica recuo para o sidebar "dockado" de 75px */
+@media (min-width: 768px) {
+  .mainColumn {
+    margin-left: 75px;
+  }
+}
+
+/* Wrapper rolável do conteúdo (scroll só aqui, topbar fica fixo) */
+.contentScroll {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;              /* ⬅ AQUI o scroll vertical */
+  overscroll-behavior: contain;  /* evita bounce estranho em alguns browsers */
+}
+
+/* Área de conteúdo centralizada, com espaço para o Topbar fixo */
+.content {
+  width: 100%;
+  max-width: 72rem; /* ~max-w-6xl */
+  margin: 0 auto;
+  padding: 5rem 1rem 2.5rem; /* top ~ altura do Topbar (fixo) + um respiro embaixo */
+}
+
+/* ====== Estado de loading ====== */
+
+.loadingRoot {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter',
+    sans-serif;
+}
+
+.loadingBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 3px solid rgba(148, 163, 184, 0.55);
+  border-top-color: rgba(59, 130, 246, 0.9);
+  animation: dashboard-spin 0.7s linear infinite;
+}
+
+.loadingText {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
