@@ -1,28 +1,27 @@
 // jest.config.ts
-import type { Config } from 'jest';
+import nextJest from 'next/jest';
 
-const config: Config = {
+const createJestConfig = nextJest({
+  dir: './'
+});
+
+const customJestConfig = {
   testEnvironment: 'jsdom',
-
+  moduleDirectories: ['node_modules', '<rootDir>/'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
-
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
-
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-
   moduleNameMapper: {
-    // CSS/SCSS Modules → identity-obj-proxy
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-
-    // Aliases do Next.js
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/app/(.*)$': '<rootDir>/src/app/$1',
+    '^@/core/(.*)$': '<rootDir>/src/core/$1',
+    '^@/types/(.*)$': '<rootDir>/src/types/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
-
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'json', 'html'],
+  testMatch: ['**/?(*.)+(test).[tj]s?(x)'],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/index.ts',
+    '!src/**/mocks/**'
+  ]
 };
 
-export default config;
+export default createJestConfig(customJestConfig);

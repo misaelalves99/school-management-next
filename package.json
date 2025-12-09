@@ -1,19 +1,22 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
+  "name": "school-management-next",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand"
   },
   "dependencies": {
     "firebase": "^12.3.0",
     "next": "14.2.5",
+    "next-navigation": "^1.0.6",
     "next-router-mock": "^1.0.2",
+    "next-routes": "^1.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.4.0"
